@@ -26,7 +26,7 @@ def landing_page(request):
     
     context = {
         "page_title": "Fitness Assistant Landing Page",
-        "site_name": "AuraFitness",
+        "site_name": "MentorFit",
         "workouts": ["Strength", "Cardio", "Yoga", "HIIT"],
         "user_count": "2,500+",
         "hero_image": "/static/images/fitness-hero.jpg",

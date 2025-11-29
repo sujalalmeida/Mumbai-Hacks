@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Personalized Plan - AuraFitness</title>
+    
+    <!-- Modern CSS Framework and Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #0066ff;
+            --secondary: #FF6B6B;
+            --accent: #4CC9F0;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #8338ec;
+            --text-primary: #2B2D42;
+            --text-secondary: #6C757D;
+            --text-light: #ADB5BD;
+            --card-bg: #FFFFFF;
+            --body-bg: #F7FAFC;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .badge-premium {
+            background: linear-gradient(135deg, #FF9A8B, #FF6B6B);
+            color: white;
+            padding: 0.35em 0.8em;
+            font-size: 0.7em;
+            font-weight: 600;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(255, 107, 107, 0.3);
+        }
+        
+        .avatar-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        /* WhatsApp share feature styles */
+        .whatsapp-share-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-share-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        .whatsapp-share-btn i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .whatsapp-modal .modal-header {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        .day-selector {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .day-selector .form-check {
+            margin-bottom: 8px;
+        }
+        
+        .plan-preview {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main plan container styles */
+        .plan-container {
+            margin-top: 2rem;
+        }
+        
+        .plan-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
+            margin-bottom: 30px;
+            color: white;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .plan-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+        
+        .plan-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            z-index: 0;
+        }
+        
+        .plan-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .plan-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .plan-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .plan-meta-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .plan-meta-item i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Details card */
+        .profile-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .profile-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .profile-card-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        .profile-data {
+            padding: 1.5rem;
+        }
+        
+        .profile-data-item {
+            display: flex;
+            margin-bottom: 1.25rem;
+        }
+        
+        .profile-data-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .profile-data-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .profile-data-icon.bg-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .profile-data-icon.bg-info {
+            background: linear-gradient(135deg, var(--info), #9747FF);
+            color: white;
+        }
+        
+        .profile-data-icon.bg-success {
+            background: linear-gradient(135deg, var(--success), #49C628);
+            color: white;
+        }
+        
+        .profile-data-icon.bg-warning {
+            background: linear-gradient(135deg, var(--warning), #FFD166);
+            color: white;
+        }
+        
+        .profile-data-icon.bg-danger {
+            background: linear-gradient(135deg, var(--secondary), #FF8585);
+            color: white;
+        }
+        
+        .profile-data-content {
+            flex-grow: 1;
+        }
+        
+        .profile-data-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        
+        .profile-data-value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .profile-card-footer {
+            padding: 1rem 1.5rem;
+            background-color: rgba(0, 0, 0, 0.01);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Tabs and content */
+        .plan-tabs {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .plan-tabs-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-tabs {
+            border: none;
+            gap: 0.5rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: transparent;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .nav-tabs .nav-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .plan-tabs-content {
+            padding: 2rem;
+        }
+        
+        /* Plan content styles */
+        .plan-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .plan-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .plan-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .plan-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .plan-section-title i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .plan-item {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            transition: all 0.2s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .plan-item:hover {
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .plan-item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .plan-item-title i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+            width: 24px;
+            text-align: center;
+        }
+        
+        .plan-item-content {
+            padding-left: 2.25rem;
+            color: var(--text-secondary);
+        }
+        
+        .plan-item-content ul {
+            padding-left: 1.25rem;
+            margin-bottom: 0;
+        }
+        
+        .plan-item-content li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .plan-item-content li:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Button styles */
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            border: none;
+            box-shadow: 0 4px 10px rgba(58, 134, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(58, 134, 255, 0.4);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-light {
+            background-color: white;
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-secondary);
+        }
+        
+        .btn-light:hover {
+            background-color: #f8f9fa;
+            color: var(--text-primary);
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Modal customization */
+        .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.25rem;
+        }
+        
+        /* Form controls */
+        .form-control, .form-select {
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        /* Interactive elements */
+        .meal-checkbox {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .meal-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        .checkmark {
+            position: absolute;
+            top: 2px;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            border-radius: 4px;
+            border: 2px solid var(--primary);
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .meal-checkbox:hover input ~ .checkmark {
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+        
+        .meal-checkbox input:checked ~ .checkmark {
+            background-color: var(--primary);
+        }
+        
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        
+        .meal-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+        
+        .meal-checkbox .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .meal-checkbox-text {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .meal-checkbox input:checked ~ .meal-checkbox-text {
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+        
+        /* Progress bar */
+        .progress {
+            height: 10px;
+            margin: 1rem 0;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 10px;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .plan-header {
+                padding: 1.5rem;
+            }
+            
+            .plan-title {
+                font-size: 1.5rem;
+            }
+            
+            .plan-meta {
+                flex-wrap: wrap;
+            }
+            
+            .plan-tabs-content {
+                padding: 1.25rem;
+            }
+            
+            .plan-item {
+                padding: 1rem;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .navbar, .btn, .modal, .plan-meta, .profile-card-footer {
+                display: none !important;
+            }
+            
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            
+            .plan-header {
+                background: none !important;
+                color: black !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .profile-card, .plan-tabs {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .tab-pane {
+                display: block !important;
+                opacity: 1 !important;
+            }
+            
+            .tab-pane:not(.active) {
+                margin-top: 2rem !important;
+                border-top: 2px solid #ddd !important;
+                padding-top: 2rem !important;
+            }
+            
+            .plan-tabs-header {
+                display: none !important;
+            }
+            
+            .plan-section-title {
+                page-break-after: avoid;
+            }
+            
+            .plan-item {
+                page-break-inside: avoid;
+                border-left: 2px solid #333 !important;
+                background-color: white !important;
+                box-shadow: none !important;
+            }
+        }
+        
+        /* New WhatsApp Quick Actions */
+        .whatsapp-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .whatsapp-fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+        }
+        
+        .whatsapp-fab i {
+            transition: transform 0.3s ease;
+        }
+        
+        .whatsapp-fab.active i {
+            transform: rotate(45deg);
+        }
+        
+        .whatsapp-menu {
+            position: absolute;
+            bottom: 75px;
+            right: 5px;
+            background-color: white;
+            border-radius: 12px;
+            width: 220px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-menu.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        
+        .whatsapp-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+        
+        .whatsapp-menu-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .whatsapp-menu-item:hover {
+            background-color: rgba(37, 211, 102, 0.1);
+        }
+        
+        .whatsapp-menu-item i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: #25D366;
+        }
+        
+        .whatsapp-menu-item span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .phone-input-group {
+            position: relative;
+        }
+        
+        .country-code-selector {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 80px;
+            border: none;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background-color: rgba(0, 0, 0, 0.03);
+            font-weight: 500;
+            color: var(--text-primary);
+            padding-left: 10px;
+        }
+        
+        .phone-number-input {
+            padding-left: 90px !important;
+        }
+        
+        .sharing-status {
+            height: 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .sharing-status-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #25D366, #128C7E);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .quick-settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .quick-setting-btn {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            background-color: rgba(37, 211, 102, 0.1);
+            color: #128C7E;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .quick-setting-btn:hover, .quick-setting-btn.active {
+            background-color: #25D366;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand" href="/">AuraFitness</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-dumbbell"></i> Workouts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-apple-alt"></i> Nutrition</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="fas fa-clipboard-list"></i> My Plan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-users"></i> Community</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown me-3">
+                            <button class="btn btn-light rounded-circle position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    2
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                <li><a class="dropdown-item" href="#">New workout available</a></li>
+                                <li><a class="dropdown-item" href="#">Weekly progress report</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-primary" href="#">View all</a></li>
+                            </ul>
+                        </div>
+                        <div class="avatar-container">
+                            <span>{{ user_data.full_name|slice:":1" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container plan-container">
+    {% if messages %}
+        <div class="row mb-4">
+            <div class="col-12">
+        {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+        {% endfor %}
+            </div>
+    </div>
+    {% endif %}
+
+        {% if error %}
+        <div class="alert alert-danger">
+            <p>There was an error generating your plan: {{ error }}</p>
+            <p>Please try again or contact support.</p>
+        </div>
+        {% endif %}
+
+        {% if show_form %}
+        <div class="text-center py-5">
+            <h2>No plan generated yet</h2>
+            <p class="lead text-muted">Please complete the basic information form to generate your personalized plan.</p>
+            <a href="{% url 'onboarding' %}" class="btn btn-primary mt-3">Go to Basic Information</a>
+    </div>
+        {% elif user_data and plan %}
+        
+        <div class="plan-header">
+            <h1 class="plan-title">Your Personalized Fitness Plan</h1>
+            <p class="plan-subtitle">Based on your profile and fitness goals</p>
+            <div class="plan-meta">
+                <div class="plan-meta-item">
+                    <i class="fas fa-calendar-alt"></i> Created on {{ plan_date }}
+                </div>
+                <div class="plan-meta-item">
+                    <i class="fas fa-sync-alt"></i> Updates Weekly
+                </div>
+                <div class="plan-meta-item">
+                    <i class="fas fa-star"></i> Premium <span class="badge-premium ms-1">AI</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <div>
+                            <h5 class="profile-card-title">Profile Details</h5>
+                            <p class="profile-card-subtitle">Your personal information</p>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">Active</span>
+                    </div>
+                    <div class="profile-data">
+                        <div class="profile-data-item">
+                            <div class="profile-data-icon bg-primary">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-data-content">
+                                <span class="profile-data-label">Name</span>
+                                <p class="profile-data-value">{{ user_data.full_name }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-data-item">
+                            <div class="profile-data-icon bg-info">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="profile-data-content">
+                                <span class="profile-data-label">Date of Birth</span>
+                                <p class="profile-data-value">{{ user_data.dob }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-data-item">
+                            <div class="profile-data-icon bg-success">
+                                <i class="fas fa-venus-mars"></i>
+                            </div>
+                            <div class="profile-data-content">
+                                <span class="profile-data-label">Gender</span>
+                                <p class="profile-data-value">{{ user_data.gender|title }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-data-item">
+                            <div class="profile-data-icon bg-warning">
+                                <i class="fas fa-ruler-vertical"></i>
+                            </div>
+                            <div class="profile-data-content">
+                                <span class="profile-data-label">Height</span>
+                                <p class="profile-data-value">{{ user_data.height }} cm</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-data-item">
+                            <div class="profile-data-icon bg-danger">
+                                <i class="fas fa-weight"></i>
+                            </div>
+                            <div class="profile-data-content">
+                                <span class="profile-data-label">Weight</span>
+                                <p class="profile-data-value">{{ user_data.weight }} kg</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-card-footer">
+                        <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="plan-tabs">
+                    <div class="plan-tabs-header">
+                        <ul class="nav nav-tabs" id="planTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="diet-tab" data-bs-toggle="tab" data-bs-target="#diet" type="button" role="tab" aria-controls="diet" aria-selected="true">
+                                    <i class="fas fa-utensils"></i> Diet Plan
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="workout-tab" data-bs-toggle="tab" data-bs-target="#workout" type="button" role="tab" aria-controls="workout" aria-selected="false">
+                                    <i class="fas fa-dumbbell"></i> Workout Plan
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tips-tab" data-bs-toggle="tab" data-bs-target="#tips" type="button" role="tab" aria-controls="tips" aria-selected="false">
+                                    <i class="fas fa-lightbulb"></i> Tips
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="plan-tabs-content">
+                        <div class="tab-content" id="planTabContent">
+                            <div class="tab-pane fade show active" id="diet" role="tabpanel" aria-labelledby="diet-tab">
+                                <div id="dietContent">
+                                    <!-- Diet plan content will be dynamically populated -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="workout" role="tabpanel" aria-labelledby="workout-tab">
+                                <div id="workoutContent">
+                                    <!-- Workout plan content will be dynamically populated -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tips" role="tabpanel" aria-labelledby="tips-tab">
+                                <div id="tipsContent">
+                                    <!-- Tips content will be dynamically populated -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small">Last updated: {{ plan_date }}</span>
+                        </div>
+                        <div>
+                            <button class="btn btn-light me-2" id="printPlan">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button class="btn whatsapp-share-btn me-2" data-bs-toggle="modal" data-bs-target="#whatsappShareModal">
+                                <i class="fab fa-whatsapp"></i> Share via WhatsApp
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Your Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editProfileForm">
+                            <div class="mb-3">
+                                <label for="editFullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="editFullName" value="{{ user_data.full_name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editEmail" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="editEmail" value="{{ user_data.email }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="editDob" value="{{ user_data.dob }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editGender" class="form-label">Gender</label>
+                                <select class="form-select" id="editGender">
+                                    <option value="male" {% if user_data.gender == 'male' %}selected{% endif %}>Male</option>
+                                    <option value="female" {% if user_data.gender == 'female' %}selected{% endif %}>Female</option>
+                                    <option value="non-binary" {% if user_data.gender == 'non-binary' %}selected{% endif %}>Non-binary</option>
+                                    <option value="prefer-not" {% if user_data.gender == 'prefer-not' %}selected{% endif %}>Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editHeight" class="form-label">Height (cm)</label>
+                                    <input type="number" step="0.01" class="form-control" id="editHeight" value="{{ user_data.height }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editWeight" class="form-label">Weight (kg)</label>
+                                    <input type="number" step="0.01" class="form-control" id="editWeight" value="{{ user_data.weight }}">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Share Modal -->
+        <div class="modal fade" id="whatsappShareModal" tabindex="-1" aria-labelledby="whatsappShareModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content whatsapp-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="whatsappShareModalLabel"><i class="fab fa-whatsapp me-2"></i> Share Your Plan via WhatsApp</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="sharing-status">
+                            <div class="sharing-status-progress" id="sharingProgress"></div>
+                        </div>
+                        
+                        <form id="whatsappShareForm">
+                            <div class="mb-3">
+                                <label for="whatsappNumber" class="form-label">WhatsApp Number</label>
+                                <div class="phone-input-group">
+                                    <select class="country-code-selector" id="countryCode">
+                                        <option value="+1">🇺🇸 +1</option>
+                                        <option value="+44">🇬🇧 +44</option>
+                                        <option value="+91">🇮🇳 +91</option>
+                                        <option value="+61">🇦🇺 +61</option>
+                                        <option value="+33">🇫🇷 +33</option>
+                                        <option value="+49">🇩🇪 +49</option>
+                                        <option value="+81">🇯🇵 +81</option>
+                                        <option value="+86">🇨🇳 +86</option>
+                                    </select>
+                                    <input type="tel" class="form-control phone-number-input" id="whatsappNumber" placeholder="Phone number" value="{{ user_data.phone|default:'' }}" required>
+                                </div>
+                                <div class="form-text" id="phoneValidationMessage">Enter your number without country code</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">What would you like to share?</label>
+                                <div class="quick-settings">
+                                    <div class="quick-setting-btn active" data-option="today">Today's Plan</div>
+                                    <div class="quick-setting-btn" data-option="tomorrow">Tomorrow's Plan</div>
+                                    <div class="quick-setting-btn" data-option="week">Weekly Summary</div>
+                                </div>
+                                
+                                <div class="day-selector mt-3" id="specificDaySelector" style="display: none;">
+                                    <select class="form-select" id="specificDay">
+                                        <option value="monday">Monday</option>
+                                        <option value="tuesday">Tuesday</option>
+                                        <option value="wednesday">Wednesday</option>
+                                        <option value="thursday">Thursday</option>
+                                        <option value="friday">Friday</option>
+                                        <option value="saturday">Saturday</option>
+                                        <option value="sunday">Sunday</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Plan Preview</label>
+                                <div class="plan-preview" id="planPreview">
+                                    <!-- Preview content will be shown here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="includeMotivationalTip" checked>
+                                <label class="form-check-label" for="includeMotivationalTip">
+                                    Include a motivational tip
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="rememberNumber" checked>
+                                <label class="form-check-label" for="rememberNumber">
+                                    Remember my number for next time
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn whatsapp-share-btn" id="sendWhatsappBtn">
+                            <i class="fab fa-whatsapp"></i> Send to WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- WhatsApp Quick Actions -->
+        <div class="whatsapp-actions">
+            <div class="whatsapp-fab" id="whatsappFab">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="whatsapp-menu" id="whatsappMenu">
+                <div class="whatsapp-menu-item" id="shareTodayPlan">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Share Today's Plan</span>
+                </div>
+                <div class="whatsapp-menu-item" id="shareTomorrowPlan">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Share Tomorrow's Plan</span>
+                </div>
+                <div class="whatsapp-menu-item" id="shareFullPlan">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Share Full Plan</span>
+                </div>
+                <div class="whatsapp-menu-item" id="openShareModal">
+                    <i class="fas fa-cog"></i>
+                    <span>Advanced Options</span>
+                </div>
+            </div>
+        </div>
+            {% endif %}
+        </div>
+
+    <!-- Bootstrap JS and other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    {% if plan %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            
+            // Store the current week for workout tracking
+            let currentWeek = 1;
+            let mealProgress = 0;
+            let workoutProgress = 0;
+            
+            // The plan content in markdown format
+            const planContent = `{{ plan|escapejs }}`;
+            
+            // Process the content
+            processContent(planContent);
+            
+            // Set up event handlers
+            setupEventHandlers();
+            
+            // Track meal and workout progress
+            updateProgress();
+            
+            // Set up WhatsApp sharing functionality
+            setupWhatsAppSharing();
+            
+            // Helper function to parse and organize content
+            function processContent(content) {
+                // Split the content into sections
+                const sections = {
+                    diet: '',
+                    workout: '',
+                    tips: '',
+                    intro: ''
+                };
+                
+                // Set this to true for debugging - will show raw content in console
+                const debug = false;
+                if (debug) {
+                    console.log("Raw plan content:", content);
+                }
+                
+                // First, check if plan has clear section headers
+                const hasDietHeading = content.toLowerCase().includes("diet plan") || 
+                                      content.toLowerCase().includes("meal plan") || 
+                                      content.toLowerCase().includes("nutrition plan");
+                
+                const hasWorkoutHeading = content.toLowerCase().includes("workout plan") || 
+                                         content.toLowerCase().includes("exercise plan") || 
+                                         content.toLowerCase().includes("training plan");
+                
+                // If no clear section headings, we need to split the content differently
+                if (!hasDietHeading && !hasWorkoutHeading) {
+                    if (debug) console.log("No clear section headers found, using AI to infer sections");
+                    
+                    // Find meals and workout keywords
+                    const mealKeywords = ["breakfast", "lunch", "dinner", "snack", "meal", "eat", "food", "nutrition", "diet"];
+                    const workoutKeywords = ["workout", "exercise", "training", "cardio", "strength", "pushup", "squat", "rep", "set"];
+                    
+                    // Split content into paragraphs
+                    const paragraphs = content.split('\n\n');
+                    
+                    // Process each paragraph
+                    for (let paragraph of paragraphs) {
+                        const lowerPara = paragraph.toLowerCase();
+                        
+                        // Check if paragraph is likely about diet
+                        const isDiet = mealKeywords.some(keyword => lowerPara.includes(keyword));
+                        
+                        // Check if paragraph is likely about workouts
+                        const isWorkout = workoutKeywords.some(keyword => lowerPara.includes(keyword));
+                        
+                        if (isDiet && !isWorkout) {
+                            sections.diet += paragraph + '\n\n';
+                        } else if (isWorkout && !isDiet) {
+                            sections.workout += paragraph + '\n\n';
+                        } else if (isDiet && isWorkout) {
+                            // If it mentions both, place in the section that has more keyword hits
+                            const dietHits = mealKeywords.filter(keyword => lowerPara.includes(keyword)).length;
+                            const workoutHits = workoutKeywords.filter(keyword => lowerPara.includes(keyword)).length;
+                            
+                            if (dietHits >= workoutHits) {
+                                sections.diet += paragraph + '\n\n';
+                            } else {
+                                sections.workout += paragraph + '\n\n';
+                            }
+                        } else {
+                            // If it's neither clearly diet nor workout, check if it's intro or tips
+                            if (lowerPara.includes("introduction") || lowerPara.includes("overview") || 
+                                lowerPara.startsWith("welcome") || lowerPara.startsWith("this plan")) {
+                                sections.intro += paragraph + '\n\n';
+                            } else if (lowerPara.includes("tip") || lowerPara.includes("advice") || 
+                                       lowerPara.includes("suggest") || lowerPara.includes("recommend") ||
+                                       lowerPara.includes("motivat")) {
+                                sections.tips += paragraph + '\n\n';
+                            } else {
+                                // If we can't categorize, add to intro by default
+                                sections.intro += paragraph + '\n\n';
+                            }
+                        }
+                    }
+                } else {
+                    // More robust parsing logic for content with clear section headers
+                    const contentLines = content.split('\n');
+                    let currentSection = 'intro';
+                    
+                    // First pass - find section headers
+                    for (let line of contentLines) {
+                        const lowerLine = line.toLowerCase();
+                        
+                        if ((lowerLine.includes('diet') || lowerLine.includes('nutrition') || lowerLine.includes('meal')) && 
+                            (line.startsWith('#') || line.startsWith('##'))) {
+                            currentSection = 'diet';
+                            sections.diet += line + '\n';
+                        } 
+                        else if ((lowerLine.includes('workout') || lowerLine.includes('exercise') || lowerLine.includes('training') || 
+                                  lowerLine.includes('fitness') || lowerLine.includes('activity')) && 
+                                  (line.startsWith('#') || line.startsWith('##'))) {
+                            currentSection = 'workout';
+                            sections.workout += line + '\n';
+                        } 
+                        else if ((lowerLine.includes('motivation') || lowerLine.includes('tips') || 
+                                  lowerLine.includes('advice') || lowerLine.includes('guidelines')) && 
+                                  (line.startsWith('#') || line.startsWith('##'))) {
+                            currentSection = 'tips';
+                            sections.tips += line + '\n';
+                        } 
+                        else if ((lowerLine.includes('introduction') || lowerLine.includes('overview') || 
+                                  lowerLine.includes('about')) && 
+                                  (line.startsWith('#') || line.startsWith('##'))) {
+                            currentSection = 'intro';
+                            sections.intro += line + '\n';
+                        } 
+                        else {
+                            sections[currentSection] += line + '\n';
+                        }
+                    }
+                }
+                
+                // If diet plan is still not detected, generate a basic diet plan
+                if (!sections.diet.trim()) {
+                    sections.diet = generateBasicDietPlan();
+                }
+                
+                // If workout plan is not detected, look for workout-related content
+                if (!sections.workout.trim()) {
+                    sections.workout = generateBasicWorkoutPlan();
+                } else {
+                    // Enhance the existing workout plan with more AI content
+                    sections.workout = enhanceWorkoutPlan(sections.workout);
+                }
+                
+                // If tips not detected, generate basic tips
+                if (!sections.tips.trim()) {
+                    sections.tips = generateBasicTips();
+                }
+                
+                // Render the diet plan with meal checkboxes
+                renderDietPlan(sections.diet);
+                
+                // Render the workout plan with interactive elements
+                renderWorkoutPlan(sections.workout);
+                
+                // Render the tips with card format
+                renderTips(sections.tips);
+                
+                if (debug) {
+                    console.log("Processed sections:", sections);
+                }
+            }
+            
+            // Function to generate a basic diet plan if none is detected
+            function generateBasicDietPlan() {
+                const userData = {
+                    gender: "{{ user_data.gender|escapejs }}",
+                    weight: "{{ user_data.weight|escapejs }}",
+                    height: "{{ user_data.height|escapejs }}"
+                };
+                
+                // Calculate approximate calorie needs based on height and weight
+                let baseCalories = 0;
+                if (userData.gender.toLowerCase() === 'male') {
+                    baseCalories = 10 * parseFloat(userData.weight) + 6.25 * parseFloat(userData.height) - 5 * 30 + 5;
+                } else {
+                    baseCalories = 10 * parseFloat(userData.weight) + 6.25 * parseFloat(userData.height) - 5 * 30 - 161;
+                }
+                
+                // Round to nearest 50
+                baseCalories = Math.round(baseCalories / 50) * 50;
+                
+                return `## Diet Plan
+
+Your personalized diet plan is designed to provide adequate nutrition while supporting your fitness goals. This plan provides approximately ${baseCalories} calories per day, which you can adjust based on your specific needs and activity level.
+
+### Breakfast:
+- Greek yogurt with berries and a drizzle of honey
+- Whole grain toast with avocado
+- Egg white omelet with spinach and tomatoes
+- Steel-cut oatmeal with nuts and fruit
+- Protein smoothie with banana, spinach, and almond milk
+
+### Lunch:
+- Grilled chicken salad with olive oil and vinegar dressing
+- Quinoa bowl with roasted vegetables and chickpeas
+- Turkey and avocado wrap with whole grain tortilla
+- Lentil soup with a side of mixed greens
+- Brown rice bowl with steamed vegetables and tofu
+
+### Dinner:
+- Baked salmon with sweet potatoes and asparagus
+- Lean beef stir-fry with broccoli and brown rice
+- Grilled chicken with quinoa and roasted vegetables
+- Baked cod with zucchini noodles
+- Turkey meatballs with whole wheat pasta and tomato sauce
+
+### Snacks:
+- Handful of mixed nuts
+- Apple with 1 tablespoon of almond butter
+- Carrot sticks with hummus
+- Protein shake or smoothie
+- Greek yogurt with berries
+
+### Hydration:
+- Aim for 8-10 glasses of water daily
+- Green or herbal tea is a great option
+- Limit sugary drinks and alcohol
+
+This meal plan provides a good balance of protein, complex carbohydrates, and healthy fats to fuel your workouts and support recovery. Adjust portion sizes based on your hunger levels and activity.`;
+            }
+            
+            // Function to enhance an existing workout plan with more AI content
+            function enhanceWorkoutPlan(existingPlan) {
+                // Add a comprehensive introduction if not present
+                if (!existingPlan.toLowerCase().includes("introduction")) {
+                    existingPlan = `## Enhanced Workout Plan
+
+This comprehensive workout plan is designed to help you achieve optimal results. The plan incorporates a balance of strength training, cardiovascular exercise, and flexibility work to improve overall fitness and body composition.
+
+Key components of this plan:
+- Progressive overload to continuously challenge your muscles
+- Adequate rest periods for recovery and growth
+- Variety to prevent plateaus and keep workouts engaging
+- Proper form and technique to prevent injuries
+
+${existingPlan}`;
+                }
+                
+                // Add form tips and technique guidance
+                if (!existingPlan.toLowerCase().includes("form") && !existingPlan.toLowerCase().includes("technique")) {
+                    existingPlan += `
+
+### Exercise Technique and Form Guidelines
+
+For maximum results and safety, follow these guidelines:
+
+**Strength Training Form:**
+- Maintain a neutral spine position during all exercises
+- Control the movement throughout the full range of motion
+- Focus on the muscle contraction during each repetition
+- Use appropriate weight that allows proper form
+- Breathe out during exertion and in during the return phase
+
+**Cardio Technique:**
+- Start with a 5-minute warm-up at low intensity
+- Gradually increase intensity to your target level
+- Maintain proper posture to prevent joint strain
+- Consider interval training for maximum efficiency
+- Cool down with 5 minutes of low-intensity movement
+
+**Recovery Strategy:**
+- Allow 48 hours before training the same muscle group
+- Consider active recovery like walking or swimming on rest days
+- Use foam rolling to alleviate muscle tightness
+- Ensure adequate sleep (7-9 hours) for optimal recovery
+- Stay hydrated before, during, and after workouts`;
+                }
+                
+                // Add progression plan if not present
+                if (!existingPlan.toLowerCase().includes("progress") && !existingPlan.toLowerCase().includes("advance")) {
+                    existingPlan += `
+
+### 4-Week Progression Plan
+
+To ensure continuous improvement, adjust your workout as follows:
+
+**Week 1:** Focus on proper form and establishing baseline performance
+- Use moderate weights that allow 12-15 repetitions with good form
+- Rest 60-90 seconds between sets
+- Perform 2-3 sets per exercise
+
+**Week 2:** Increase intensity
+- Increase weights slightly to allow 10-12 repetitions
+- Reduce rest periods to 45-60 seconds
+- Perform 3-4 sets per exercise
+
+**Week 3:** Peak intensity
+- Use challenging weights that allow 8-10 repetitions
+- Keep rest periods at 45-60 seconds
+- Perform 4 sets per exercise
+- Add one drop set to the final exercise of each muscle group
+
+**Week 4:** Active recovery
+- Return to moderate weights with higher repetitions (12-15)
+- Focus on slower, more controlled movements
+- Incorporate more dynamic stretching
+- Prepare for the next 4-week cycle with increased baseline weights`;
+                }
+                
+                return existingPlan;
+            }
+            
+            // Function to generate a comprehensive workout plan if none is detected
+            function generateBasicWorkoutPlan() {
+                return `## Workout Plan
+
+This personalized workout program is designed to improve strength, endurance, and overall fitness. Follow this balanced routine for optimal results.
+
+### Monday: Upper Body Focus
+- **Chest**: Push-ups or chest press: 3 sets of 10-12 reps
+- **Back**: Dumbbell rows: 3 sets of 10-12 reps
+- **Shoulders**: Overhead press: 3 sets of 10-12 reps
+- **Arms**: Bicep curls and tricep dips: 3 sets of 10-12 reps
+- **Core**: Plank: 3 sets, hold for 30-45 seconds
+- **Cardio Finisher**: 10 minutes of high-intensity interval training
+
+### Tuesday: Lower Body & Core
+- **Quads**: Squats or lunges: 3 sets of 12-15 reps
+- **Hamstrings**: Romanian deadlifts: 3 sets of 10-12 reps
+- **Calves**: Calf raises: 3 sets of 15-20 reps
+- **Glutes**: Glute bridges: 3 sets of 15 reps
+- **Core**: Russian twists: 3 sets of 20 reps (10 per side)
+- **Abs**: Bicycle crunches: 3 sets of 20 reps
+
+### Wednesday: Active Recovery
+- 30-45 minutes of light cardio (walking, swimming, or cycling)
+- Full-body stretching routine (hold each stretch for 30 seconds)
+- Foam rolling session for tight muscles
+- Light yoga or mobility exercises
+
+### Thursday: Full Body Strength
+- **Compound Movement**: Dumbbell squat to press: 3 sets of 12 reps
+- **Pull Movement**: Pull-ups or assisted pull-ups: 3 sets of 8-10 reps
+- **Push Movement**: Dumbbell bench press: 3 sets of 10-12 reps
+- **Hip Hinge**: Kettlebell swings: 3 sets of 15 reps
+- **Core**: Side planks: 3 sets, hold for 30 seconds each side
+- **Cardio**: 15 minutes of steady-state cardio
+
+### Friday: High-Intensity Interval Training
+- **Warm-up**: 5 minutes of light cardio
+- **Circuit** (repeat 3-4 times with 1-minute rest between circuits):
+  - Burpees: 30 seconds
+  - Mountain climbers: 30 seconds
+  - Jumping jacks: 30 seconds
+  - High knees: 30 seconds
+  - Rest: 30 seconds
+- **Cool-down**: 5 minutes of stretching
+
+### Saturday: Flexibility & Mobility
+- 10 minutes of light cardio warm-up
+- Dynamic mobility exercises for all major joints
+- Yoga flow sequence focusing on strength and flexibility
+- Deep stretching routine for major muscle groups
+- Meditation or breathwork practice (5-10 minutes)
+
+### Sunday: Rest Day
+- Complete rest or very light activity like walking
+- Focus on proper nutrition and hydration
+- Ensure adequate sleep for recovery
+- Mentally prepare for the upcoming week
+
+### Form & Technique Tips:
+- Maintain proper form throughout all exercises
+- Focus on controlled movements rather than speed
+- Keep core engaged during all exercises
+- Breathe properly: exhale during exertion, inhale during the easier phase
+- If you feel pain (not normal muscle fatigue), stop and reassess your form
+
+### Progression Strategy:
+Follow this plan for 4 weeks, then increase intensity by:
+- Adding more weight
+- Increasing repetitions
+- Reducing rest time between sets
+- Adding advanced variations of exercises`;
+            }
+            
+            // Function to generate basic motivation tips if none are detected
+            function generateBasicTips() {
+                return `## Motivation & Tips
+
+### Staying Motivated
+1. **Set Clear, Measurable Goals**: Define specific targets that you can track and measure.
+2. **Track Your Progress**: Keep a workout and nutrition journal to see your improvements.
+3. **Find Your 'Why'**: Identify your deep motivation for pursuing fitness and revisit it often.
+4. **Create a Reward System**: Treat yourself after achieving milestones (non-food rewards work best).
+5. **Visualize Success**: Take time to imagine how you'll feel and look after achieving your goals.
+
+### Consistency Tips
+1. **Start Small**: Begin with manageable changes that you can maintain.
+2. **Schedule Workouts**: Treat exercise like important appointments that can't be missed.
+3. **Prepare in Advance**: Lay out workout clothes, prepare meals ahead of time, and remove barriers to success.
+4. **Follow the 2-Day Rule**: Never miss more than two consecutive days of planned exercise.
+5. **Focus on Habits, Not Results**: Build consistent routines that will eventually lead to your desired outcomes.
+
+### Nutritional Guidance
+1. **Prioritize Protein**: Ensure adequate protein intake for muscle recovery and satiety.
+2. **Hydrate Properly**: Drink water throughout the day, especially before, during, and after workouts.
+3. **Eat Mindfully**: Pay attention to hunger cues and eat slowly to avoid overeating.
+4. **Plan for Indulgences**: Schedule occasional treats to maintain a sustainable approach.
+5. **Focus on Whole Foods**: Base your diet primarily on unprocessed foods for optimal nutrition.
+
+### When Facing Challenges
+1. **Anticipate Obstacles**: Plan for potential challenges in advance.
+2. **Have Backup Plans**: Create alternative workouts for when time is limited.
+3. **Find Accountability**: Share your goals with someone who will support you.
+4. **Celebrate Small Wins**: Acknowledge all progress, no matter how small.
+5. **Be Kind to Yourself**: Avoid negative self-talk when you experience setbacks.
+
+Remember that consistency beats perfection, and sustainable progress takes time. Your fitness journey is a marathon, not a sprint.`;
+            }
+            
+            // Function to render the diet plan with interactive elements
+            function renderDietPlan(dietContent) {
+                const dietElement = document.getElementById('dietContent');
+                
+                // Parse the diet content to identify meals and organize them
+                const dietLines = dietContent.split('\n');
+                let currentDietSection = '';
+                let mealSections = {
+                    introduction: [],
+                    breakfast: [],
+                    lunch: [],
+                    dinner: [],
+                    snacks: []
+                };
+                
+                // Parse diet content into organized sections
+                for (let line of dietLines) {
+                    const lowercaseLine = line.toLowerCase();
+                    
+                    if (lowercaseLine.includes('breakfast')) {
+                        currentDietSection = 'breakfast';
+                    } else if (lowercaseLine.includes('lunch')) {
+                        currentDietSection = 'lunch';
+                    } else if (lowercaseLine.includes('dinner')) {
+                        currentDietSection = 'dinner';
+                    } else if (lowercaseLine.includes('snack')) {
+                        currentDietSection = 'snacks';
+                    } else if (line.startsWith('#')) {
+                        currentDietSection = 'introduction';
+                    }
+                    
+                    if (currentDietSection) {
+                        mealSections[currentDietSection].push(line);
+                    } else {
+                        mealSections.introduction.push(line);
+                    }
+                }
+                
+                // Build the HTML for the diet plan
+                let dietHTML = `
+                    <div class="plan-section">
+                        <h3 class="plan-section-title"><i class="fas fa-utensils"></i> Diet Plan</h3>
+                        <p class="mb-4">Your personalized diet plan based on your profile. Track your meals by checking them off as you go.</p>
+                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="mealProgress"></div>
+    </div>
+                        
+                        <p class="text-end text-muted small mb-4"><span id="mealProgressText">0%</span> complete</p>
+                `;
+                
+                // Create section for breakfast
+                if (mealSections.breakfast.length > 0) {
+                    dietHTML += createMealSection('Breakfast', 'coffee', mealSections.breakfast);
+                }
+                
+                // Create section for lunch
+                if (mealSections.lunch.length > 0) {
+                    dietHTML += createMealSection('Lunch', 'hamburger', mealSections.lunch);
+                }
+                
+                // Create section for dinner
+                if (mealSections.dinner.length > 0) {
+                    dietHTML += createMealSection('Dinner', 'utensils', mealSections.dinner);
+                }
+                
+                // Create section for snacks
+                if (mealSections.snacks.length > 0) {
+                    dietHTML += createMealSection('Snacks', 'apple-alt', mealSections.snacks);
+                }
+                
+                dietHTML += `</div>`;
+                dietElement.innerHTML = dietHTML;
+            }
+            
+            // Helper function to create a meal section
+            function createMealSection(title, icon, content) {
+                // Extract list items from content
+                const listItems = [];
+                let foundList = false;
+                
+                for (let line of content) {
+                    if (line.trim().startsWith('-') || line.trim().startsWith('*')) {
+                        foundList = true;
+                        // Clean up the line and extract just the text
+                        const itemText = line.trim().substring(1).trim();
+                        if (itemText) {
+                            listItems.push(itemText);
+                        }
+                    }
+                }
+                
+                // If no list items were found, try to extract sentences
+                if (!foundList && content.length > 0) {
+                    const combinedText = content.join(' ');
+                    const sentences = combinedText.match(/[^\.!\?]+[\.!\?]+/g);
+                    if (sentences) {
+                        for (let sentence of sentences) {
+                            const cleaned = sentence.trim();
+                            if (cleaned && !cleaned.toLowerCase().includes(title.toLowerCase())) {
+                                listItems.push(cleaned);
+                            }
+                        }
+                    }
+                }
+                
+                let html = `
+                    <div class="plan-item">
+                        <h4 class="plan-item-title"><i class="fas fa-${icon}"></i> ${title}</h4>
+                        <div class="plan-item-content">
+                `;
+                
+                if (listItems.length > 0) {
+                    html += '<div class="meal-items">';
+                    for (let i = 0; i < listItems.length; i++) {
+                        html += `
+                            <label class="meal-checkbox">
+                                <input type="checkbox" class="meal-check" data-meal-type="${title.toLowerCase()}">
+                                <span class="checkmark"></span>
+                                <span class="meal-checkbox-text">${listItems[i]}</span>
+                            </label>
+                        `;
+                    }
+                    html += '</div>';
+                } else {
+                    html += '<p class="text-muted">No specific meals listed.</p>';
+                }
+                
+                html += `
+</div>
+                    </div>
+                `;
+                
+                return html;
+            }
+            
+            // Function to render the workout plan with interactive elements
+            function renderWorkoutPlan(workoutContent) {
+                const workoutElement = document.getElementById('workoutContent');
+                
+                // Parse the workout content to identify days and exercises
+                const workoutLines = workoutContent.split('\n');
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                let currentDay = '';
+                let workoutSections = {
+                    introduction: [],
+                };
+                
+                // Initialize day sections
+                for (let day of days) {
+                    workoutSections[day] = [];
+                }
+                
+                // Parse workout content into organized sections by day
+                for (let line of workoutLines) {
+                    const lowercaseLine = line.toLowerCase();
+                    let foundDay = false;
+                    
+                    // Check if line contains a day of the week
+                    for (let day of days) {
+                        if (lowercaseLine.includes(day)) {
+                            currentDay = day;
+                            foundDay = true;
+                            break;
+                        }
+                    }
+                    
+                    if (foundDay) {
+                        workoutSections[currentDay].push(line);
+                    } else if (line.startsWith('#')) {
+                        currentDay = 'introduction';
+                        workoutSections.introduction.push(line);
+                    } else if (currentDay) {
+                        workoutSections[currentDay].push(line);
+                    } else {
+                        workoutSections.introduction.push(line);
+                    }
+                }
+                
+                // Build the HTML for the workout plan
+                let workoutHTML = `
+                    <div class="plan-section">
+                        <h3 class="plan-section-title"><i class="fas fa-dumbbell"></i> Workout Plan</h3>
+                        <p class="mb-4">Your weekly workout routine. Check off exercises as you complete them.</p>
+                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="workoutProgress"></div>
+                        </div>
+                        
+                        <p class="text-end text-muted small mb-4"><span id="workoutProgressText">0%</span> complete</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="btn-group" role="group" aria-label="Week selector">
+                                <button type="button" class="btn btn-sm btn-primary active" onclick="switchWeek(1)">Week 1</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="switchWeek(2)">Week 2</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="switchWeek(3)">Week 3</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="switchWeek(4)">Week 4</button>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="resetWorkouts()">
+                                <i class="fas fa-redo-alt"></i> Reset
+                            </button>
+                        </div>
+                `;
+                
+                // Add workout day sections
+                let foundAnyDays = false;
+                
+                for (let day of days) {
+                    if (workoutSections[day].length > 0) {
+                        foundAnyDays = true;
+                        const dayName = day.charAt(0).toUpperCase() + day.slice(1);
+                        workoutHTML += createWorkoutDaySection(dayName, workoutSections[day]);
+                    }
+                }
+                
+                // If no days were found, create generic workout sections
+                if (!foundAnyDays) {
+                    const exerciseRegex = /\b(push-?ups?|squats?|lunges?|plank|burpees?|jumping jacks|sit-?ups?|pull-?ups?|cardio|strength|running|jogging|walk|bicep|tricep|shoulder|leg|chest|back|core|abdominal|crunches)\b/gi;
+                    const exercises = [];
+                    let match;
+                    
+                    const fullText = workoutLines.join(' ');
+                    while ((match = exerciseRegex.exec(fullText)) !== null) {
+                        exercises.push(match[0]);
+                    }
+                    
+                    // If exercises were found, create sections
+                    if (exercises.length > 0) {
+                        // Group exercises (evenly distributed across 3 days)
+                        const exercisesPerDay = Math.ceil(exercises.length / 3);
+                        const dayExercises = [
+                            exercises.slice(0, exercisesPerDay),
+                            exercises.slice(exercisesPerDay, exercisesPerDay * 2),
+                            exercises.slice(exercisesPerDay * 2)
+                        ];
+                        
+                        // Create day sections
+                        workoutHTML += createWorkoutDaySection('Day 1: Strength', dayExercises[0].map(ex => `- ${ex}: 3 sets of 10-12 reps`));
+                        
+                        if (dayExercises[1].length > 0) {
+                            workoutHTML += createWorkoutDaySection('Day 2: Cardio', dayExercises[1].map(ex => `- ${ex}: 30 minutes`));
+                        }
+                        
+                        if (dayExercises[2].length > 0) {
+                            workoutHTML += createWorkoutDaySection('Day 3: Flexibility', dayExercises[2].map(ex => `- ${ex}: 3 sets of 15 reps`));
+                        }
+                    } else {
+                        // Create generic workout structure
+                        workoutHTML += createWorkoutDaySection('Day 1: Upper Body', [
+                            '- Push-ups: 3 sets of 10-15 reps',
+                            '- Shoulder press: 3 sets of 10 reps',
+                            '- Bicep curls: 3 sets of 12 reps'
+                        ]);
+                        
+                        workoutHTML += createWorkoutDaySection('Day 2: Lower Body', [
+                            '- Squats: 3 sets of 15 reps',
+                            '- Lunges: 3 sets of 10 reps per leg',
+                            '- Calf raises: 3 sets of 20 reps'
+                        ]);
+                        
+                        workoutHTML += createWorkoutDaySection('Day 3: Cardio', [
+                            '- Brisk walking or jogging: 30 minutes',
+                            '- Jumping jacks: 3 sets of 30 seconds',
+                            '- High knees: 3 sets of 30 seconds'
+                        ]);
+                    }
+                }
+                
+                workoutHTML += `</div>`;
+                workoutElement.innerHTML = workoutHTML;
+                
+                // Define switchWeek and resetWorkouts in the global scope
+                window.switchWeek = function(week) {
+                    currentWeek = week;
+                    
+                    // Update active button
+                    const weekButtons = document.querySelectorAll('.btn-group .btn');
+                    weekButtons.forEach((btn, index) => {
+                        if (index + 1 === week) {
+                            btn.classList.remove('btn-outline-primary');
+                            btn.classList.add('btn-primary');
+                        } else {
+                            btn.classList.remove('btn-primary');
+                            btn.classList.add('btn-outline-primary');
+                        }
+                    });
+                    
+                    // Could adjust workouts based on progression for different weeks
+                    alert(`Switched to Week ${week} workouts. In a full implementation, exercises would progress in intensity.`);
+                };
+                
+                window.resetWorkouts = function() {
+                    if (confirm('Are you sure you want to reset your workout progress?')) {
+                        const workoutChecks = document.querySelectorAll('.workout-check');
+                        workoutChecks.forEach(check => {
+                            check.checked = false;
+                        });
+                        updateProgress();
+                    }
+                };
+            }
+            
+            // Helper function to create a workout day section
+            function createWorkoutDaySection(dayName, content) {
+                // Extract list items from content
+                const exercises = [];
+                
+                for (let line of content) {
+                    if (typeof line === 'string' && (line.trim().startsWith('-') || line.trim().startsWith('*'))) {
+                        // Clean up the line and extract just the text
+                        const exerciseText = line.trim().substring(1).trim();
+                        if (exerciseText) {
+                            exercises.push(exerciseText);
+                        }
+                    }
+                }
+                
+                // If no exercises were found and content is an array of exercises, use those directly
+                if (exercises.length === 0 && Array.isArray(content)) {
+                    for (let item of content) {
+                        if (typeof item === 'string') {
+                            exercises.push(item.replace(/^[-*]\s*/, '').trim());
+                        }
+                    }
+                }
+                
+                // Determine the icon based on day name
+                let icon = 'dumbbell';
+                if (dayName.toLowerCase().includes('cardio')) {
+                    icon = 'running';
+                } else if (dayName.toLowerCase().includes('rest')) {
+                    icon = 'bed';
+                } else if (dayName.toLowerCase().includes('flexibility') || dayName.toLowerCase().includes('stretch')) {
+                    icon = 'child';
+                }
+                
+                let html = `
+                    <div class="plan-item">
+                        <h4 class="plan-item-title"><i class="fas fa-${icon}"></i> ${dayName}</h4>
+                        <div class="plan-item-content">
+                `;
+                
+                if (exercises.length > 0) {
+                    html += '<div class="workout-items">';
+                    for (let i = 0; i < exercises.length; i++) {
+                        html += `
+                            <label class="meal-checkbox">
+                                <input type="checkbox" class="workout-check" data-workout-day="${dayName.toLowerCase()}">
+                                <span class="checkmark"></span>
+                                <span class="meal-checkbox-text">${exercises[i]}</span>
+                            </label>
+                        `;
+                    }
+                    html += '</div>';
+                } else if (dayName.toLowerCase().includes('rest')) {
+                    html += '<p class="text-success"><i class="fas fa-check-circle me-2"></i> Rest day - focus on recovery and stretching.</p>';
+                } else {
+                    html += '<p class="text-muted">No specific exercises listed for this day.</p>';
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+                
+                return html;
+            }
+            
+            // Function to render the tips in a clean, card-based format
+            function renderTips(tipsContent) {
+                const tipsElement = document.getElementById('tipsContent');
+                
+                // Split the content to extract useful tips
+                const tipsLines = tipsContent.split('\n');
+                const tipsList = [];
+                let foundList = false;
+                
+                // Find and extract list items as tips
+                for (let line of tipsLines) {
+                    if (line.trim().startsWith('-') || line.trim().startsWith('*') || line.trim().match(/^\d+\./)) {
+                        foundList = true;
+                        // Clean up the line and extract just the text
+                        let tipText = line.trim();
+                        tipText = tipText.replace(/^[-*]\s*/, '').trim(); // Remove list marker
+                        tipText = tipText.replace(/^\d+\.\s*/, '').trim(); // Remove numbered list marker
+                        
+                        if (tipText) {
+                            tipsList.push(tipText);
+                        }
+                    }
+                }
+                
+                // If no list items were found, try to extract sentences
+                if (!foundList && tipsLines.length > 0) {
+                    const combinedText = tipsLines.join(' ');
+                    const sentences = combinedText.match(/[^\.!\?]+[\.!\?]+/g);
+                    if (sentences) {
+                        for (let sentence of sentences) {
+                            const cleaned = sentence.trim();
+                            if (cleaned && cleaned.length > 20 && 
+                                !cleaned.toLowerCase().includes('tip') && 
+                                !cleaned.toLowerCase().includes('introduction')) {
+                                tipsList.push(cleaned);
+                            }
+                        }
+                    }
+                }
+                
+                // Generate the HTML
+                let tipsHTML = `
+                    <div class="plan-section">
+                        <h3 class="plan-section-title"><i class="fas fa-lightbulb"></i> Motivation & Tips</h3>
+                        <p class="mb-4">Keep these tips in mind to stay motivated and make the most of your fitness journey.</p>
+                `;
+                
+                const icons = ['star', 'check-circle', 'trophy', 'heart', 'bolt', 'thumbs-up', 'medal'];
+                const bgColors = ['primary', 'success', 'warning', 'info', 'danger', 'secondary'];
+                
+                if (tipsList.length > 0) {
+                    for (let i = 0; i < tipsList.length; i++) {
+                        const icon = icons[i % icons.length];
+                        const bgColor = bgColors[i % bgColors.length];
+                        
+                        tipsHTML += `
+                            <div class="plan-item">
+                                <h4 class="plan-item-title"><i class="fas fa-${icon} text-${bgColor}"></i> Tip ${i + 1}</h4>
+                                <div class="plan-item-content">
+                                    <p>${tipsList[i]}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    tipsHTML += `
+                        <div class="plan-item">
+                            <h4 class="plan-item-title"><i class="fas fa-star text-warning"></i> Stay Consistent</h4>
+                            <div class="plan-item-content">
+                                <p>Consistency is key to achieving your fitness goals. Try to follow your plan regularly.</p>
+                            </div>
+                        </div>
+                        <div class="plan-item">
+                            <h4 class="plan-item-title"><i class="fas fa-heart text-danger"></i> Focus on Progress</h4>
+                            <div class="plan-item-content">
+                                <p>Don't get discouraged by small setbacks. Focus on your overall progress and improvements.</p>
+                            </div>
+                        </div>
+                        <div class="plan-item">
+                            <h4 class="plan-item-title"><i class="fas fa-trophy text-success"></i> Celebrate Achievements</h4>
+                            <div class="plan-item-content">
+                                <p>Take time to celebrate your achievements, no matter how small they might seem.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                tipsHTML += `</div>`;
+                tipsElement.innerHTML = tipsHTML;
+            }
+            
+            // Function to set up event handlers
+            function setupEventHandlers() {
+                // Add event listeners for meal checkboxes
+                document.addEventListener('change', function(e) {
+                    if (e.target.classList.contains('meal-check') || e.target.classList.contains('workout-check')) {
+                        updateProgress();
+                    }
+                });
+                
+                // Print functionality
+                document.getElementById('printPlan').addEventListener('click', function() {
+                    window.print();
+                });
+            }
+            
+            // Function to set up WhatsApp sharing
+            function setupWhatsAppSharing() {
+                // Initialize sharing progress indicator
+                const sharingProgress = document.getElementById('sharingProgress');
+                
+                // Save user's phone number in localStorage if available
+                const savedPhone = localStorage.getItem('userWhatsAppNumber');
+                if (savedPhone) {
+                    document.getElementById('whatsappNumber').value = savedPhone;
+                }
+                
+                // Try to detect user's country by timezone
+                const detectedCountry = detectUserCountry();
+                if (detectedCountry) {
+                    document.getElementById('countryCode').value = detectedCountry;
+                }
+                
+                // Auto-select today/tomorrow based on time of day
+                const currentHour = new Date().getHours();
+                const isEvening = currentHour >= 18;
+                if (isEvening) {
+                    // If it's evening, pre-select tomorrow's plan
+                    document.querySelector('.quick-setting-btn[data-option="tomorrow"]').click();
+                }
+                
+                // Quick settings selection
+                const quickSettingBtns = document.querySelectorAll('.quick-setting-btn');
+                quickSettingBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        quickSettingBtns.forEach(b => b.classList.remove('active'));
+                        
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        // Show specific day selector if week option is selected
+                        const specificDaySelector = document.getElementById('specificDaySelector');
+                        specificDaySelector.style.display = this.dataset.option === 'week' ? 'block' : 'none';
+                        
+                        // Update plan preview
+                        updatePlanPreview();
+                    });
+                });
+                
+                // Specific day selection
+                document.getElementById('specificDay').addEventListener('change', updatePlanPreview);
+                
+                // Phone number validation
+                const phoneInput = document.getElementById('whatsappNumber');
+                const validationMessage = document.getElementById('phoneValidationMessage');
+                
+                phoneInput.addEventListener('input', function() {
+                    const phoneValue = this.value.trim();
+                    const isValid = /^[0-9]{10,15}$/.test(phoneValue);
+                    
+                    if (isValid) {
+                        validationMessage.textContent = "✓ Valid phone number";
+                        validationMessage.style.color = "#25D366";
+                    } else {
+                        validationMessage.textContent = "Enter your number without country code";
+                        validationMessage.style.color = "";
+                    }
+                });
+                
+                // Initial preview update
+                updatePlanPreview();
+                
+                // Send to WhatsApp button
+                document.getElementById('sendWhatsappBtn').addEventListener('click', function() {
+                    sendPlanToWhatsApp();
+                });
+                
+                // WhatsApp Floating Action Button
+                const whatsappFab = document.getElementById('whatsappFab');
+                const whatsappMenu = document.getElementById('whatsappMenu');
+                
+                whatsappFab.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    whatsappMenu.classList.toggle('active');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!whatsappFab.contains(event.target) && !whatsappMenu.contains(event.target)) {
+                        whatsappFab.classList.remove('active');
+                        whatsappMenu.classList.remove('active');
+                    }
+                });
+                
+                // Quick share options
+                document.getElementById('shareTodayPlan').addEventListener('click', function() {
+                    quickShare('today');
+                });
+                
+                document.getElementById('shareTomorrowPlan').addEventListener('click', function() {
+                    quickShare('tomorrow');
+                });
+                
+                document.getElementById('shareFullPlan').addEventListener('click', function() {
+                    quickShare('week');
+                });
+                
+                document.getElementById('openShareModal').addEventListener('click', function() {
+                    const modal = new bootstrap.Modal(document.getElementById('whatsappShareModal'));
+                    modal.show();
+                    whatsappFab.classList.remove('active');
+                    whatsappMenu.classList.remove('active');
+                });
+            }
+            
+            // Function to detect user's country based on timezone
+            function detectUserCountry() {
+                try {
+                    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    
+                    // Simple mapping of common timezones to country codes
+                    const timeZoneMap = {
+                        'America/': '+1',      // US/Canada
+                        'Europe/London': '+44', // UK
+                        'Europe/Paris': '+33',  // France
+                        'Europe/Berlin': '+49', // Germany
+                        'Asia/Kolkata': '+91',  // India
+                        'Asia/Tokyo': '+81',    // Japan
+                        'Australia/': '+61',    // Australia
+                        'Asia/Shanghai': '+86'  // China
+                    };
+                    
+                    for (const [zone, code] of Object.entries(timeZoneMap)) {
+                        if (timeZone.includes(zone)) {
+                            return code;
+                        }
+                    }
+                    
+                    return '+1'; // Default to US
+                } catch (e) {
+                    return '+1'; // Default if detection fails
+                }
+            }
+            
+            // Function to quick share a plan without opening the modal
+            function quickShare(option) {
+                // Set up the plan based on the selected option
+                let planToShare = '';
+                let dayName = '';
+                
+                if (option === 'today') {
+                    const today = new Date();
+                    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    dayName = days[today.getDay()];
+                    planToShare = generatePlanTextForDay(dayName);
+                } else if (option === 'tomorrow') {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    dayName = days[tomorrow.getDay()];
+                    planToShare = generatePlanTextForDay(dayName);
+                } else {
+                    // For weekly plan, include a summary
+                    planToShare = generateWeeklyPlanSummary();
+                }
+                
+                // Get the phone number (from localStorage or ask user)
+                let phoneNumber = localStorage.getItem('userWhatsAppNumber');
+                
+                if (!phoneNumber) {
+                    phoneNumber = prompt("Please enter your phone number (without country code):");
+                    const countryCode = detectUserCountry();
+                    
+                    if (phoneNumber) {
+                        // Save the phone number if user entered it
+                        localStorage.setItem('userWhatsAppNumber', phoneNumber);
+                        
+                        // Full phone with country code
+                        phoneNumber = countryCode + phoneNumber.replace(/^0+/, '');
+                    } else {
+                        // User canceled
+                        return;
+                    }
+                } else {
+                    // If we have a saved number, ensure it has country code
+                    if (!phoneNumber.startsWith('+')) {
+                        const countryCode = detectUserCountry();
+                        phoneNumber = countryCode + phoneNumber.replace(/^0+/, '');
+                    }
+                }
+                
+                // Ensure the message is properly encoded
+                const text = encodeURIComponent(planToShare);
+                
+                // Format the phone number correctly - remove any non-digits
+                const cleanPhone = phoneNumber.replace(/\D/g, '');
+                
+                // Create WhatsApp URL with properly formatted parameters
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${text}`;
+                
+                // Open WhatsApp in a new tab or window
+                const newWindow = window.open(whatsappUrl, '_blank');
+                
+                // Handle popup blocker or if window failed to open
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    alert('Please allow popups to open WhatsApp. Alternatively, you can copy your plan and paste it manually in WhatsApp.');
+                    
+                    // Provide a fallback to copy the text
+                    const textArea = document.createElement('textarea');
+                    textArea.value = planToShare;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Plan copied to clipboard. You can now paste it in WhatsApp manually.');
+                } else {
+                    // Show success toast
+                    showSuccessToast(`Plan for ${dayName} opened in WhatsApp!`);
+                }
+                
+                // Close the menu
+                document.getElementById('whatsappFab').classList.remove('active');
+                document.getElementById('whatsappMenu').classList.remove('active');
+            }
+            
+            // Function to send the plan to WhatsApp from the modal
+            function sendPlanToWhatsApp() {
+                // Update progress indicator
+                const sharingProgress = document.getElementById('sharingProgress');
+                sharingProgress.style.width = '30%';
+                
+                // Get phone number with country code
+                const countryCode = document.getElementById('countryCode').value;
+                const phoneNumber = document.getElementById('whatsappNumber').value.trim();
+                
+                // Validate phone number
+                if (!phoneNumber || !phoneNumber.match(/^[0-9]{10,15}$/)) {
+                    sharingProgress.style.width = '0%';
+                    alert('Please enter a valid phone number without country code');
+                    return;
+                }
+                
+                // Remember phone number if checkbox is checked
+                if (document.getElementById('rememberNumber').checked) {
+                    localStorage.setItem('userWhatsAppNumber', phoneNumber);
+                }
+                
+                sharingProgress.style.width = '60%';
+                
+                // Get selected option
+                const selectedOption = document.querySelector('.quick-setting-btn.active').dataset.option;
+                let planText = '';
+                
+                if (selectedOption === 'today') {
+                    const today = new Date();
+                    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    planText = generatePlanTextForDay(days[today.getDay()]);
+                } else if (selectedOption === 'tomorrow') {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    planText = generatePlanTextForDay(days[tomorrow.getDay()]);
+                } else {
+                    // For weekly option, use the selected day
+                    const specificDay = document.getElementById('specificDay').value;
+                    planText = generatePlanTextForDay(specificDay);
+                }
+                
+                sharingProgress.style.width = '90%';
+                
+                // Ensure the message is properly encoded
+                const text = encodeURIComponent(planText);
+                
+                // Format the phone number correctly - remove any non-digits
+                const fullPhoneNumber = (countryCode + phoneNumber).replace(/\D/g, '');
+                
+                // Create WhatsApp URL with properly formatted parameters
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${fullPhoneNumber}&text=${text}`;
+                
+                setTimeout(() => {
+                    // Open WhatsApp in a new tab or window
+                    const newWindow = window.open(whatsappUrl, '_blank');
+                    
+                    // Handle popup blocker or if window failed to open
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                        sharingProgress.style.width = '0%';
+                        alert('Please allow popups to open WhatsApp. Alternatively, you can copy your plan and paste it manually in WhatsApp.');
+                        
+                        // Provide a fallback to copy the text
+                        const textArea = document.createElement('textarea');
+                        textArea.value = planText;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        alert('Plan copied to clipboard. You can now paste it in WhatsApp manually.');
+                    } else {
+                        // Complete progress
+                        sharingProgress.style.width = '100%';
+                        
+                        // Close the modal after a short delay
+                        setTimeout(() => {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('whatsappShareModal'));
+                            modal.hide();
+                            sharingProgress.style.width = '0%';
+                            
+                            // Show success message
+                            showSuccessToast('Plan opened in WhatsApp!');
+                        }, 500);
+                    }
+                }, 500);
+            }
+            
+            // Function to generate plan text for a specific day
+            function generatePlanTextForDay(dayName) {
+                const userName = "{{ user_data.full_name }}".split(' ')[0];
+                const formattedDayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+                
+                // Create a simpler message structure that's less likely to have encoding issues
+                let planText = `${userName}'s Fitness Plan for ${formattedDayName}\n\n`;
+                
+                // Add diet plan - simplified formatting
+                planText += `MEAL PLAN:\n`;
+                const mealSections = document.querySelectorAll('#diet .plan-item');
+                
+                if (mealSections.length > 0) {
+                    for (let section of mealSections) {
+                        const mealTitle = section.querySelector('.plan-item-title').textContent.trim();
+                        planText += `\n${mealTitle}\n`;
+                        
+                        const mealItems = section.querySelectorAll('.meal-checkbox-text');
+                        mealItems.forEach(item => {
+                            planText += `• ${item.textContent.trim()}\n`;
+                        });
+                    }
+                } else {
+                    planText += "\nYour personalized meal plan will help you reach your goals. Follow it closely for best results!\n";
+                }
+                
+                // Add workout plan specifically for the selected day - simplified formatting
+                planText += `\nWORKOUT PLAN:\n`;
+                const workoutSections = document.querySelectorAll('#workout .plan-item');
+                
+                let foundWorkout = false;
+                for (let section of workoutSections) {
+                    const dayTitle = section.querySelector('.plan-item-title').textContent.toLowerCase();
+                    
+                    if (dayTitle.includes(dayName.toLowerCase())) {
+                        planText += `\n${section.querySelector('.plan-item-title').textContent.trim()}\n`;
+                        
+                        const workoutItems = section.querySelectorAll('.workout-items .meal-checkbox-text');
+                        workoutItems.forEach(item => {
+                            planText += `• ${item.textContent.trim()}\n`;
+                        });
+                        
+                        foundWorkout = true;
+                        break;
+                    }
+                }
+                
+                if (!foundWorkout) {
+                    // If no specific day workout is found, include a generic workout
+                    planText += `\nWorkout for ${formattedDayName}\n`;
+                    planText += "• Warm up: 5-10 minutes of light cardio\n";
+                    planText += "• Main workout: 3 sets of your regular exercises\n";
+                    planText += "• Cool down: 5 minutes of stretching\n";
+                }
+                
+                // Add a motivational tip if checked (simplified formatting)
+                if (document.getElementById('includeMotivationalTip')?.checked ?? true) {
+                    const motivationalTips = [
+                        "Remember, consistency is key! Stay committed to your plan.",
+                        "Small progress is still progress. Celebrate your wins!",
+                        "You don't have to be perfect, you just have to be consistent.",
+                        "Your body can stand almost anything. It's your mind you have to convince.",
+                        "The pain you feel today will be the strength you feel tomorrow."
+                    ];
+                    
+                    const randomTip = motivationalTips[Math.floor(Math.random() * motivationalTips.length)];
+                    planText += `\nDAILY MOTIVATION:\n"${randomTip}"\n`;
+                }
+                
+                // Add app signature (simplified)
+                planText += `\nSent from AuraFitness App`;
+                
+                return planText;
+            }
+            
+            // Function to generate a weekly plan summary (simplified for better WhatsApp compatibility)
+            function generateWeeklyPlanSummary() {
+                const userName = "{{ user_data.full_name }}".split(' ')[0];
+                
+                let planText = `${userName}'s Weekly Fitness Plan\n\n`;
+                planText += `Here's your workout schedule for the week ahead\n\n`;
+                
+                // Add workout overview for each day
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                const workoutSections = document.querySelectorAll('#workout .plan-item');
+                
+                days.forEach(day => {
+                    planText += `${day}: `;
+                    let foundWorkout = false;
+                    
+                    for (let section of workoutSections) {
+                        const dayTitle = section.querySelector('.plan-item-title').textContent;
+                        if (dayTitle.toLowerCase().includes(day.toLowerCase())) {
+                            // Extract the main focus from the title
+                            let focus = dayTitle.replace(day, '').replace(':', '').trim();
+                            if (!focus) {
+                                focus = "Regular workout";
+                            }
+                            
+                            planText += `${focus}\n`;
+                            foundWorkout = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!foundWorkout) {
+                        planText += "Rest or light activity\n";
+                    }
+                });
+                
+                // Add nutrition overview
+                planText += `\nNUTRITION OVERVIEW:\n`;
+                planText += "• Aim for balanced meals with protein, complex carbs, and healthy fats\n";
+                planText += "• Stay hydrated with 8-10 glasses of water daily\n";
+                planText += "• Include fruits and vegetables with each meal\n";
+                
+                // Add weekly goals
+                planText += `\nWEEKLY GOALS:\n`;
+                planText += "• Complete all scheduled workouts\n";
+                planText += "• Track your meals and stay within your nutrition targets\n";
+                planText += "• Get 7-8 hours of quality sleep each night\n";
+                
+                // Add simplified signature
+                planText += `\nSent from AuraFitness App`;
+                
+                return planText;
+            }
+            
+            // Function to update the plan preview in the modal
+            function updatePlanPreview() {
+                const planPreview = document.getElementById('planPreview');
+                const selectedOption = document.querySelector('.quick-setting-btn.active').dataset.option;
+                
+                let previewHTML = '';
+                let dayName = '';
+                
+                if (selectedOption === 'today') {
+                    const today = new Date();
+                    dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
+                    previewHTML = `<p class="fw-bold mb-2">${dayName}'s Plan (Today)</p>`;
+                } else if (selectedOption === 'tomorrow') {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    dayName = tomorrow.toLocaleDateString('en-US', { weekday: 'long' });
+                    previewHTML = `<p class="fw-bold mb-2">${dayName}'s Plan (Tomorrow)</p>`;
+                } else {
+                    // Weekly option - show selected day
+                    const specificDay = document.getElementById('specificDay').value;
+                    dayName = specificDay.charAt(0).toUpperCase() + specificDay.slice(1);
+                    previewHTML = `<p class="fw-bold mb-2">${dayName}'s Plan</p>`;
+                }
+                
+                // Add meal preview
+                previewHTML += '<div class="mb-2">';
+                previewHTML += '<p class="text-primary mb-1"><i class="fas fa-utensils me-1"></i> <strong>Meals:</strong></p>';
+                previewHTML += '<ul class="mb-0 ps-3">';
+                
+                // Get a few sample meals
+                const mealItems = document.querySelectorAll('#diet .meal-checkbox-text');
+                const sampleMeals = Array.from(mealItems).slice(0, 3);
+                
+                sampleMeals.forEach(meal => {
+                    previewHTML += `<li class="small">${meal.textContent}</li>`;
+                });
+                
+                if (mealItems.length > 3) {
+                    previewHTML += `<li class="small text-muted">+${mealItems.length - 3} more meals...</li>`;
+                }
+                
+                previewHTML += '</ul></div>';
+                
+                // Add workout preview
+                previewHTML += '<div>';
+                previewHTML += '<p class="text-primary mb-1"><i class="fas fa-dumbbell me-1"></i> <strong>Workout:</strong></p>';
+                
+                // Find workout for the specified day
+                const workoutSections = document.querySelectorAll('#workout .plan-item');
+                let foundWorkout = false;
+                
+                const dayLower = dayName.toLowerCase();
+                for (let section of workoutSections) {
+                    const sectionTitle = section.querySelector('.plan-item-title').textContent.toLowerCase();
+                    
+                    if (sectionTitle.includes(dayLower)) {
+                        previewHTML += '<ul class="mb-0 ps-3">';
+                        
+                        // Get workout items
+                        const workoutItems = section.querySelectorAll('.workout-items .meal-checkbox-text');
+                        const sampleWorkouts = Array.from(workoutItems).slice(0, 3);
+                        
+                        sampleWorkouts.forEach(workout => {
+                            previewHTML += `<li class="small">${workout.textContent}</li>`;
+                        });
+                        
+                        if (workoutItems.length > 3) {
+                            previewHTML += `<li class="small text-muted">+${workoutItems.length - 3} more exercises...</li>`;
+                        }
+                        
+                        previewHTML += '</ul>';
+                        foundWorkout = true;
+                        break;
+                    }
+                }
+                
+                if (!foundWorkout) {
+                    previewHTML += '<p class="small text-muted">General workout routines will be included.</p>';
+                }
+                
+                // Update the preview
+                planPreview.innerHTML = previewHTML;
+            }
+            
+            // Function to show a success toast message
+            function showSuccessToast(message) {
+                // Create toast container if it doesn't exist
+                let toastContainer = document.querySelector('.toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    document.body.appendChild(toastContainer);
+                }
+                
+                // Create toast element
+                const toastEl = document.createElement('div');
+                toastEl.className = 'toast show';
+                toastEl.setAttribute('role', 'alert');
+                toastEl.setAttribute('aria-live', 'assertive');
+                toastEl.setAttribute('aria-atomic', 'true');
+                
+                toastEl.innerHTML = `
+                    <div class="toast-header bg-success text-white">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong class="me-auto">Success</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                `;
+                
+                // Add to container
+                toastContainer.appendChild(toastEl);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    toastEl.remove();
+                }, 5000);
+            }
+            
+            // Function to update progress bars
+            function updateProgress() {
+                // Count completed meals
+                const mealChecks = document.querySelectorAll('.meal-check');
+                const completedMeals = Array.from(mealChecks).filter(check => check.checked).length;
+                mealProgress = mealChecks.length > 0 ? Math.round((completedMeals / mealChecks.length) * 100) : 0;
+                
+                // Count completed workouts
+                const workoutChecks = document.querySelectorAll('.workout-check');
+                const completedWorkouts = Array.from(workoutChecks).filter(check => check.checked).length;
+                workoutProgress = workoutChecks.length > 0 ? Math.round((completedWorkouts / workoutChecks.length) * 100) : 0;
+                
+                // Update progress bars
+                const mealProgressBar = document.getElementById('mealProgress');
+                const workoutProgressBar = document.getElementById('workoutProgress');
+                const mealProgressText = document.getElementById('mealProgressText');
+                const workoutProgressText = document.getElementById('workoutProgressText');
+                
+                if (mealProgressBar && mealProgressText) {
+                    mealProgressBar.style.width = `${mealProgress}%`;
+                    mealProgressBar.setAttribute('aria-valuenow', mealProgress);
+                    mealProgressText.textContent = `${mealProgress}%`;
+                }
+                
+                if (workoutProgressBar && workoutProgressText) {
+                    workoutProgressBar.style.width = `${workoutProgress}%`;
+                    workoutProgressBar.setAttribute('aria-valuenow', workoutProgress);
+                    workoutProgressText.textContent = `${workoutProgress}%`;
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
+

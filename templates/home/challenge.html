@@ -1,0 +1,3040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraFitness - Challenges</title>
+  <style>
+    :root {
+      --primary-color: #5468FF;
+      --secondary-color: #6C5CE7;
+      --background-color: #F5F7FF;
+      --card-bg: #FFFFFF;
+      --text-dark: #2D3748;
+      --text-medium: #4A5568;
+      --text-light: #718096;
+      --success-color: #48BB78;
+      --warning-color: #F6AD55;
+      --error-color: #F56565;
+      --primary-color: #5468FF;
+  /* ... */
+  
+  /* Add these missing variables */
+  --primary: #5468FF;
+  --primary-dark: #4555e2;
+  --primary-light: rgba(84, 104, 255, 0.1);
+  --white: #FFFFFF;
+  --text-dark: #2D3748;
+  --text-medium: #4A5568;
+  --border-light: #E2E8F0;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --bg-medium: #F7FAFC;
+  --danger: #F56565;
+
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 1rem 0;
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-medium);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .nav-link.active {
+      color: var(--primary-color);
+      background-color: rgba(84, 104, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+    
+    .notification-badge {
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.75rem;
+    }
+    
+    .profile-icon {
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .hero {
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-medium);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+    
+    .category-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    
+    .category-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: white;
+      border: 1px solid #E2E8F0;
+      border-radius: 999px;
+      font-weight: 500;
+      color: var(--text-medium);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .category-btn:hover {
+      background-color: #F7FAFC;
+    }
+    
+    .category-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .challenge-card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .challenge-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .challenge-img {
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .challenge-content {
+      padding: 1.5rem;
+    }
+    
+    .challenge-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background-color: rgba(84, 104, 255, 0.1);
+      color: var(--primary-color);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+    
+    .challenge-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .challenge-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .challenge-progress {
+      margin-bottom: 1rem;
+    }
+    
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background-color: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    
+    .progress-value {
+      height: 100%;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border-radius: 999px;
+    }
+    
+    .challenge-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .challenge-btn:hover {
+      background-color: #4555e2;
+    }
+    
+    .challenge-btn.secondary {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .challenge-btn.secondary:hover {
+      background-color: rgba(84, 104, 255, 0.05);
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .featured-challenge {
+      display: flex;
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 3rem;
+    }
+    
+    .featured-img {
+      flex: 0 0 40%;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .featured-content {
+      flex: 1;
+      padding: 2rem;
+    }
+    
+    .participants-avatars {
+      display: flex;
+      margin-bottom: 1.5rem;
+    }
+    
+    .participant-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #ccc;
+      border: 2px solid white;
+      margin-left: -10px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .participant-avatar:first-child {
+      margin-left: 0;
+    }
+    
+    .participant-count {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #E2E8F0;
+      border: 2px solid white;
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .create-challenge {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 3rem;
+    }
+    
+    .create-challenge h2 {
+      margin-bottom: 1rem;
+    }
+    
+    .create-challenge p {
+      margin-bottom: 2rem;
+      color: var(--text-medium);
+    }
+    
+    footer {
+      background-color: white;
+      padding: 3rem 0;
+      border-top: 1px solid #E2E8F0;
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    
+    .footer-col {
+      flex: 1;
+      min-width: 240px;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-title {
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-link {
+      margin-bottom: 0.75rem;
+    }
+    
+    .footer-link a {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    .footer-link a:hover {
+      color: var(--primary-color);
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #F7FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-medium);
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+    
+    .social-icon:hover {
+      background-color: #E2E8F0;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow-y: auto;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      animation: modalSlideIn 0.3s ease forwards;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-medium);
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+    
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+    
+    /* Start Challenge UI */
+    .challenge-details {
+      margin-bottom: 2rem;
+    }
+    
+    .challenge-overview {
+      display: flex;
+      margin-bottom: 1.5rem;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    
+    .challenge-thumbnail {
+      width: 120px;
+      height: 120px;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    
+    .challenge-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .challenge-info {
+      flex: 1;
+    }
+    
+    .challenge-description {
+      margin-bottom: 1.5rem;
+      color: var(--text-medium);
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .info-item {
+      background-color: #F7FAFC;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    
+    .info-label {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+      font-weight: 600;
+    }
+    
+    .start-instructions {
+      background-color: #EBF8FF;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 2rem;
+    }
+    
+    .step-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    
+    /* Progress Visualization */
+    .progress-visualization {
+      margin-bottom: 2rem;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-filters {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background-color: #F7FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .filter-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .chart-container {
+      height: 300px;
+      background-color: #F7FAFC;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      position: relative;
+    }
+    
+    .chart-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-medium);
+      padding: 1.5rem;
+    }
+    
+    .line-chart {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    
+    .chart-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 65%;
+      overflow: hidden;
+    }
+    
+    .line {
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      width: 0;
+      position: absolute;
+      bottom: 0;
+      animation: drawLine 2s forwards ease-in-out;
+    }
+    
+    @keyframes drawLine {
+      0% {
+        width: 0;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+    
+    .data-points {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 65%;
+    }
+    
+    .data-point {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      transform: translate(-50%, 50%);
+    }
+    
+    .data-point::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(84, 104, 255, 0.3);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      70% {
+        transform: scale(2);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+    
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      bottom: 10px;
+      left: 50px;
+      right: 50px;
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+    
+    .y-axis {
+      position: absolute;
+      left: 20px;
+      bottom: 30px;
+      top: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--primary-color);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .streak-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+    
+    .streak-day {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    
+    .streak-day.completed {
+      background-color: var(--success-color);
+      color: white;
+    }
+    
+    .streak-day.current {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .streak-day.future {
+      background-color: #F7FAFC;
+      color: var(--text-medium);
+    }
+    
+    .view-all {
+      display: inline-block;
+      color: var(--primary-color);
+      font-weight: 500;
+      margin-top: 1rem;
+      text-decoration: none;
+    }
+    
+    /* Progress visualization page */
+    .progress-page {
+      padding: 2rem 0;
+    }
+    
+    .progress-page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .progress-page-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .progress-page-subtitle {
+      color: var(--text-medium);
+    }
+    
+    .progress-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    
+    .progress-panel {
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+    }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .panel-action {
+      font-size: 0.9rem;
+      color: var(--primary-color);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    /* Charts */
+    .area-chart {
+      height: 200px;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    .area-gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(84, 104, 255, 0.1), rgba(84, 104, 255, 0));
+      clip-path: polygon(0 100%, 10% 80%, 20% 85%, 30% 70%, 40% 75%, 50% 60%, 60% 65%, 70% 50%, 80% 60%, 90% 40%, 100% 50%, 100% 100%);
+    }
+    
+    .area-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      stroke: var(--primary-color);
+      stroke-width: 2;
+      fill: none;
+      animation: drawAreaLine 2s forwards ease-in-out;
+    }
+    /* Circle progress animation */
+.circle-progress-value {
+  animation: fillCircle 1.5s ease-out forwards;
+}
+
+@keyframes fillCircle {
+  0% {
+    stroke-dashoffset: 440;
+  }
+  100% {
+    stroke-dashoffset: 330; /* 25% progress */
+  }
+}
+
+/* Fix for event listener tracking */
+.challenge-btn {
+  position: relative;
+}
+    
+    @keyframes drawAreaLine {
+      0% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+      }
+      100% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    .chart-dots {
+      position: relative;
+      height: 100%;
+    }
+    
+    .chart-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      transform: translate(-50%, -50%);
+    }
+    
+    .chart-tooltip {
+      position: absolute;
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      font-size: 0.8rem;
+      transform: translate(-50%, -100%);
+      margin-top: -10px;
+      z-index: 10;
+      display: none;
+    }
+    
+    .chart-dot:hover .chart-tooltip {
+      display: block;
+    }
+    
+    .metric-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+    }
+    
+    .metric-card {
+      background-color: #F7FAFC;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .metric-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--primary-color);
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.progress-table th,
+.progress-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.progress-table th {
+  font-weight: 500;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.activity-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.status-completed {
+  background-color: var(--success-color);
+}
+
+.status-ongoing {
+  background-color: var(--warning-color);
+}
+
+.status-upcoming {
+  background-color: var(--text-light);
+}
+
+.circle-progress {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #E2E8F0;
+  stroke-width: 10;
+}
+
+.circle-progress-value {
+  fill: none;
+  stroke: var(--primary-color);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 1s ease;
+  stroke-dasharray: 440;
+}
+
+.circle-progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-percentage {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.goal-milestone {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.milestone-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #F7FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.milestone-info {
+  flex: 1;
+}
+
+.milestone-title {
+  font-weight: 500;
+}
+
+.milestone-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+}
+
+.milestone-status {
+  font-weight: 500;
+}
+
+.milestone-status.completed {
+  color: var(--success-color);
+}
+
+.milestone-status.upcoming {
+  color: var(--text-light);
+}
+
+@keyframes fillCircle {
+  0% {
+    stroke-dashoffset: 440;
+  }
+  100% {
+    stroke-dashoffset: 220;
+  }
+  color: var(--success-color);
+}
+
+.milestone-status.upcoming {
+  color: var(--text-light);
+}
+
+.milestone-status.in-progress {
+  color: var(--warning-color);
+}
+
+.leaderboard {
+  width: 100%;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.rank {
+  width: 36px;
+  height: 36px;
+  background-color: #F7FAFC;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.rank.top-1 {
+  background-color: #FFD700;
+  color: white;
+}
+
+.rank.top-2 {
+  background-color: #C0C0C0;
+  color: white;
+}
+
+.rank.top-3 {
+  background-color: #CD7F32;
+  color: white;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 1rem;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.user-stats {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-score {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .featured-challenge {
+    flex-direction: column;
+  }
+  
+  .featured-img {
+    height: 200px;
+    width: 100%;
+  }
+  
+  .progress-dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .challenges-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category-nav {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 1rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  .progress-page-title {
+    font-size: 1.5rem;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-light);
+  background-image: linear-gradient(120deg, #6366F1, #8B5CF6);
+  color: var(--white);
+  position: relative;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--white);
+  font-size: 1.75rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  opacity: 0.8;
+}
+
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg-medium);
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: var(--bg-medium);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 4px;
+}
+
+.challenge-header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.challenge-cover {
+  width: 120px;
+  height: 120px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.challenge-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.challenge-header-content {
+  flex: 1;
+}
+
+.challenge-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.challenge-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-medium);
+  font-size: 0.875rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+/* Progress Section */
+.challenge-progress-overview {
+  background-color: var(--bg-medium);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progress-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  flex: 1;
+  background-color: var(--white);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+}
+
+.progress-bar-container {
+  height: 0.75rem;
+  background-color: var(--border-light);
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-image: linear-gradient(90deg, var(--primary), #818CF8);
+  border-radius: 1rem;
+  width: 25%;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+/* Options Section */
+.join-options {
+  margin-bottom: 2rem;
+}
+
+.option-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.option-card {
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option-card:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.option-card.active {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--primary-light);
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.option-card:hover .option-icon,
+.option-card.active .option-icon {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.option-card:hover .option-icon svg,
+.option-card.active .option-icon svg {
+  color: var(--white);
+}
+
+.option-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--primary);
+}
+
+.option-name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.option-description {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+}
+
+/* Action Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.9375rem;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-medium);
+}
+
+.floating-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white);
+  box-shadow: var(--shadow);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.control-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--text-medium);
+}
+
+/* Timeline Progress */
+.timeline {
+  margin-top: 2rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.6875rem;
+  width: 2px;
+  background-color: var(--border-light);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 0.25rem;
+  left: -2rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 2px solid var(--primary);
+}
+
+.timeline-item.completed .timeline-dot {
+  background-color: var(--primary);
+}
+
+.timeline-content {
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.timeline-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-date {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-description {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+}
+
+/* Action Panels */
+.action-panel {
+  display: none;
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-light);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.action-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.action-panel-header {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-panel-header svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Schedule View */
+.schedule-view {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  border: 1px solid var(--border-light);
+  margin: 1.5rem 0;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.schedule-view.active {
+  display: block;
+}
+
+.schedule-day {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  gap: 1rem;
+}
+
+.schedule-day:last-child {
+  border-bottom: none;
+}
+
+.day-number {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.day-content {
+  flex: 1;
+}
+
+.day-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.day-description {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  margin-bottom: 0.5rem;
+}
+
+.day-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-medium);
+}
+
+.notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--white);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1100;
+}
+
+.notification.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.notification-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-success {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+.notification-warning {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.notification-danger {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.notification-message {
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.challenge-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.confirm-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+}
+
+.confirm-btn-secondary {
+  background-color: transparent;
+  color: var(--text-medium);
+  border: 1px solid var(--border-light);
+}
+
+.confirm-btn-danger {
+  background-color: var(--danger);
+  color: var(--white);
+  border: none;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container navbar">
+      <a href="{% url 'landing' %}" class="logo">AuraFitness</a>
+      
+    </nav>
+  </header>
+  
+  <section class="hero">
+    <div class="container">
+      <h1>Fitness Challenges</h1>
+      <p>Join challenges, track your progress, and compete with others to achieve your fitness goals and earn rewards.</p>
+      
+      <div class="category-nav">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Running</button>
+        <button class="category-btn">Strength</button>
+        <button class="category-btn">Yoga</button>
+        <button class="category-btn">Nutrition</button>
+        <button class="category-btn">Mindfulness</button>
+      </div>
+    </div>
+  </section>
+  
+  <section class="container">
+    <div class="featured-challenge">
+      <div class="featured-img" style="background-image: url('https://images.unsplash.com/photo-1538805060514-97d9cc17730c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+      <div class="featured-content">
+        <div class="challenge-badge">Featured Challenge</div>
+        <h2 class="challenge-title">30-Day Full Body Transformation</h2>
+        <div class="challenge-meta">
+          <div class="meta-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            4 weeks
+          </div>
+          <div class="meta-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            1,248 participants
+          </div>
+        </div>
+        
+        <p class="challenge-description">Transform your body in just 30 days with this comprehensive full-body workout program. Daily workouts, nutrition guidance, and community support included.</p>
+        
+        <div class="participants-avatars">
+          <div class="participant-avatar" style="background-image: url('https://randomuser.me/api/portraits/women/65.jpg')"></div>
+          <div class="participant-avatar" style="background-image: url('https://randomuser.me/api/portraits/men/32.jpg')"></div>
+          <div class="participant-avatar" style="background-image: url('https://randomuser.me/api/portraits/women/44.jpg')"></div>
+          <div class="participant-avatar" style="background-image: url('https://randomuser.me/api/portraits/men/78.jpg')"></div>
+          <div class="participant-count">+1.2k</div>
+        </div>
+        
+        <button class="challenge-btn" id="openStartModal">Start Challenge</button>
+      </div>
+    </div>
+    
+    <h2 class="section-title">Popular Challenges</h2>
+    
+    <div class="challenges-grid">
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1571008887538-b36bb32f4571?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Running</div>
+          <h3 class="challenge-title">10K Training Plan</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              8 weeks
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              856 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>25%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 25%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Continue Challenge</button>
+        </div>
+      </div>
+      
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Strength</div>
+          <h3 class="challenge-title">Push-Up Challenge</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              30 days
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              1,102 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+      
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Nutrition</div>
+          <h3 class="challenge-title">21-Day Sugar Detox</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              3 weeks
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              725 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+      
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Yoga</div>
+          <h3 class="challenge-title">30-Day Yoga Journey</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              30 days
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              938 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+      
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Mindfulness</div>
+          <h3 class="challenge-title">Daily Meditation</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Ongoing
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              1,567 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+      
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('https://images.unsplash.com/photo-1526401485004-46910ecc8e51?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">Strength</div>
+          <h3 class="challenge-title">Core Challenge</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              14 days
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              652 participants
+            </div>
+          </div>
+          
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="create-challenge">
+      <h2>Create Your Own Challenge</h2>
+      <p>Design a custom challenge to meet your specific fitness goals or to motivate your friends and community.</p>
+      <button class="challenge-btn">Create Challenge</button>
+    </div>
+  </section>
+ <!-- Start Challenge Modal -->
+<div class="modal" id="startChallengeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Start Challenge</h2>
+        <button class="modal-close" id="closeStartModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="challenge-details">
+          <div class="challenge-overview">
+            <div class="challenge-thumbnail">
+              <img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Challenge Thumbnail">
+            </div>
+            <div class="challenge-info">
+              <h3 class="challenge-title">30-Day Full Body Transformation</h3>
+              <div class="challenge-meta">
+                <div class="meta-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  4 weeks
+                </div>
+                <div class="meta-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  1,248 participants
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="challenge-description">Transform your body in just 30 days with this comprehensive full-body workout program. Daily workouts, nutrition guidance, and community support included.</p>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Difficulty</div>
+              <div class="info-value">Intermediate</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Time Required</div>
+              <div class="info-value">30-45 min daily</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Equipment</div>
+              <div class="info-value">Basic home equipment</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Challenge Type</div>
+              <div class="info-value">Daily workouts</div>
+            </div>
+          </div>
+        </div>
+        <div class="start-instructions">
+          <h4>How to get started:</h4>
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div>Click the "Join Challenge" button below to register.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div>Set your specific goals for this challenge.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div>Complete your first workout today and start tracking your progress.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="challenge-btn secondary" id="learnMoreBtn">Learn More</button>
+        <button class="challenge-btn" id="joinChallengeBtn">Join Challenge</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Join Challenge Button -->
+  <!-- <button class="challenge-btn" id="joinChallengeBtn">Join Challenge</button> -->
+
+  <!-- Join Challenge Modal -->
+  <div class="modal" id="joinChallengeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Join Challenge</h2>
+        <button class="modal-close">&times;</button>
+        
+        <div class="floating-controls">
+          <button class="control-btn" title="Share Challenge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
+          <button class="control-btn" title="Save Challenge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="modal-body">
+        <div class="challenge-header">
+          <div class="challenge-cover">
+            <img src="/api/placeholder/250/250" alt="30-Day Full Body Transformation">
+          </div>
+          <div class="challenge-header-content">
+            <h3 class="challenge-name">30-Day Full Body Transformation</h3>
+            <div class="challenge-meta">
+              <div class="meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                4 weeks
+              </div>
+              <div class="meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                1,248 participants
+              </div>
+            </div>
+            <span class="badge badge-primary">Intermediate</span>
+          </div>
+        </div>
+        
+        <div class="challenge-progress-overview">
+          <div class="progress-stats">
+            <div class="stat-item">
+              <div class="stat-value">30</div>
+              <div class="stat-label">Total Days</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">7</div>
+              <div class="stat-label">Days Completed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">23</div>
+              <div class="stat-label">Days Left</div>
+            </div>
+          </div>
+          
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
+          </div>
+          <div class="progress-text">
+            <span>Progress: 25%</span>
+            <span>Estimated completion: May 8, 2025</span>
+          </div>
+        </div>
+        
+        <div class="join-options">
+          <h4 class="option-title">Choose an option</h4>
+          <div class="options-grid">
+            <div class="option-card active">
+              <div class="option-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+              </div>
+              <div class="option-name">Continue Challenge</div>
+              <div class="option-description">Resume from where you left off</div>
+            </div>
+            
+            <div class="option-card">
+              <div class="option-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </div>
+              <div class="option-name">Restart Challenge</div>
+              <div class="option-description">Begin the challenge from day one</div>
+            </div>
+            
+            <div class="option-card">
+              <div class="option-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+              </div>
+              <div class="option-name">Pause Challenge</div>
+              <div class="option-description">Temporarily pause your progress</div>
+            </div>
+            
+            <div class="option-card">
+              <div class="option-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 6L6 18"></path>
+                  <path d="M6 6l12 12"></path>
+                </svg>
+              </div>
+              <div class="option-name">End Challenge</div>
+              <div class="option-description">Quit and remove from your list</div>
+            </div>
+          </div>
+        </div>
+        
+        <h4 class="option-title">Upcoming Schedule</h4>
+        <div class="timeline">
+          <div class="timeline-item completed">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h5 class="timeline-title">Day 7: Full Body HIIT</h5>
+              <div class="timeline-date">Completed on April 7, 2025</div>
+              <div class="timeline-description">High-intensity interval training targeting all major muscle groups.</div>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h5 class="timeline-title">Day 8: Active Recovery</h5>
+              <div class="timeline-date">Today - April 8, 2025</div>
+              <div class="timeline-description">Light stretching and mobility exercises to aid muscle recovery.</div>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h5 class="timeline-title">Day 9: Upper Body Focus</h5>
+              <div class="timeline-date">Tomorrow - April 9, 2025</div>
+              <div class="timeline-description">Strength training focusing on chest, back, shoulders, and arms.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary">View Full Schedule</button>
+        <button class="btn btn-primary">Continue Challenge</button>
+      </div>
+    </div>
+  </div>
+        
+        <!-- Schedule View Panel -->
+        <div class="schedule-view" id="schedulePanel">
+          <h4 class="option-title">Full Schedule</h4>
+          <div class="schedule-day">
+            <div class="day-number">1</div>
+            <div class="day-content">
+              <h5 class="day-title">Full Body Assessment</h5>
+              <p class="day-description">Initial fitness assessment to establish your baseline and set goals.</p>
+              <div class="day-meta">
+                <span>30-45 min</span>
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="schedule-day">
+            <div class="day-number">2</div>
+            <div class="day-content">
+              <h5 class="day-title">Upper Body Focus</h5>
+              <p class="day-description">Strength training targeting chest, back, shoulders, and arms.</p>
+              <div class="day-meta">
+                <span>40-50 min</span>
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="schedule-day">
+            <div class="day-number">3</div>
+            <div class="day-content">
+              <h5 class="day-title">Lower Body Focus</h5>
+              <p class="day-description">Strength training targeting quads, hamstrings, glutes, and calves.</p>
+              <div class="day-meta">
+                <span>40-50 min</span>
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-body">
+            <div class="challenge-header">
+              <div class="challenge-cover">
+                <img src="/api/placeholder/250/250" alt="30-Day Full Body Transformation">
+              </div>
+              <div class="challenge-header-content">
+                <h3 class="challenge-name">30-Day Full Body Transformation</h3>
+                <div class="challenge-meta">
+                  <div class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    4 weeks
+                  </div>
+                  <div class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    1,248 participants
+                  </div>
+                </div>
+                <span class="badge badge-primary">Intermediate</span>
+              </div>
+            </div>
+            
+            <div class="challenge-progress-overview">
+              <div class="progress-stats">
+                <div class="stat-item">
+                  <div class="stat-value">30</div>
+                  <div class="stat-label">Total Days</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">7</div>
+                  <div class="stat-label">Days Completed</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">23</div>
+                  <div class="stat-label">Days Left</div>
+                </div>
+              </div>
+              
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill"></div>
+              </div>
+              <div class="progress-text">
+                <span>Progress: 25%</span>
+                <span>Estimated completion: May 8, 2025</span>
+              </div>
+            </div>
+            
+            <div class="join-options">
+              <h4 class="option-title">Choose an option</h4>
+              <div class="options-grid">
+                <div class="option-card active" id="continueOption">
+                  <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                  </div>
+                  <div class="option-name">Continue Challenge</div>
+                  <div class="option-description">Resume from where you left off</div>
+                </div>
+                
+                <div class="option-card" id="restartOption">
+                  <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 4v6h-6"></path>
+                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                  </div>
+                  <div class="option-name">Restart Challenge</div>
+                  <div class="option-description">Begin the challenge from day one</div>
+                </div>
+                
+                <div class="option-card" id="pauseOption">
+                  <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="6" y="4" width="4" height="16"></rect>
+                      <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                  </div>
+                  <div class="option-name">Pause Challenge</div>
+                  <div class="option-description">Temporarily pause your progress</div>
+                </div>
+                
+                <div class="option-card" id="endOption">
+                  <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 6L6 18"></path>
+                      <path d="M6 6l12 12"></path>
+                    </svg>
+                  </div>
+                  <div class="option-name">End Challenge</div>
+                  <div class="option-description">Quit and remove from your list</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Continue Challenge Panel -->
+            <div class="action-panel" id="continuePanel">
+              <div class="action-panel-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Continue Challenge
+              </div>
+              <p>You're currently on Day 8 of 30. Your next workout is ready to go!</p>
+              <div class="timeline-item" style="margin-top: 1rem;">
+                <div class="timeline-content">
+                  <h5 class="timeline-title">Day 8: Active Recovery</h5>
+                  <div class="timeline-date">Today - April 8, 2025</div>
+                  <div class="timeline-description">Light stretching and mobility exercises to aid muscle recovery.</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Restart Challenge Panel -->
+            <div class="action-panel" id="restartPanel">
+              <div class="action-panel-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                Restart Challenge
+              </div>
+              <p>Are you sure you want to restart the challenge? Your current progress (7 days completed) will be reset to day 1.</p>
+              <div class="challenge-controls">
+                <button class="confirm-btn confirm-btn-secondary" id="cancelRestart">Cancel</button>
+                <button class="confirm-btn confirm-btn-primary" id="confirmRestart">Yes, Restart</button>
+              </div>
+            </div>
+            
+            <!-- Pause Challenge Panel -->
+            <div class="action-panel" id="pausePanel">
+              <div class="action-panel-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                Pause Challenge
+              </div>
+              <p>Pausing the challenge will temporarily stop your progress. You can resume anytime later.</p>
+              <div class="challenge-controls">
+                <button class="confirm-btn confirm-btn-secondary" id="cancelPause">Cancel</button>
+                <button class="confirm-btn confirm-btn-primary" id="confirmPause">Pause Challenge</button>
+              </div>
+            </div>
+            
+            <!-- End Challenge Panel -->
+            <div class="action-panel" id="endPanel">
+              <div class="action-panel-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 6L6 18"></path>
+                  <path d="M6 6l12 12"></path>
+                </svg>
+                End Challenge
+              </div>
+              <p>Are you sure you want to end this challenge? All your progress will be lost and the challenge will be removed from your list.</p>
+              <div class="challenge-controls">
+                <button class="confirm-btn confirm-btn-secondary" id="cancelEnd">Cancel</button>
+                <button class="confirm-btn confirm-btn-danger" id="confirmEnd">End Challenge</button>
+              </div>
+            </div>
+            
+            <!-- Schedule View Panel -->
+            <div class="schedule-view" id="schedulePanel">
+              <h4 class="option-title">Full Schedule</h4>
+              <div class="schedule-day">
+                <div class="day-number">1</div>
+                <div class="day-content">
+                  <h5 class="day-title">Full Body Assessment</h5>
+                  <p class="day-description">Initial fitness assessment to establish your baseline and set goals.</p>
+                  <div class="day-meta">
+                    <span>30-45 min</span>
+                    <span>Completed</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="schedule-day">
+                <div class="day-number">2</div>
+                <div class="day-content">
+                  <h5 class="day-title">Upper Body Focus</h5>
+                  <p class="day-description">Strength training targeting chest, back, shoulders, and arms.</p>
+                  <div class="day-meta">
+                    <span>40-50 min</span>
+                    <span>Completed</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="schedule-day">
+                <div class="day-number">3</div>
+                <div class="day-content">
+                  <h5 class="day-title">Lower Body Focus</h5>
+                  <p class="day-description">Strength training targeting quads, hamstrings, glutes, and calves.</p>
+                  <div class="day-meta">
+                    <span>40-50 min</span>
+                    <span>Completed</span>
+                  </div>
+                </div>
+              </div>
+              
+              
+    </div>
+  </div>
+  
+  <!-- Create Challenge Modal -->
+  <div class="modal" id="createChallengeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Create Your Own Challenge</h2>
+        <button class="modal-close" id="closeCreateModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="createChallengeForm">
+          <div style="margin-bottom: 1.5rem;">
+            <label for="challengeName" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Challenge Name</label>
+            <input type="text" id="challengeName" placeholder="e.g., 30-Day Plank Challenge" style="width: 100%; padding: 0.75rem; border: 1px solid #E2E8F0; border-radius: 0.5rem;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="challengeCategory" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Category</label>
+            <select id="challengeCategory" style="width: 100%; padding: 0.75rem; border: 1px solid #E2E8F0; border-radius: 0.5rem;">
+              <option value="Running">Running</option>
+              <option value="Strength">Strength</option>
+              <option value="Yoga">Yoga</option>
+              <option value="Nutrition">Nutrition</option>
+              <option value="Mindfulness">Mindfulness</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="challengeDuration" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Duration</label>
+            <select id="challengeDuration" style="width: 100%; padding: 0.75rem; border: 1px solid #E2E8F0; border-radius: 0.5rem;">
+              <option value="7 days">7 days</option>
+              <option value="14 days">14 days</option>
+              <option value="21 days">21 days</option>
+              <option value="30 days">30 days</option>
+              <option value="8 weeks">8 weeks</option>
+              <option value="Ongoing">Ongoing</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="challengeDescription" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Description</label>
+            <textarea id="challengeDescription" rows="4" placeholder="Describe your challenge..." style="width: 100%; padding: 0.75rem; border: 1px solid #E2E8F0; border-radius: 0.5rem;"></textarea>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Privacy</label>
+            <div style="display: flex; gap: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="radio" name="privacy" value="public" checked>
+                Public (Anyone can join)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="radio" name="privacy" value="private">
+                Private (Invite only)
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="challenge-btn secondary" id="cancelCreateBtn">Cancel</button>
+        <button class="challenge-btn" id="saveCreateBtn">Create Challenge</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Continue Challenge Modal -->
+  <div class="modal" id="continueChallengeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">10K Training Plan</h2>
+        <button class="modal-close" id="closeContinueModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="challenge-progress" style="margin-bottom: 2rem;">
+          <div class="circle-progress">
+            <svg class="progress-ring" viewBox="0 0 160 160">
+              <circle class="circle-bg" cx="80" cy="80" r="70"></circle>
+              <circle class="circle-progress-value" cx="80" cy="80" r="70" style="stroke-dashoffset: 330;"></circle>
+            </svg>
+            <div class="circle-progress-text">
+              <div class="progress-percentage">25%</div>
+              <div class="progress-label">Completed</div>
+            </div>
+          </div>
+        </div>
+        <h4 style="margin-bottom: 1rem;">Your Streak</h4>
+        <div class="streak-container">
+          <div class="streak-day completed">M</div>
+          <div class="streak-day completed">T</div>
+          <div class="streak-day current">W</div>
+          <div class="streak-day future">T</div>
+          <div class="streak-day future">F</div>
+          <div class="streak-day future">S</div>
+          <div class="streak-day future">S</div>
+        </div>
+        <h4 style="margin: 2rem 0 1rem;">Today's Workout</h4>
+        <div style="background-color: #F7FAFC; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem;">
+          <h5 style="margin-bottom: 0.5rem;">3-Mile Easy Run</h5>
+          <p style="color: var(--text-medium); margin-bottom: 1rem;">Focus on maintaining a comfortable pace where you can hold a conversation.</p>
+          <button class="challenge-btn">Mark as Complete</button>
+        </div>
+        <h4 style="margin-bottom: 1rem;">Upcoming Schedule</h4>
+        <table class="progress-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Activity</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Thursday</td>
+              <td>Cross Training (30 min)</td>
+              <td><span class="activity-status status-upcoming"></span> Upcoming</td>
+            </tr>
+            <tr>
+              <td>Friday</td>
+              <td>Rest Day</td>
+              <td><span class="activity-status status-upcoming"></span> Upcoming</td>
+            </tr>
+            <tr>
+              <td>Saturday</td>
+              <td>Long Run (5 miles)</td>
+              <td><span class="activity-status status-upcoming"></span> Upcoming</td>
+            </tr>
+            <tr>
+              <td>Sunday</td>
+              <td>Recovery Walk</td>
+              <td><span class="activity-status status-upcoming"></span> Upcoming</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="challenge-btn secondary" id="viewAllWorkoutsBtn">View All Workouts</button>
+        <button class="challenge-btn" id="shareChallengeBtn">Share Progress</button>
+      </div>
+    </div>
+  </div>
+  
+      
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-col">
+        <h3 class="footer-title">AuraFitness</h3>
+        <p>Your complete fitness journey companion for tracking workouts, participating in challenges, and connecting with a supportive community.</p>
+        <div class="social-links">
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-title">Features</h3>
+        <ul class="footer-links">
+          <li class="footer-link"><a href="#">Activity Tracking</a></li>
+          <li class="footer-link"><a href="#">Fitness Challenges</a></li>
+          <li class="footer-link"><a href="#">Workout Library</a></li>
+          <li class="footer-link"><a href="#">Nutrition Plans</a></li>
+          <li class="footer-link"><a href="#">Community Groups</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-title">Support</h3>
+        <ul class="footer-links">
+          <li class="footer-link"><a href="#">Help Center</a></li>
+          <li class="footer-link"><a href="#">Getting Started</a></li>
+          <li class="footer-link"><a href="#">Contact Us</a></li>
+          <li class="footer-link"><a href="#">FAQ</a></li>
+          <li class="footer-link"><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-title">Download App</h3>
+        <p>Take your fitness journey anywhere with our mobile app.</p>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+          <a href="#" style="display: inline-block;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" style="height: 40px;">
+          </a>
+          <a href="#" style="display: inline-block;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" style="height: 40px;">
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Modals
+  const startModal = document.getElementById('startChallengeModal');
+  const createModal = document.getElementById('createChallengeModal');
+  const continueModal = document.getElementById('continueChallengeModal');
+
+  // Buttons
+  const openStartModalBtn = document.getElementById('openStartModal');
+  const closeStartModalBtn = document.getElementById('closeStartModal');
+  const createChallengeBtn = document.querySelector('.create-challenge .challenge-btn');
+  const closeCreateModalBtn = document.getElementById('closeCreateModal');
+  const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+  const saveCreateBtn = document.getElementById('saveCreateBtn');
+  const closeContinueModalBtn = document.getElementById('closeContinueModal');
+
+  // Open/Close Start Modal
+  if (openStartModalBtn) {
+    openStartModalBtn.addEventListener('click', () => {
+      startModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  if (closeStartModalBtn) {
+    closeStartModalBtn.addEventListener('click', () => {
+      startModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+  }
+
+  // Open/Close Create Modal
+  if (createChallengeBtn) {
+    createChallengeBtn.addEventListener('click', () => {
+      createModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  if (closeCreateModalBtn) {
+    closeCreateModalBtn.addEventListener('click', () => {
+      createModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+  }
+
+  if (cancelCreateBtn) {
+    cancelCreateBtn.addEventListener('click', () => {
+      createModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+  }
+
+  if (saveCreateBtn) {
+    saveCreateBtn.addEventListener('click', () => {
+      const name = document.getElementById('challengeName').value;
+      const category = document.getElementById('challengeCategory').value;
+      const duration = document.getElementById('challengeDuration').value;
+      const description = document.getElementById('challengeDescription').value;
+
+      if (name && category && duration) {
+        addNewChallenge(name, category, duration, description);
+        createModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        document.getElementById('createChallengeForm').reset();
+      } else {
+        alert('Please fill in all required fields');
+      }
+    });
+  }
+
+  // Open/Close Continue Modal
+  if (closeContinueModalBtn) {
+    closeContinueModalBtn.addEventListener('click', () => {
+      continueModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+  }
+
+  // Close any modal when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === startModal) {
+      startModal.classList.remove('active');
+    }
+    if (e.target === createModal) {
+      createModal.classList.remove('active');
+    }
+    if (e.target === continueModal) {
+      continueModal.classList.remove('active');
+    }
+    document.body.style.overflow = 'auto';
+  });
+
+  // Event delegation for dynamic buttons (Start/Continue)
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('challenge-btn')) {
+      const btnText = e.target.textContent.trim();
+      if (btnText === 'Start Challenge') {
+        startModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } else if (btnText === 'Continue Challenge') {
+        continueModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  });
+
+  // Add new challenge to DOM
+  function addNewChallenge(name, category, duration, description) {
+    const challengesGrid = document.querySelector('.challenges-grid');
+    const images = {
+      'Running': 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571',
+      'Strength': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438',
+      'Yoga': 'https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539',
+      'Nutrition': 'https://images.unsplash.com/photo-1545389336-cf090694435e',
+      'Mindfulness': 'https://images.unsplash.com/photo-1551632811-561732d1e306'
+    };
+    const imageUrl = images[category] || 'https://images.unsplash.com/photo-1526401485004-46910ecc8e51';
+
+    const newChallengeHTML = `
+      <div class="challenge-card">
+        <div class="challenge-img" style="background-image: url('${imageUrl}?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')"></div>
+        <div class="challenge-content">
+          <div class="challenge-badge">${category}</div>
+          <h3 class="challenge-title">${name}</h3>
+          <div class="challenge-meta">
+            <div class="meta-item">
+              <svg width="16" height="16" ...> ... </svg>
+              ${duration}
+            </div>
+            <div class="meta-item">
+              <svg width="16" height="16" ...> ... </svg>
+              1 participant
+            </div>
+          </div>
+          <div class="challenge-progress">
+            <div class="progress-text">
+              <span>Progress</span>
+              <span>0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 0%"></div>
+            </div>
+          </div>
+          <button class="challenge-btn">Start Challenge</button>
+        </div>
+      </div>
+    `;
+    challengesGrid.insertAdjacentHTML('afterbegin', newChallengeHTML);
+  }
+
+  // Animate SVG Circle (if any)
+  const circle = document.querySelector('.circle-progress-value');
+  if (circle) {
+    const radius = 70;
+    const circumference = 2 * Math.PI * radius;
+    const progress = 25;
+    const offset = circumference - (progress / 100) * circumference;
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = offset;
+  }
+
+  // Category filter logic
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // TODO: Filter logic goes here
+    });
+  });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const joinBtn = document.getElementById('joinChallengeBtn');
+    const modal = document.getElementById('joinChallengeModal');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    // Show modal on button click
+    joinBtn.addEventListener('click', function () {
+      modal.style.display = 'block';
+    });
+
+    // Hide modal on close button click
+    closeModalBtn.addEventListener('click', function () {
+      modal.style.display = 'none';
+    });
+
+    // Optional: Hide modal when clicking outside of it
+    window.addEventListener('click', function (event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    const openModalBtn = document.getElementById('joinChallengeBtn'); // Button to open modal
+    const modal = document.getElementById('joinChallengeModal');      // Modal container
+    const closeBtn = modal.querySelector('.modal-close');             // Close button (×)
+    const continueBtn = modal.querySelector('.btn-primary');          // Continue Challenge button
+
+    // Open the modal
+    openModalBtn?.addEventListener('click', function () {
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // Prevent background scroll
+    });
+
+    // Close the modal
+    closeBtn?.addEventListener('click', function () {
+      modal.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scroll
+    });
+
+    // Close modal if clicked outside content
+    window.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Redirect on continue challenge
+    continueBtn?.addEventListener('click', function () {
+      window.location.href = 'http://127.0.0.1:8000/challenge/';
+    });
+  });
+   </script>
+    </body>
+    </html>

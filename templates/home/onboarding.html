@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraFitness Profile</title>
+  <style>
+    :root {
+      --primary: #5C6BF8;
+      --primary-light: #7E8BFA;
+      --primary-dark: #4555F5;
+      --gray-100: #f9fafb;
+      --gray-200: #edf2f7;
+      --gray-300: #e2e8f0;
+      --gray-400: #cbd5e0;
+      --gray-500: #a0aec0;
+      --gray-600: #718096;
+      --gray-700: #4a5568;
+      --gray-800: #2d3748;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7ff;
+      color: var(--gray-800);
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    form {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .form-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .form-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-header p {
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    .form-content {
+      padding: 2rem;
+    }
+    
+    .section {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--gray-200);
+      padding-bottom: 2rem;
+    }
+    
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--gray-100);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      color: var(--primary);
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-col {
+      flex: 1;
+    }
+    
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(92, 107, 248, 0.15);
+    }
+    
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .allergen-container {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .allergen-tag {
+      background-color: var(--gray-100);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--gray-300);
+    }
+    
+    .allergen-tag .remove {
+      margin-left: 0.5rem;
+      cursor: pointer;
+      color: var(--gray-500);
+    }
+    
+    .add-allergen {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    
+    .add-allergen input {
+      flex: 1;
+      margin-right: 0.5rem;
+    }
+    
+    .add-allergen button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .form-footer {
+      background-color: var(--gray-100);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--gray-400);
+      color: var(--gray-700);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--gray-200);
+    }
+    
+    .progress-bar {
+      height: 5px;
+      background-color: var(--gray-200);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary) 100%);
+      width: 40%;
+    }
+    
+    .plan-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .plan-card {
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .plan-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .plan-card.active {
+      border-color: var(--primary);
+      background-color: rgba(92, 107, 248, 0.05);
+    }
+    
+    .plan-icon {
+      width: 48px;
+      height: 48px;
+      background-color: var(--gray-100);
+      border-radius: 10px;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+    
+    .plan-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .plan-desc {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .plan-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form method="POST" action="{% url 'show_plan' %}">
+        {% csrf_token %}
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      
+      <div class="form-header">
+        <h1>Your AI-Powered Fitness Journey</h1>
+        <p>Complete your profile for personalized workout & nutrition plans</p>
+      </div>
+      
+      <div class="form-content">
+        <!-- User Profile -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h2 class="section-title">User Profile</h2>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input id="full_name" name="full_name" placeholder="Ashal Dabre" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                  <option value="">Select gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Non-binary</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" step="0.01" id="height" name="height" placeholder="175">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" step="0.01" id="weight" name="weight" placeholder="70">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lifestyle -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </div>
+            <h2 class="section-title">Lifestyle</h2>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="activity_level">Activity Level</label>
+                <select id="activity_level" name="activity_level">
+                  <option value="">Select activity level</option>
+                  <option value="sedentary">Sedentary (little to no exercise)</option>
+                  <option value="light">Lightly active (1-3 days/week)</option>
+                  <option value="moderate">Moderately active (3-5 days/week)</option>
+                  <option value="active">Very active (6-7 days/week)</option>
+                  <option value="extreme">Extremely active (physical job or 2x training)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="sleep_quality">Sleep Quality</label>
+                <select id="sleep_quality" name="sleep_quality">
+                  <option value="">Select sleep quality</option>
+                  <option value="poor">Poor (less than 5 hours/night)</option>
+                  <option value="fair">Fair (5-6 hours/night)</option>
+                  <option value="good">Good (7-8 hours/night)</option>
+                  <option value="excellent">Excellent (8+ hours/night)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="stress_level">Stress Level</label>
+                <select id="stress_level" name="stress_level">
+                  <option value="">Select stress level</option>
+                  <option value="low">Low (rarely feel stressed)</option>
+                  <option value="moderate">Moderate (occasionally stressed)</option>
+                  <option value="high">High (frequently stressed)</option>
+                  <option value="severe">Severe (constantly stressed)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Diet -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </div>
+            <h2 class="section-title">Diet & Nutrition</h2>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="diet_type">Diet Type</label>
+                <select id="diet_type" name="diet_type">
+                  <option value="">Select diet type</option>
+                  <option value="omnivore">Omnivore</option>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="vegan">Vegan</option>
+                  <option value="pescatarian">Pescatarian</option>
+                  <option value="keto">Keto</option>
+                  <option value="paleo">Paleo</option>
+                  <option value="mediterranean">Mediterranean</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Allergies & Food Restrictions</label>
+            <div class="allergen-container">
+              <div class="allergen-tag">
+                Nuts <span class="remove">×</span>
+              </div>
+              <div class="allergen-tag">
+                Dairy <span class="remove">×</span>
+              </div>
+            </div>
+            <div class="add-allergen">
+              <input name="allergen" placeholder="Add allergy or restriction">
+              <button type="button" class="btn btn-primary">Add</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Fitness Goal -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h2 class="section-title">Fitness Goals</h2>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="goal_type">Primary Goal</label>
+                <select id="goal_type" name="goal_type">
+                  <option value="">Select goal</option>
+                  <option value="weight_loss">Weight Loss</option>
+                  <option value="muscle_gain">Muscle Gain</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="endurance">Improve Endurance</option>
+                  <option value="strength">Increase Strength</option>
+                  <option value="flexibility">Improve Flexibility</option>
+                  <option value="health">General Health</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="experience_level">Experience Level</label>
+                <select id="experience_level" name="experience_level">
+                  <option value="">Select experience</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="target_weight">Target Weight (kg)</label>
+                <input type="number" id="target_weight" name="target_weight" placeholder="65">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="target_date">Target Date</label>
+                <input type="date" id="target_date" name="target_date">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="goal_description">Goal Description</label>
+            <textarea id="goal_description" name="goal_description" placeholder="Describe your fitness goals in detail and what motivates you..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Medical Info -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <h2 class="section-title">Medical Information</h2>
+          </div>
+          
+          <div class="form-group">
+            <label for="condition_name">Medical Conditions</label>
+            <input id="condition_name" name="condition_name" placeholder="e.g. Diabetes, Asthma, Heart Conditions, etc.">
+          </div>
+          
+          <div class="form-group">
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" name="notes" placeholder="Any additional information our trainers should know about..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Workout Preferences -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </div>
+            <h2 class="section-title">Workout Preferences</h2>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="workout_style">Preferred Workout Style</label>
+                <select id="workout_style" name="workout_style">
+                  <option value="">Select style</option>
+                  <option value="hiit">HIIT</option>
+                  <option value="strength">Strength Training</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="yoga">Yoga</option>
+                  <option value="pilates">Pilates</option>
+                  <option value="crossfit">CrossFit</option>
+                  <option value="calisthenics">Calisthenics</option>
+                  <option value="mixed">Mixed</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="equipment_owned">Available Equipment</label>
+            <textarea id="equipment_owned" name="equipment_owned" placeholder="List the equipment you have access to..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Plan Selection -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <h2 class="section-title">Plan Selection</h2>
+          </div>
+          
+          <div class="plan-cards">
+            <div class="plan-card">
+              <div class="plan-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line>
+                  <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line>
+                  <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line>
+                  <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>
+                </svg>
+              </div>
+              <h3 class="plan-title">Basic</h3>
+              <p class="plan-desc">AI-powered workout plans with basic features</p>
+            </div>
+            
+            <div class="plan-card active">
+              <div class="plan-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <h3 class="plan-title">Premium</h3>
+              <p class="plan-desc">Full access to all features and personalized coaching</p>
+            </div>
+            
+            <div class="plan-card">
+              <div class="plan-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+              </div>
+              <h3 class="plan-title">Elite</h3>
+              <p class="plan-desc">VIP coaching with dedicated trainer and advanced analytics</p>
+            </div>
+          </div>
+          
+          <input type="hidden" name="selected_plan" value="premium">
+          
+          <div class="form-row" style="margin-top: 1.5rem;">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date" name="start_date">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-footer">
+        <button type="button" class="btn btn-outline">Save Draft</button>
+        <button type="submit" class="btn btn-primary">Create My Profile</button>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    // Plan selection functionality
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const planName = this.querySelector('.plan-title').textContent.toLowerCase();
+        document.querySelector('input[name="selected_plan"]').value = planName;
+      });
+    });
+
+    // Add allergen functionality
+    const allergenInput = document.querySelector('.add-allergen input');
+    const addAllergenBtn = document.querySelector('.add-allergen button');
+    const allergenContainer = document.querySelector('.allergen-container');
+
+    addAllergenBtn.addEventListener('click', function() {
+      if (allergenInput.value.trim() !== '') {
+        const allergenTag = document.createElement('div');
+        allergenTag.className = 'allergen-tag';
+        allergenTag.innerHTML = `${allergenInput.value} <span class="remove">×</span>`;
+        allergenContainer.appendChild(allergenTag);
+        allergenInput.value = '';
+
+        // Add remove functionality
+        allergenTag.querySelector('.remove').addEventListener('click', function() {
+          allergenTag.remove();
+        });
+      }
+    });
+
+    // Add remove functionality to existing allergen tags
+    document.querySelectorAll('.allergen-tag .remove').forEach(removeBtn => {
+      removeBtn.addEventListener('click', function() {
+        this.parentElement.remove();
+      });
+    });
+
+    // CSRF Token handling for POST requests
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    fetch('/your-url/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ yourData: 'value' })
+    });
+</script>
+<script>
+.then(response => response.json())
+.then(data => {
+  if (data.redirect_url) {
+    window.location.href = data.redirect_url;
+  } else {
+    console.log('Response:', data);
+  }
+})
+  // CSRF helper
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      document.cookie.split(';').forEach(cookie => {
+        const [k, v] = cookie.trim().split('=');
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+    }
+    return cookieValue;
+  }
+
+  // intercept the form submit
+  const form = document.querySelector('form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const data = {};
+    new FormData(form).forEach((val, key) => {
+      // for numeric fields, turn '' → null, else parseFloat
+      if (['height','weight','target_weight'].includes(key)) {
+        data[key] = val.trim() === '' ? null : parseFloat(val);
+      } else {
+        data[key] = val;
+      }
+    });
+
+    fetch(form.action || window.location.pathname, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify(data),
+    })
+    .then(res => {
+      if (res.redirected) {
+        // if your view redirects on success
+        window.location = res.url;
+      } else {
+        return res.json();
+      }
+    })
+    .then(json => {
+      console.log('Success:', json);
+    })
+    .catch(err => console.error('Error:', err));
+  });
+</script>
+</body>
+</html>

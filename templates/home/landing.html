@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFitness - AI-Powered Fitness Journey</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Fitness Tracker CSS -->
+    <link rel="stylesheet" href="/static/fit_tracker/css/style.css">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        /* Glass Morphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Navigation */
+        .navbar {
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .nav-link {
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin: 0 0.2rem;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-item.active .nav-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #f8fafc, #eef2ff);
+            border-radius: 0 0 50px 50px;
+        }
+        
+        /* Background decorations */
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        .bg-decoration-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
+            top: -150px;
+            right: -100px;
+            filter: blur(50px);
+        }
+        
+        .bg-decoration-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f97316, #eab308);
+            bottom: -100px;
+            left: 10%;
+            filter: blur(40px);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+        
+        .hero-content h1 span {
+            display: block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.2);
+            color: var(--primary-color);
+        }
+        
+        /* Features */
+        .features-section {
+            padding: 5rem 0;
+        }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(59, 130, 246, 0.1));
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        /* Stats Badges */
+        .stats-badge {
+            background: var(--card-bg);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: inline-flex;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .user-count {
+            font-weight: 700;
+            margin-left: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        /* Fitness Tracker Dashboard Styles */
+        .fitness-tracker-section {
+            background-color: #f8f9fd;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fitness-tracker-section::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: white;
+            border-radius: 0 0 50% 50%;
+            z-index: 1;
+        }
+
+        /* Metric cards */
+        .metric-card {
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-icon {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .metric-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .metric-subtitle {
+            font-size: 0.8rem;
+            color: #858796;
+            margin-top: -10px;
+        }
+
+        /* Chart cards */
+        .chart-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            background-color: white;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .data-table {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background-color: white;
+        }
+
+        /* Filter container */
+        .filter-container {
+            padding: 15px;
+        }
+
+        .time-filter {
+            border-radius: 30px;
+            font-weight: 500;
+            padding: 0.375rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .time-filter.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        /* Card header customization */
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 15px 20px;
+        }
+
+        /* Dropdown menu items */
+        .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+        }
+
+        /* For doughnut chart center text */
+        .chart-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .chart-center-text h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .chart-center-text p {
+            font-size: 0.8rem;
+            color: #858796;
+            margin: 0;
+        }
+
+        /* Animation for cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fitness-tracker-section .row > div {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Stagger animation delay for each card */
+        .fitness-tracker-section .row > div:nth-child(1) { animation-delay: 0.1s; }
+        .fitness-tracker-section .row > div:nth-child(2) { animation-delay: 0.2s; }
+        .fitness-tracker-section .row > div:nth-child(3) { animation-delay: 0.3s; }
+        .fitness-tracker-section .row > div:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+            
+            .metric-value {
+                font-size: 1.5rem;
+            }
+            
+            .metric-icon {
+                font-size: 1.8rem;
+            }
+        }
+        .feature-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.feature-card:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.feature-card h3 {
+  margin-top: 15px;
+  font-size: 1.2rem;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.feature-card .feature-icon {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+button.feature-card {
+  border: none;
+  outline: none;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light glass sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">AuraFitness</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" href="{% url 'workout_session' %}">
+                            <i class="fas fa-running me-1"></i> Workouts
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main_dashboard' %}"><i class="fas fa-utensils me-1"></i> Nutrition</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'challenge' %}">Challenges</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'community:community_hub' %}">Community</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                  
+                    <a href="{% url 'profile' %}" class="ms-2">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="bg-decoration bg-decoration-1"></div>
+        <div class="bg-decoration bg-decoration-2"></div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1>Your AI-Powered <span>Fitness Journey</span></h1>
+                    <p>Personalized workouts, nutrition guidance, real-time form correction, and motivation—all in one intelligent fitness companion.</p>
+                    <div class="d-flex flex-wrap">
+                        <a href="{% url 'onboarding' %}" class="btn btn-primary me-3 mb-2">
+                            Get Started Free <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        
+                        <a href="#" class="btn btn-secondary mb-2">Learn More</a>
+                    </div>
+                    
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <a href="{% url 'fit_tracker:chatbot' %}" class="feature-card w-100 text-start d-block text-decoration-none">
+                          <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                          </div>
+                          <h3>AI Coach</h3>
+                          <p>Get personalized feedback and guidance from our advanced AI training system.</p>
+                        </a>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <a href="/fit/" class="feature-card w-100 text-start d-block text-decoration-none">
+                          <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                          </div>
+                          <h3>Track Progress</h3>
+                          <p>Monitor your fitness journey with detailed analytics and insights.</p>
+                        </a>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <a href="{% url 'workout_session' %}" class="feature-card w-100 text-start d-block text-decoration-none">
+                          <div class="feature-icon">
+                            <i class="fas fa-running"></i>
+                          </div>
+                          <h3>Workout</h3>
+                          <p>Real-time Workout guided by AI pose detection.</p>
+                        </a>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <a href="{% url 'main_dashboard' %}" class="feature-card w-100 text-start d-block text-decoration-none">
+                          <div class="feature-icon">
+                            <i class="fas fa-utensils"></i>
+                          </div>
+                          <h3>Nutrition Plans</h3>
+                          <p>Customized meal plans that complement your fitness goals.</p>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+                    <p class="text-muted">Our AI-powered platform adapts to your fitness level and goals</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3>Create Profile</h3>
+                        <p>Tell us about your fitness level, goals, and preferences so we can personalize your experience.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Get Your Plan</h3>
+                        <p>Receive AI-generated workout plans specifically designed for your goals and available equipment.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <h3>Track & Improve</h3>
+                        <p>Monitor your progress with detailed analytics as you achieve milestones and improve fitness.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h3>Voice Coaching</h3>
+                        <p>Get real-time audio guidance during workouts, just like having a personal trainer.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Community Support</h3>
+                        <p>Connect with like-minded fitness enthusiasts for motivation and accountability.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Adaptive Training</h3>
+                        <p>Our AI adjusts your plan based on your performance and feedback for optimal results.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'onboarding' %}" class="btn btn-primary btn-lg">Start Your Fitness Journey</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fitness Tracker Dashboard Section -->
+    <section class="fitness-tracker-section py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Your Fitness Dashboard</h2>
+                    <p class="text-muted">Track your activity, monitor progress, and achieve your fitness goals</p>
+                </div>
+            </div>
+
+            <!-- Metrics Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-shoe-prints"></i>
+                            </div>
+                            <h5 class="metric-title">Total Steps</h5>
+                            <p class="metric-value" id="totalStepsValue">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-walking"></i>
+                            </div>
+                            <h5 class="metric-title">Average Steps</h5>
+                            <p class="metric-value" id="avgStepsValue">0</p>
+                            <p class="metric-subtitle">per day</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <h5 class="metric-title">Total Calories</h5>
+                            <p class="metric-value" id="totalCaloriesValue">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h5 class="metric-title">Average Calories</h5>
+                            <p class="metric-value" id="avgCaloriesValue">0</p>
+                            <p class="metric-subtitle">per day</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Time filter buttons -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center filter-container">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary time-filter active" data-days="0">All Data</button>
+                                <button type="button" class="btn btn-outline-primary time-filter" data-days="7">Last 7 Days</button>
+                                <button type="button" class="btn btn-outline-primary time-filter" data-days="14">Last 14 Days</button>
+                                <button type="button" class="btn btn-outline-primary time-filter" data-days="30">Last 30 Days</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts - First Row -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Daily Steps</h3>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="stepsChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="stepsChartOptions">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="stepsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Calories Burned</h3>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="caloriesChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="caloriesChartOptions">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="caloriesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts - Second Row -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Activity Distribution</h3>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="activityChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="activityChartOptions">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="activityMinutesChart"></canvas>
+                            </div>
+                            <div class="chart-center-text">
+                                <h4>Daily Activity</h4>
+                                <p>Average minutes per day</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Step Progression</h3>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="progressChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="progressChartOptions">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="cumulativeStepsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4 mb-5">
+                <a href="/fit/" class="btn btn-primary btn-lg">View Full Fitness Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js and Dashboard Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script>
+        // Pass the data from Django to JavaScript
+        const fitnessData = [
+            {% for entry in fitness_data %}
+            {
+                date: "{{ entry.activity_date|date:'Y-m-d' }}",
+                steps: {{ entry.total_steps }},
+                calories: {{ entry.calories }},
+                distance: {{ entry.total_distance }},
+                veryActiveMinutes: {{ entry.very_active_minutes }},
+                lightlyActiveMinutes: {{ entry.lightly_active_minutes }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if fitnessData is available
+            if (typeof fitnessData === 'undefined' || fitnessData.length === 0) {
+                console.error('No fitness data available');
+                return;
+            }
+        
+            // Chart.js global defaults for better appearance
+            Chart.defaults.font.family = "'Roboto', 'Helvetica', 'Arial', sans-serif";
+            Chart.defaults.color = '#555';
+            Chart.defaults.borderColor = '#eee';
+            
+            // Prepare data for charts
+            const dates = fitnessData.map(entry => entry.date);
+            const steps = fitnessData.map(entry => entry.steps);
+            const calories = fitnessData.map(entry => entry.calories);
+            const distance = fitnessData.map(entry => entry.distance);
+            const veryActiveMinutes = fitnessData.map(entry => entry.veryActiveMinutes);
+            const lightlyActiveMinutes = fitnessData.map(entry => entry.lightlyActiveMinutes);
+            
+            // Calculate cumulative steps and average steps per day
+            const cumulativeSteps = calculateCumulative(steps);
+            const totalSteps = cumulativeSteps[cumulativeSteps.length - 1] || 0;
+            const avgSteps = totalSteps > 0 ? Math.round(totalSteps / steps.length) : 0;
+            
+            // Calculate total and average calories
+            const totalCalories = calories.reduce((acc, curr) => acc + curr, 0);
+            const avgCalories = totalCalories > 0 ? Math.round(totalCalories / calories.length) : 0;
+            
+            // Update summary metrics
+            document.getElementById('totalStepsValue').textContent = totalSteps.toLocaleString();
+            document.getElementById('avgStepsValue').textContent = avgSteps.toLocaleString();
+            document.getElementById('totalCaloriesValue').textContent = totalCalories.toLocaleString();
+            document.getElementById('avgCaloriesValue').textContent = avgCalories.toLocaleString();
+        
+            // Create steps line chart
+            const stepsCtx = document.getElementById('stepsChart').getContext('2d');
+            const stepsChart = new Chart(stepsCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Total Steps',
+                        data: steps,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Steps: ${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 10000,
+                                    yMax: 10000,
+                                    borderColor: 'rgba(255, 99, 132, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Goal: 10,000 steps',
+                                        enabled: true,
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Steps'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
+            });
+        
+            // Create calories bar chart
+            const caloriesCtx = document.getElementById('caloriesChart').getContext('2d');
+            const caloriesChart = new Chart(caloriesCtx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Calories Burned',
+                        data: calories,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        hoverBackgroundColor: 'rgba(255, 99, 132, 0.9)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Calories: ${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Calories'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Create activity minutes pie chart
+            const activityMinutesCtx = document.getElementById('activityMinutesChart').getContext('2d');
+            const avgVeryActive = Math.round(veryActiveMinutes.reduce((a, b) => a + b, 0) / veryActiveMinutes.length);
+            const avgLightlyActive = Math.round(lightlyActiveMinutes.reduce((a, b) => a + b, 0) / lightlyActiveMinutes.length);
+            const avgInactive = 1440 - avgVeryActive - avgLightlyActive; // 1440 minutes in a day
+            
+            const activityMinutesChart = new Chart(activityMinutesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Very Active', 'Lightly Active', 'Inactive'],
+                    datasets: [{
+                        data: [avgVeryActive, avgLightlyActive, avgInactive],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(201, 203, 207, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.formattedValue || '';
+                                    const percentage = Math.round((context.raw / 1440) * 100);
+                                    return `${label}: ${value} min (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+            
+            // Create cumulative steps area chart
+            const cumulativeStepsCtx = document.getElementById('cumulativeStepsChart').getContext('2d');
+            const cumulativeStepsChart = new Chart(cumulativeStepsCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Cumulative Steps',
+                        data: cumulativeSteps,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true,
+                        pointBackgroundColor: 'rgba(153, 102, 255, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Total Steps: ${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Steps'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add chart filter functionality
+            document.querySelectorAll('.time-filter').forEach(button => {
+                button.addEventListener('click', function() {
+                    const days = parseInt(this.dataset.days);
+                    
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.time-filter').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Filter data
+                    filterChartData(days, stepsChart, caloriesChart, cumulativeStepsChart);
+                });
+            });
+            
+            // Helper function to calculate cumulative values
+            function calculateCumulative(data) {
+                let sum = 0;
+                return data.map(value => {
+                    sum += value;
+                    return sum;
+                });
+            }
+            
+            // Helper function to filter chart data based on time period
+            function filterChartData(days, stepsChart, caloriesChart, cumulativeStepsChart) {
+                if (!days || days <= 0) {
+                    // Show all data
+                    updateChartData(stepsChart, dates, steps);
+                    updateChartData(caloriesChart, dates, calories);
+                    updateChartData(cumulativeStepsChart, dates, cumulativeSteps);
+                    return;
+                }
+                
+                // Filter last X days
+                const filteredDates = dates.slice(-days);
+                const filteredSteps = steps.slice(-days);
+                const filteredCalories = calories.slice(-days);
+                const filteredCumulativeSteps = calculateCumulative(filteredSteps);
+                
+                updateChartData(stepsChart, filteredDates, filteredSteps);
+                updateChartData(caloriesChart, filteredDates, filteredCalories);
+                updateChartData(cumulativeStepsChart, filteredDates, filteredCumulativeSteps);
+            }
+            
+            // Helper function to update chart data
+            function updateChartData(chart, labels, data) {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = data;
+                chart.update();
+            }
+        });
+    </script>
+</body>
+</html>

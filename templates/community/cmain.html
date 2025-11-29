@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin: 30px 0;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-light);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        
+        .discussion-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .discussion-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        
+        .discussion-tag {
+            background-color: #FFF3E0;
+            color: #FF9800;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .discussion-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .metric {
+            display: flex;
+            align-items: center;
+        }
+        
+        .metric i {
+            margin-right: 5px;
+        }
+        
+        .trending-topics {
+            margin-top: 40px;
+        }
+        
+        .topic-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .topic-card {
+            position: relative;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .topic-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .topic-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 15px;
+        }
+        
+        .topic-title {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .join-discussion-btn {
+            background-color: white;
+            color: var(--text-dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .achievements {
+            margin-top: 40px;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .achievement-item {
+            text-align: center;
+        }
+        
+        .achievement-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .achievement-badge i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .achievement-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .member-spotlight {
+            margin-top: 40px;
+        }
+        
+        .member-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .member-info {
+            flex-grow: 1;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .member-level {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+        
+        .member-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+        
+        .follow-btn {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .community-goals {
+            margin-top: 40px;
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+        }
+        
+        .challenge-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .challenge-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .challenge-info {
+            flex-grow: 1;
+        }
+        
+        .challenge-progress {
+            width: 100%;
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .daily-reminder {
+            margin-top: 20px;
+            background-color: #E8F5E9;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .reminder-text {
+            color: #2E7D32;
+            font-weight: 500;
+        }
+        
+        .social-media {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .activity-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .activity-content {
+            flex-grow: 1;
+            font-size: 0.9rem;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        /* News cards styles */
+        .news-card {
+            transition: all 0.3s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            transform: translateY(0);
+        }
+        
+        .shadow-hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .shadow-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+        
+        /* News container and slider */
+        .news-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .news-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            flex-wrap: nowrap;
+        }
+        
+        .news-slide {
+            flex: 0 0 auto;
+            width: 25%; /* 4 cards per view on large screens */
+            padding: 0 10px;
+        }
+        
+        @media (max-width: 991px) {
+            .news-slide {
+                width: 50%; /* 2 cards per view on tablets */
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .news-slide {
+                width: 100%; /* 1 card per view on mobile */
+                padding: 0 5px;
+            }
+            
+            .news-nav-btn {
+                width: 36px;
+                height: 36px;
+                top: 50%; /* Center vertically relative to the card */
+                transform: translateY(-130px);
+                background-color: rgba(255, 255, 255, 0.8);
+                z-index: 20;
+            }
+            
+            .prev-btn {
+                left: 5px;
+            }
+            
+            .next-btn {
+                right: 5px;
+            }
+            
+            .news-pagination {
+                margin-top: 5px;
+            }
+            
+            .news-container {
+                padding: 0 5px;
+            }
+            
+            .news-card {
+                margin-bottom: 15px;
+            }
+            
+            /* News image container fixed height */
+            .news-image-container {
+                height: 160px;
+            }
+            
+            /* Smaller card body padding */
+            .news-card .card-body {
+                padding: 12px !important;
+            }
+            
+            /* Smaller title font */
+            .news-title {
+                font-size: 14px;
+                -webkit-line-clamp: 2;
+            }
+            
+            /* Smaller description font */
+            .news-description {
+                font-size: 12px;
+                -webkit-line-clamp: 2;
+            }
+        }
+        
+        /* News navigation buttons */
+        .news-nav-buttons {
+            position: absolute;
+            width: 100%;
+            top: 190px; /* Positioned right below the image container */
+            left: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+        
+        .news-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            color: #333;
+            position: absolute;
+            top: 0;
+        }
+        
+        .prev-btn {
+            left: -20px;
+        }
+        
+        .next-btn {
+            right: -20px;
+        }
+        
+        .news-nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* News pagination indicators */
+        .news-pagination {
+            margin-top: 15px;
+        }
+        
+        .news-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .news-indicator.active {
+            background-color: var(--primary-color);
+            width: 24px;
+            border-radius: 4px;
+        }
+        
+        .news-image-container {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            background-color: #f5f7fa;
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .news-card:hover .news-image {
+            transform: scale(1.05);
+        }
+        
+        .placeholder-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        
+        .news-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #333;
+        }
+        
+        .news-description {
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .news-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+        }
+        
+        .news-source {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 5px 10px;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+        }
+        
+        .news-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .news-card:hover .news-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .news-action-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .news-category-pill {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        .read-more-btn {
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border: none;
+        }
+        
+        .read-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .news-refresh-btn {
+            border-color: #dc3545;
+            color: #dc3545;
+            transition: all 0.2s ease;
+        }
+        
+        .news-refresh-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* Pulse animation for heartbeat icon */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .fa-heartbeat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        /* Shimmer loading effect */
+        .shimmer-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            z-index: 20;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Hover animation */
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        }
+        
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Instagram Fitness Influencers */
+        .text-gradient-instagram {
+            background: -webkit-linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .influencer-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .influencer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .influencer-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .influencer-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 12px;
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D) border-box;
+        }
+        
+        .influencer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .influencer-info {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .influencer-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+            margin-right: 5px;
+        }
+        
+        .verified-badge {
+            color: #3897f0;
+            font-size: 0.8rem;
+        }
+        
+        .instagram-link {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            color: white;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .instagram-link:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+        
+        .influencer-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2px;
+            height: 200px;
+        }
+        
+        .gallery-image {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.3s ease;
+            z-index: 1;
+        }
+        
+        .gallery-image:hover::before {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-image:hover img {
+            transform: scale(1.1);
+        }
+        
+        .influencer-stats {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #f5f5f5;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .influencer-stats .stat {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .follow-instagram-btn {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .follow-instagram-btn:hover {
+            background-color: #0074cc;
+        }
+        
+        .explore-btn {
+            border-color: #333;
+            color: #333;
+            transition: all 0.2s ease;
+        }
+        
+        .explore-btn:hover {
+            background-color: #333;
+            color: white;
+        }
+        
+        @media (max-width: 991px) {
+            .influencer-gallery {
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .influencer-gallery {
+                height: 150px;
+            }
+            
+            .influencer-card {
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* Toast notification styles */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            z-index: 9999;
+            transition: transform 0.3s ease;
+        }
+        
+        .toast-container.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast-message {
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toast-message i {
+            color: #4CD964;
+            margin-right: 8px;
+        }
+        
+        /* Heart animation for gallery image likes */
+        .heart-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0;
+            z-index: 2;
+            opacity: 0;
+            transition: all 0.5s ease;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .heart-animation.animate {
+            font-size: 50px;
+            opacity: 1;
+            animation: heartbeat 1s ease forwards;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(0.9); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+        
+        /* Join Discussion Button Styles */
+        #join-discussion-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(var(--bs-primary-rgb), 0.3);
+        }
+        
+        #join-discussion-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(var(--bs-primary-rgb), 0.4);
+        }
+        
+        /* Discussion Section Styles */
+        #discussion-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        #discussion-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .topic-tab {
+            cursor: pointer;
+            border-radius: 50px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        
+        .topic-tab:hover {
+            background-color: #e9ecef;
+        }
+        
+        .topic-tab.active {
+            background-color: var(--bs-primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .post-card {
+            transition: all 0.2s ease;
+            border: none;
+            border-radius: 12px;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+        }
+        
+        .user-avatar {
+            min-width: 40px;
+        }
+        
+        .post-action.upvoted, 
+        .post-action.saved {
+            color: var(--bs-primary);
+        }
+        
+        /* Add animation for the image preview */
+        #preview-image {
+            max-height: 300px;
+            object-fit: cover;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        #preview-image[src]:not([src=""]) {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="{% url 'landing' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <div class="logo">Forum Fitness</div>
+            <div class="user-menu">
+                <div class="notification"><i class="fa fa-bell"></i></div>
+                <div class="user-avatar"><i class="fa fa-user"></i></div>
+            </div>
+        </header>
+        
+        <div class="page-title">
+            <h1>Community Hub</h1>
+        </div>
+        <div class="page-description">
+            Connect with like-minded fitness lovers, share your journeys, and get motivated by the community around you.
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active">Community Feed</div>
+            <div class="tab">Recent Discussions</div>
+        </div>
+        
+        <!-- Featured Discussions -->
+        <div class="section-header">
+            <h2>Featured Discussions</h2>
+            <a href="#" class="view-all">View All</a>
+        </div>
+        
+        <div class="discussion-grid">
+            <div class="card discussion-card">
+                <div class="card-header">
+                    <h3 class="discussion-title">HIIT/LISS workout: expectations vs reality</h3>
+                    <span class="discussion-tag">Featured</span>
+                </div>
+                <p>Let's talk about what really happens during intense workouts...</p>
+                <div class="discussion-metrics">
+                    <div class="metric">
+                        <i class="fa fa-comment"></i>
+                        <span>123</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-thumbs-up"></i>
+                        <span>45</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-eye"></i>
+                        <span>1.2k</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card discussion-card">
+                <div class="card-header">
+                    <h3 class="discussion-title">Nutrition tips for muscle gain</h3>
+                    <span class="discussion-tag">Popular</span>
+                </div>
+                <p>Share your best nutrition strategies for gaining lean muscle...</p>
+                <div class="discussion-metrics">
+                    <div class="metric">
+                        <i class="fa fa-comment"></i>
+                        <span>87</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-thumbs-up"></i>
+                        <span>32</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-eye"></i>
+                        <span>956</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card discussion-card">
+                <div class="card-header">
+                    <h3 class="discussion-title">Overcoming fitness plateaus</h3>
+                </div>
+                <p>How to break through when you feel stuck in your progress...</p>
+                <div class="discussion-metrics">
+                    <div class="metric">
+                        <i class="fa fa-comment"></i>
+                        <span>65</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-thumbs-up"></i>
+                        <span>28</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-eye"></i>
+                        <span>742</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card discussion-card">
+                <div class="card-header">
+                    <h3 class="discussion-title">Recovery: 10 things I wish I knew</h3>
+                    <span class="discussion-tag">Trending</span>
+                </div>
+                <p>Important recovery techniques that changed my fitness journey...</p>
+                <div class="discussion-metrics">
+                    <div class="metric">
+                        <i class="fa fa-comment"></i>
+                        <span>92</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-thumbs-up"></i>
+                        <span>51</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fa fa-eye"></i>
+                        <span>1.5k</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center my-5">
+            <button id="join-discussion-btn" class="btn btn-primary btn-lg px-5 rounded-pill shadow">
+                <i class="fas fa-comments me-2"></i> Join Discussion
+            </button>
+        </div>
+        
+        <div id="discussion-section" style="display: none;">
+            <div class="container">
+                <header class="page-header mb-4">
+                    <h1 class="page-title">AuraFitness Community</h1>
+                    <p class="page-subtitle">Connect with fellow fitness enthusiasts, share your journey, and get inspired.</p>
+                </header>
+                
+                <div class="discussion-layout row">
+                    <main class="discussion-main col-lg-8">
+                        <div class="post-composer card shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="composer-header d-flex align-items-center mb-3">
+                                    <div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">JS</div>
+                                    <div>Share your thoughts with the community</div>
+                                </div>
+                                <textarea id="post-text-input" class="post-input form-control mb-3" placeholder="What's on your fitness mind today?"></textarea>
+                                <img id="preview-image" class="preview-image img-fluid rounded mb-3" src="" alt="Preview" style="display: none;">
+                                <div class="composer-actions d-flex justify-content-between align-items-center">
+                                    <div class="action-buttons">
+                                        <input type="file" id="image-upload-input" accept="image/*" class="d-none">
+                                        <button id="image-btn" class="action-btn btn btn-sm btn-light me-2">
+                                            <i class="fas fa-image me-1"></i> Image
+                                        </button>
+                                        <button class="action-btn btn btn-sm btn-light me-2">
+                                            <i class="fas fa-video me-1"></i> Video
+                                        </button>
+                                        <button class="action-btn btn btn-sm btn-light">
+                                            <i class="fas fa-map-marker-alt me-1"></i> Location
+                                        </button>
+                                    </div>
+                                    <button id="post-button" class="post-btn btn btn-primary px-4">Post</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="topic-tabs d-flex flex-wrap mb-4">
+                            <div class="topic-tab active me-3 mb-2 px-3 py-2">All Posts</div>
+                            <div class="topic-tab me-3 mb-2 px-3 py-2">Workouts</div>
+                            <div class="topic-tab me-3 mb-2 px-3 py-2">Nutrition</div>
+                            <div class="topic-tab me-3 mb-2 px-3 py-2">Transformation</div>
+                            <div class="topic-tab me-3 mb-2 px-3 py-2">Questions</div>
+                            <div class="topic-tab me-3 mb-2 px-3 py-2">Challenges</div>
+                        </div>
+                        
+                        <div class="sort-options d-flex align-items-center mb-4">
+                            <span class="sort-label me-2">Sort by:</span>
+                            <button class="sort-button active btn btn-sm btn-light d-flex align-items-center">
+                                Hot
+                                <i class="fas fa-chevron-down ms-2"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="post-feed" class="post-feed">
+                            <!-- Post 1 -->
+                            <article class="post-card card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <div class="post-header d-flex mb-3">
+                                        <div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">MW</div>
+                                        <div class="author-info">
+                                            <div class="author-name font-weight-bold">Mark Wilson</div>
+                                            <div class="post-meta text-muted small">
+                                                <span>2 hours ago</span>
+                                                <span class="mx-1">•</span>
+                                                <span class="post-badge badge bg-light text-dark">Transformation</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="post-content">
+                                        <p class="post-text mb-3">Just completed my 30-day strength challenge! I've seen incredible progress in my bench press, going from 185lbs to 225lbs. Consistency really is the key to success. What challenges are you all working on?</p>
+                                        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=800&h=500&auto=format&fit=crop" alt="Transformation progress" class="post-image img-fluid rounded mb-3">
+                                    </div>
+                                    <div class="post-actions d-flex">
+                                        <button class="post-action upvoted btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-up me-1"></i>
+                                            <span class="action-count">124</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-down me-1"></i>
+                                            <span class="action-count">8</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="far fa-comment me-1"></i>
+                                            <span class="action-count">42</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center ms-auto">
+                                            <i class="far fa-bookmark me-1"></i>
+                                            <span class="action-count">Save</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                            <!-- Post 2 -->
+                            <article class="post-card card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <div class="post-header d-flex mb-3">
+                                        <div class="user-avatar rounded-circle bg-info text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">SL</div>
+                                        <div class="author-info">
+                                            <div class="author-name font-weight-bold">Sarah Lee</div>
+                                            <div class="post-meta text-muted small">
+                                                <span>4 hours ago</span>
+                                                <span class="mx-1">•</span>
+                                                <span class="post-badge badge bg-light text-dark">Nutrition</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="post-content">
+                                        <p class="post-text mb-3">I've been struggling with my post-workout meals. Looking for high-protein, quick recipes that aren't just another chicken breast. Any suggestions from the community?</p>
+                                    </div>
+                                    <div class="post-actions d-flex">
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-up me-1"></i>
+                                            <span class="action-count">86</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-down me-1"></i>
+                                            <span class="action-count">2</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="far fa-comment me-1"></i>
+                                            <span class="action-count">57</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center ms-auto">
+                                            <i class="far fa-bookmark me-1"></i>
+                                            <span class="action-count">Save</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                            <!-- Post 3 -->
+                            <article class="post-card card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <div class="post-header d-flex mb-3">
+                                        <div class="user-avatar rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">RT</div>
+                                        <div class="author-info">
+                                            <div class="author-name font-weight-bold">Ryan Thompson</div>
+                                            <div class="post-meta text-muted small">
+                                                <span>Yesterday</span>
+                                                <span class="mx-1">•</span>
+                                                <span class="post-badge badge bg-light text-dark">Workouts</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="post-content">
+                                        <p class="post-text mb-3">The AI Coach feature on AuraFitness has completely changed my workout routine. It caught my poor squat form in real-time and gave me instant corrections. Has anyone else noticed significant improvements using the AI coach?</p>
+                                        <img src="https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=800&h=500&auto=format&fit=crop" alt="AI coaching screenshot" class="post-image img-fluid rounded mb-3">
+                                    </div>
+                                    <div class="post-actions d-flex">
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-up me-1"></i>
+                                            <span class="action-count">75</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="fas fa-arrow-down me-1"></i>
+                                            <span class="action-count">4</span>
+                                        </button>
+                                        <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                            <i class="far fa-comment me-1"></i>
+                                            <span class="action-count">32</span>
+                                        </button>
+                                        <button class="post-action saved btn btn-sm btn-primary d-flex align-items-center ms-auto">
+                                            <i class="fas fa-bookmark me-1"></i>
+                                            <span class="action-count">Saved</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </main>
+                    
+                    <aside class="community-sidebar col-lg-4">
+                        <div class="sidebar-card card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="sidebar-title h5 mb-3">Community Info</h3>
+                                <div class="community-stats d-flex mb-3">
+                                    <div class="stat-item me-4">
+                                        <div class="stat-value font-weight-bold">23,451</div>
+                                        <div class="stat-label text-muted small">Members</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value font-weight-bold">542</div>
+                                        <div class="stat-label text-muted small">Online</div>
+                                    </div>
+                                </div>
+                                <p class="small mb-3">AuraFitness community brings together fitness enthusiasts to share tips, progress, and support each other's journeys.</p>
+                                <button class="join-community btn btn-primary w-100 mb-2" onclick="window.open('https://discord.com/invite/fitness', '_blank')">
+                                    <i class="fas fa-plus-circle me-2"></i> Join Discord Community
+                                </button>
+                                <div class="online-indicator d-flex align-items-center mt-2 small">
+                                    <span class="indicator-dot bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></span>
+                                    <span>542 members online now</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-card card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="sidebar-title h5 mb-3">Trending Topics</h3>
+                                <ul class="trending-topics list-unstyled">
+                                    <li class="trending-topic d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="topic-name">HIIT Workouts</span>
+                                        <span class="topic-count badge bg-light text-dark">85</span>
+                                    </li>
+                                    <li class="trending-topic d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="topic-name">Protein Smoothies</span>
+                                        <span class="topic-count badge bg-light text-dark">74</span>
+                                    </li>
+                                    <li class="trending-topic d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="topic-name">30-Day Challenge</span>
+                                        <span class="topic-count badge bg-light text-dark">67</span>
+                                    </li>
+                                    <li class="trending-topic d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="topic-name">Weight Loss</span>
+                                        <span class="topic-count badge bg-light text-dark">59</span>
+                                    </li>
+                                    <li class="trending-topic d-flex justify-content-between align-items-center">
+                                        <span class="topic-name">AI Coach Tips</span>
+                                        <span class="topic-count badge bg-light text-dark">45</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-card card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="sidebar-title h5 mb-3">Community Rules</h3>
+                                <ol class="ps-3 mb-0 small">
+                                    <li class="mb-2">Be respectful and supportive</li>
+                                    <li class="mb-2">No spam or self-promotion</li>
+                                    <li class="mb-2">Use appropriate tags for your posts</li>
+                                    <li>Credit others' content when sharing</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Toggle discussion section
+                const joinBtn = document.getElementById('join-discussion-btn');
+                const discussionSection = document.getElementById('discussion-section');
+                
+                if (joinBtn && discussionSection) {
+                    joinBtn.addEventListener('click', function() {
+                        // First make it visible but with opacity 0
+                        discussionSection.style.display = 'block';
+                        
+                        // Force a reflow to ensure the transition works
+                        void discussionSection.offsetWidth;
+                        
+                        // Add the visible class to trigger animation
+                        discussionSection.classList.add('visible');
+                        
+                        // Hide the button with animation
+                        joinBtn.style.opacity = '0';
+                        joinBtn.style.transform = 'scale(0.8)';
+                        
+                        // After animation, fully hide the button
+                        setTimeout(() => {
+                            joinBtn.style.display = 'none';
+                        }, 300);
+                        
+                        // Smooth scroll to discussion section
+                        discussionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
+                
+                // Image upload preview
+                const imageBtn = document.getElementById('image-btn');
+                const imageInput = document.getElementById('image-upload-input');
+                const previewImage = document.getElementById('preview-image');
+                const postTextInput = document.getElementById('post-text-input');
+                const postButton = document.getElementById('post-button');
+                
+                if (imageBtn && imageInput && previewImage) {
+                    imageBtn.addEventListener('click', function() {
+                        imageInput.click();
+                    });
+                    
+                    imageInput.addEventListener('change', function() {
+                        if (this.files && this.files[0]) {
+                            const reader = new FileReader();
+                            
+                            reader.onload = function(e) {
+                                previewImage.src = e.target.result;
+                                previewImage.style.display = 'block';
+                                
+                                // Animate appearance
+                                setTimeout(() => {
+                                    previewImage.style.opacity = '1';
+                                }, 10);
+                            };
+                            
+                            reader.readAsDataURL(this.files[0]);
+                        }
+                    });
+                }
+                
+                // Enable/disable post button based on content
+                if (postTextInput && postButton) {
+                    postButton.disabled = true;
+                    
+                    postTextInput.addEventListener('input', function() {
+                        postButton.disabled = this.value.trim() === '' && !previewImage.src;
+                    });
+                    
+                    // Add some interactivity to topic tabs
+                    const topicTabs = document.querySelectorAll('.topic-tab');
+                    topicTabs.forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            topicTabs.forEach(t => t.classList.remove('active'));
+                            this.classList.add('active');
+                        });
+                    });
+                    
+                    // Add interactivity to post actions
+                    const postActions = document.querySelectorAll('.post-action');
+                    postActions.forEach(action => {
+                        if (!action.classList.contains('upvoted') && !action.classList.contains('saved')) {
+                            action.addEventListener('click', function() {
+                                // Toggle the active state
+                                if (action.querySelector('i').classList.contains('fa-arrow-up') || 
+                                    action.querySelector('i').classList.contains('fa-arrow-down')) {
+                                    action.classList.toggle('upvoted');
+                                } else if (action.querySelector('i').classList.contains('fa-bookmark')) {
+                                    action.classList.toggle('saved');
+                                    const countSpan = action.querySelector('.action-count');
+                                    if (action.classList.contains('saved')) {
+                                        countSpan.textContent = 'Saved';
+                                        action.classList.add('btn-primary');
+                                        action.classList.remove('btn-light');
+                                        action.querySelector('i').classList.remove('far');
+                                        action.querySelector('i').classList.add('fas');
+                                    } else {
+                                        countSpan.textContent = 'Save';
+                                        action.classList.remove('btn-primary');
+                                        action.classList.add('btn-light');
+                                        action.querySelector('i').classList.add('far');
+                                        action.querySelector('i').classList.remove('fas');
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
+        
+        <!-- Trending Topics -->
+        <div class="trending-topics mb-5 position-relative">
+            <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-heartbeat text-danger me-2"></i> Health & Fitness Pulse</h2>
+                <div>
+                    <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3 news-refresh-btn">
+                        <i class="fas fa-sync-alt me-1"></i> Refresh Feed
+                    </a>
+                </div>
+            </div>
+            
+            <!-- News slider controls -->
+            <div class="news-nav-buttons">
+                <button class="news-nav-btn prev-btn" id="prevNews">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="news-nav-btn next-btn" id="nextNews">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="news-container overflow-hidden">
+                <div class="row news-slider" id="newsSlider">
+                    {% for news in trending_topics %}
+                    <div class="col-md-6 col-lg-3 mb-4 news-slide">
+                        <div class="card news-card h-100 shadow-hover border-0">
+                            <div class="news-image-container">
+                                {% if news.image_url %}
+                                <img src="{{ news.image_url }}" class="card-img-top news-image" alt="{{ news.title }}" onerror="this.onerror=null; this.src=getRandomFitnessImage();">
+                                {% else %}
+                                <div class="placeholder-image d-flex align-items-center justify-content-center bg-light">
+                                    <i class="fas fa-dumbbell fa-3x text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <div class="news-badge">
+                                    <span class="news-source badge bg-gradient-primary">{{ news.source }}</span>
+                                </div>
+                                <div class="news-overlay">
+                                    <a href="{{ news.url }}" target="_blank" class="btn btn-sm btn-light rounded-circle news-action-btn">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-light rounded-circle news-action-btn" data-bs-toggle="tooltip" title="Save for later">
+                                        <i class="far fa-bookmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="news-category-pill me-2">{{ news.category|default:"Fitness" }}</div>
+                                    <small class="text-muted ms-auto">
+                                        <i class="far fa-clock me-1"></i> {{ news.published_at|date:"M d" }}
+                                    </small>
+                                </div>
+                                <h5 class="card-title news-title mb-3">{{ news.title|truncatechars:60 }}</h5>
+                                <p class="card-text text-muted news-description flex-grow-1">{{ news.description|truncatechars:100 }}</p>
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="{{ news.url }}" target="_blank" class="btn btn-primary btn-sm read-more-btn">
+                                        Read Article <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <div class="empty-state mb-4">
+                            <i class="fas fa-newspaper fa-4x text-muted"></i>
+                        </div>
+                        <h4 class="text-muted">No news available</h4>
+                        <p class="lead">Check back later for the latest health and fitness news!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- News pagination indicators -->
+            <div class="news-pagination d-flex justify-content-center mt-3">
+                <span class="news-indicator active"></span>
+                <span class="news-indicator"></span>
+                <span class="news-indicator"></span>
+            </div>
+        </div>
+        
+        <!-- Achievements Showcase -->
+        <div class="achievements">
+            <div class="section-header">
+                <h2>Achievement Showcase</h2>
+                <a href="#" class="view-all">See All Achievements</a>
+            </div>
+            
+            <div class="card">
+                <h3>Community Achievements</h3>
+                <div class="achievement-grid">
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-star"></i>
+                        </div>
+                        <div class="achievement-name">30-Day Streak</div>
+                    </div>
+                    
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-trophy"></i>
+                        </div>
+                        <div class="achievement-name">Thought Leader</div>
+                    </div>
+                    
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-fire"></i>
+                        </div>
+                        <div class="achievement-name">Marathon Finisher</div>
+                    </div>
+                    
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-medal"></i>
+                        </div>
+                        <div class="achievement-name">Nutrition Master</div>
+                    </div>
+                    
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-heart"></i>
+                        </div>
+                        <div class="achievement-name">Early Bird</div>
+                    </div>
+                    
+                    <div class="achievement-item">
+                        <div class="achievement-badge">
+                            <i class="fa fa-crown"></i>
+                        </div>
+                        <div class="achievement-name">Strength Champion</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" class="view-all">View All Achievements</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instagram Fitness Influencers -->
+        <div class="influencers-section mb-5">
+            <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fab fa-instagram text-gradient-instagram me-2"></i> Fitness Influencers</h2>
+                <div>
+                    <a href="#" class="btn btn-sm btn-outline-dark rounded-pill px-3 explore-btn">
+                        <i class="fas fa-external-link-alt me-1"></i> Explore More
+                    </a>
+                </div>
+            </div>
+            
+            <div class="influencers-container">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="influencer-card">
+                            <div class="influencer-header">
+                                <div class="influencer-avatar">
+                                    <img src="https://randomuser.me/api/portraits/women/64.jpg" alt="Alexia Fitness">
+                                </div>
+                                <div class="influencer-info">
+                                    <h4 class="influencer-name">alexia_fitness</h4>
+                                    <div class="verified-badge"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                                <a href="#" class="instagram-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                            <div class="influencer-gallery">
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGZpdG5lc3N8ZW58MHx8MHx8fDA%3D" alt="Workout photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGZpdG5lc3N8ZW58MHx8MHx8fDA%3D" alt="Workout photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzR8fGZpdG5lc3N8ZW58MHx8MHx8fDA%3D" alt="Workout photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1535743686920-55e4145369b9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fGZpdG5lc3N8ZW58MHx8MHx8fDA%3D" alt="Workout photo">
+                                </div>
+                            </div>
+                            <div class="influencer-stats">
+                                <div class="stat">
+                                    <span class="stat-value">1.2M</span>
+                                    <span class="stat-label">Followers</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">783</span>
+                                    <span class="stat-label">Posts</span>
+                                </div>
+                                <button class="follow-instagram-btn">Follow</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="influencer-card">
+                            <div class="influencer-header">
+                                <div class="influencer-avatar">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mike Strength">
+                                </div>
+                                <div class="influencer-info">
+                                    <h4 class="influencer-name">mike_strength</h4>
+                                    <div class="verified-badge"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                                <a href="#" class="instagram-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                            <div class="influencer-gallery">
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGd5bXxlbnwwfHwwfHx8MA%3D%3D" alt="Gym photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z3ltfGVufDB8fDB8fHww" alt="Gym photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1583454155184-870a1f63aebc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGd5bXxlbnwwfHwwfHx8MA%3D%3D" alt="Gym photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Z3ltfGVufDB8fDB8fHww" alt="Gym photo">
+                                </div>
+                            </div>
+                            <div class="influencer-stats">
+                                <div class="stat">
+                                    <span class="stat-value">875K</span>
+                                    <span class="stat-label">Followers</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">549</span>
+                                    <span class="stat-label">Posts</span>
+                                </div>
+                                <button class="follow-instagram-btn">Follow</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="influencer-card">
+                            <div class="influencer-header">
+                                <div class="influencer-avatar">
+                                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sophia Yoga">
+                                </div>
+                                <div class="influencer-info">
+                                    <h4 class="influencer-name">sophia_yoga</h4>
+                                    <div class="verified-badge"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                                <a href="#" class="instagram-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                            <div class="influencer-gallery">
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8eW9nYXxlbnwwfHwwfHx8MA%3D%3D" alt="Yoga photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHlvZ2F8ZW58MHx8MHx8fDA%3D" alt="Yoga photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHlvZ2F8ZW58MHx8MHx8fDA%3D" alt="Yoga photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHlvZ2F8ZW58MHx8MHx8fDA%3D" alt="Yoga photo">
+                                </div>
+                            </div>
+                            <div class="influencer-stats">
+                                <div class="stat">
+                                    <span class="stat-value">2.4M</span>
+                                    <span class="stat-label">Followers</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">932</span>
+                                    <span class="stat-label">Posts</span>
+                                </div>
+                                <button class="follow-instagram-btn">Follow</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="influencer-card">
+                            <div class="influencer-header">
+                                <div class="influencer-avatar">
+                                    <img src="https://randomuser.me/api/portraits/men/91.jpg" alt="David Runner">
+                                </div>
+                                <div class="influencer-info">
+                                    <h4 class="influencer-name">david_runner</h4>
+                                    <div class="verified-badge"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                                <a href="#" class="instagram-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                            <div class="influencer-gallery">
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cnVubmluZ3xlbnwwfHwwfHx8MA%3D%3D" alt="Running photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJ1bm5pbmd8ZW58MHx8MHx8fDA%3D" alt="Running photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1595492440343-b54c2c145fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzZ8fHJ1bm5pbmd8ZW58MHx8MHx8fDA%3D" alt="Running photo">
+                                </div>
+                                <div class="gallery-image">
+                                    <img src="https://images.unsplash.com/photo-1570900555854-2f5072c0f279?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fHJ1bm5pbmd8ZW58MHx8MHx8fDA%3D" alt="Running photo">
+                                </div>
+                            </div>
+                            <div class="influencer-stats">
+                                <div class="stat">
+                                    <span class="stat-value">1.7M</span>
+                                    <span class="stat-label">Followers</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">658</span>
+                                    <span class="stat-label">Posts</span>
+                                </div>
+                                <button class="follow-instagram-btn">Follow</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community Goals -->
+        <div class="community-goals">
+            <div class="section-header">
+                <h2>Community Goals</h2>
+                <a href="#" class="view-all">View All Goals</a>
+            </div>
+            
+            <div class="card">
+                <h3>Weekly Community Challenge</h3>
+                <div class="progress-container">
+                    <div class="challenge-item">
+                        <div class="challenge-icon">
+                            <i class="fa fa-running"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <div class="challenge-name">10,000 Steps Daily</div>
+                            <div class="challenge-progress">
+                                <div class="progress-bar" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="challenge-percentage">75%</div>
+                    </div>
+                    
+                    <div class="challenge-item">
+                        <div class="challenge-icon">
+                            <i class="fa fa-dumbbell"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <div class="challenge-name">Strength Training (3x/week)</div>
+                            <div class="challenge-progress">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="challenge-percentage">60%</div>
+                    </div>
+                    
+                    <div class="challenge-item">
+                        <div class="challenge-icon">
+                            <i class="fa fa-apple-alt"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <div class="challenge-name">5 Fruits/Veggies Daily</div>
+                            <div class="challenge-progress">
+                                <div class="progress-bar" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="challenge-percentage">85%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Daily Reminder -->
+        <div class="daily-reminder">
+            <div class="reminder-text">
+                <i class="fa fa-bell"></i> Don't forget to log your workout today!
+            </div>
+            <button style="background-color: #2E7D32; color: white; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer;">Log Now</button>
+        </div>
+        
+        <!-- Social Media Section -->
+        <div style="margin-top: 40px; text-align: center;">
+            <h3>Connect With Us</h3>
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Forum Fitness Community. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Topic cards hover effect
+        document.querySelectorAll('.topic-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.querySelector('.topic-overlay').style.opacity = '1';
+                card.querySelector('.join-discussion-btn').style.opacity = '1';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.querySelector('.topic-overlay').style.opacity = '0.8';
+                card.querySelector('.join-discussion-btn').style.opacity = '0';
+            });
+        });
+        
+        // News slider functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.getElementById('newsSlider');
+            const prevBtn = document.getElementById('prevNews');
+            const nextBtn = document.getElementById('nextNews');
+            const indicators = document.querySelectorAll('.news-indicator');
+            
+            if (!slider || !prevBtn || !nextBtn) return;
+            
+            let currentSlide = 0;
+            const slideCount = document.querySelectorAll('.news-slide').length;
+            const slidesPerView = getVisibleSlidesCount();
+            const maxSlides = Math.max(0, slideCount - slidesPerView);
+            
+            // Update buttons state
+            updateButtons();
+            
+            // Previous slide
+            prevBtn.addEventListener('click', function() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlider();
+                }
+            });
+            
+            // Next slide
+            nextBtn.addEventListener('click', function() {
+                if (currentSlide < maxSlides) {
+                    currentSlide++;
+                    updateSlider();
+                }
+            });
+            
+            // Indicator clicks
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function() {
+                    // Calculate which slide group to show based on indicators
+                    const groupSize = Math.ceil(slideCount / indicators.length);
+                    currentSlide = Math.min(index * groupSize, maxSlides);
+                    updateSlider();
+                });
+            });
+            
+            // Update slider position
+            function updateSlider() {
+                // Calculate the percentage to translate based on current slide
+                const slideWidth = 100 / slidesPerView;
+                const translateValue = -currentSlide * slideWidth;
+                
+                slider.style.transform = `translateX(${translateValue}%)`;
+                
+                // Update indicators
+                const activeGroup = Math.floor(currentSlide / Math.ceil(slideCount / indicators.length));
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === activeGroup);
+                });
+                
+                // Update buttons state
+                updateButtons();
+            }
+            
+            // Get number of visible slides based on screen size
+            function getVisibleSlidesCount() {
+                if (window.innerWidth < 768) {
+                    return 1; // Mobile: 1 card
+                } else if (window.innerWidth < 992) {
+                    return 2; // Tablet: 2 cards
+                } else {
+                    return 4; // Desktop: 4 cards
+                }
+            }
+            
+            // Update buttons state (disabled/enabled)
+            function updateButtons() {
+                prevBtn.disabled = currentSlide === 0;
+                prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
+                
+                nextBtn.disabled = currentSlide >= maxSlides;
+                nextBtn.style.opacity = currentSlide >= maxSlides ? '0.5' : '1';
+            }
+            
+            // Responsive behavior
+            window.addEventListener('resize', function() {
+                const newSlidesPerView = getVisibleSlidesCount();
+                if (newSlidesPerView !== slidesPerView) {
+                    location.reload(); // Reload for simplicity
+                }
+            });
+            
+            // Add touch swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            slider.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            slider.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50; // Minimum swipe distance
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe left (next)
+                    if (currentSlide < maxSlides) {
+                        currentSlide++;
+                        updateSlider();
+                    }
+                } else if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe right (prev)
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlider();
+                    }
+                }
+            }
+        });
+        
+        // News refresh functionality
+        document.querySelector('.news-refresh-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Add loading spinner to button
+            const originalButtonContent = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
+            this.disabled = true;
+            this.classList.add('disabled');
+            
+            // Add loading effect to all news cards
+            document.querySelectorAll('.news-card').forEach(card => {
+                card.style.opacity = '0.7';
+                card.style.pointerEvents = 'none';
+                
+                // Add shimmer effect
+                const shimmer = document.createElement('div');
+                shimmer.className = 'shimmer-effect';
+                card.appendChild(shimmer);
+            });
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                // Reload the page to fetch fresh news
+                window.location.reload();
+            }, 1200);
+        });
+        
+        // Initialize tooltips
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+        
+        // Instagram influencer interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Follow button interactions
+            const followButtons = document.querySelectorAll('.follow-instagram-btn');
+            followButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.classList.contains('following')) {
+                        this.textContent = 'Follow';
+                        this.classList.remove('following');
+                        this.style.backgroundColor = '#0095f6';
+                    } else {
+                        this.textContent = 'Following';
+                        this.classList.add('following');
+                        this.style.backgroundColor = '#ddd';
+                        this.style.color = '#333';
+                        
+                        // Show "followed" toast notification
+                        showToast('Started following ' + this.closest('.influencer-card').querySelector('.influencer-name').textContent);
+                    }
+                });
+            });
+            
+            // Gallery image hover effect
+            const galleryImages = document.querySelectorAll('.gallery-image');
+            galleryImages.forEach(image => {
+                image.addEventListener('mouseenter', function() {
+                    this.querySelector('img').style.transform = 'scale(1.1)';
+                    this.style.cursor = 'pointer';
+                });
+                
+                image.addEventListener('mouseleave', function() {
+                    this.querySelector('img').style.transform = 'scale(1.0)';
+                });
+                
+                // Show a like animation when clicked
+                image.addEventListener('click', function() {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart-animation');
+                    heart.innerHTML = '<i class="fas fa-heart"></i>';
+                    this.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.classList.add('animate');
+                    }, 10);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 1000);
+                });
+            });
+            
+            // Simple toast notification
+            function showToast(message) {
+                if (document.querySelector('.toast-container')) {
+                    document.querySelector('.toast-container').remove();
+                }
+                
+                const toastContainer = document.createElement('div');
+                toastContainer.classList.add('toast-container');
+                toastContainer.innerHTML = `
+                    <div class="toast-message">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ${message}
+                    </div>
+                `;
+                
+                document.body.appendChild(toastContainer);
+                
+                setTimeout(() => {
+                    toastContainer.classList.add('show');
+                }, 10);
+                
+                setTimeout(() => {
+                    toastContainer.classList.remove('show');
+                    setTimeout(() => {
+                        toastContainer.remove();
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Add this at the end of the file, right before the closing </body> tag -->
+    <script>
+        // Simple post button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const postButton = document.getElementById('post-button');
+            const postTextInput = document.getElementById('post-text-input');
+            const postFeed = document.getElementById('post-feed');
+            const previewImage = document.getElementById('preview-image');
+            
+            if (postButton && postTextInput && postFeed) {
+                postButton.addEventListener('click', function() {
+                    // Get post text
+                    const postText = postTextInput.value.trim();
+                    
+                    // Only post if there's text
+                    if (postText === '') {
+                        alert('Please write something before posting');
+                        return;
+                    }
+                    
+                    // Get active topic
+                    let topicText = 'General';
+                    const activeTopic = document.querySelector('.topic-tab.active');
+                    if (activeTopic) {
+                        topicText = activeTopic.textContent.trim();
+                    }
+                    
+                    // Create random initials for avatar
+                    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    const initials = letters[Math.floor(Math.random() * letters.length)] + 
+                                    letters[Math.floor(Math.random() * letters.length)];
+                    
+                    // Create a new post element
+                    const newPost = document.createElement('article');
+                    newPost.className = 'post-card card shadow-sm mb-4';
+                    
+                    // Set the HTML content for the new post
+                    newPost.innerHTML = `
+                        <div class="card-body">
+                            <div class="post-header d-flex mb-3">
+                                <div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">${initials}</div>
+                                <div class="author-info">
+                                    <div class="author-name font-weight-bold">You</div>
+                                    <div class="post-meta text-muted small">
+                                        <span>Just now</span>
+                                        <span class="mx-1">•</span>
+                                        <span class="post-badge badge bg-light text-dark">${topicText}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p class="post-text mb-3">${postText}</p>
+                                ${previewImage && previewImage.src && previewImage.src !== '' ? 
+                                    `<img src="${previewImage.src}" alt="Post image" class="post-image img-fluid rounded mb-3">` : 
+                                    ''}
+                            </div>
+                            <div class="post-actions d-flex">
+                                <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                    <i class="fas fa-arrow-up me-1"></i>
+                                    <span class="action-count">0</span>
+                                </button>
+                                <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                    <i class="fas fa-arrow-down me-1"></i>
+                                    <span class="action-count">0</span>
+                                </button>
+                                <button class="post-action btn btn-sm btn-light d-flex align-items-center me-2">
+                                    <i class="far fa-comment me-1"></i>
+                                    <span class="action-count">0</span>
+                                </button>
+                                <button class="post-action btn btn-sm btn-light d-flex align-items-center ms-auto">
+                                    <i class="far fa-bookmark me-1"></i>
+                                    <span class="action-count">Save</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add the new post at the top of the feed
+                    if (postFeed.firstChild) {
+                        postFeed.insertBefore(newPost, postFeed.firstChild);
+                    } else {
+                        postFeed.appendChild(newPost);
+                    }
+                    
+                    // Clear the input
+                    postTextInput.value = '';
+                    if (previewImage) {
+                        previewImage.src = '';
+                        previewImage.style.display = 'none';
+                    }
+                    
+                    // Add animation for a smooth appearance
+                    newPost.style.opacity = '0';
+                    newPost.style.transform = 'translateY(20px)';
+                    newPost.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        newPost.style.opacity = '1';
+                        newPost.style.transform = 'translateY(0)';
+                    }, 10);
+                    
+                    // Add action button functionality
+                    const actionButtons = newPost.querySelectorAll('.post-action');
+                    actionButtons.forEach(button => {
+                        button.addEventListener('click', function() {
+                            if (button.querySelector('.fa-arrow-up')) {
+                                button.classList.toggle('upvoted');
+                                const count = button.querySelector('.action-count');
+                                count.textContent = button.classList.contains('upvoted') ? '1' : '0';
+                            } 
+                            else if (button.querySelector('.fa-bookmark')) {
+                                button.classList.toggle('saved');
+                                const saveText = button.querySelector('.action-count');
+                                if (button.classList.contains('saved')) {
+                                    saveText.textContent = 'Saved';
+                                    button.classList.add('btn-primary');
+                                    button.classList.remove('btn-light');
+                                } else {
+                                    saveText.textContent = 'Save';
+                                    button.classList.remove('btn-primary');
+                                    button.classList.add('btn-light');
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+
+    <!-- Add this script before the closing body tag -->
+    <script>
+        // Function to get random fitness images
+        function getRandomFitnessImage() {
+            const fitnessImages = [
+                'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format',
+                'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&auto=format',
+                'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format',
+                'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&auto=format',
+                'https://images.unsplash.com/photo-1517344884509-a0c97ec11bcc?w=800&auto=format',
+                'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format',
+                'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&auto=format',
+                'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format',
+                'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=800&auto=format',
+                'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&auto=format',
+                'https://images.unsplash.com/photo-1518310383802-640c2de311b6?w=800&auto=format'
+            ];
+            
+            return fitnessImages[Math.floor(Math.random() * fitnessImages.length)];
+        }
+        
+        // Pre-assign different images to each news card on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsImages = document.querySelectorAll('.news-image');
+            newsImages.forEach(img => {
+                // Set a small chance to use the original image if it loads
+                if (Math.random() > 0.2 && img.src) {
+                    // Keep original, but add fallback
+                    img.onerror = function() {
+                        this.onerror = null;
+                        this.src = getRandomFitnessImage();
+                    };
+                } else {
+                    // Force different image
+                    img.src = getRandomFitnessImage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

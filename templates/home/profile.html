@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Profile</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <style>
+    body {
+      background-color: #f0f4f8;
+      font-family: 'Inter', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+    }
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+    }
+    .nav-item {
+      position: relative;
+      cursor: pointer;
+    }
+    .nav-item.active {
+      color: #4f46e5;
+      font-weight: 600;
+    }
+    .nav-item.active:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: 2px;
+    }
+    .stat-card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 30px;
+    }
+    .timeline-item:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #4f46e5;
+      border: 2px solid #fff;
+      z-index: 1;
+    }
+    .timeline-item:after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 12px;
+      width: 2px;
+      height: calc(100% + 20px);
+      background: #e5e7eb;
+    }
+    .timeline-item:last-child:after {
+      display: none;
+    }
+    .workout-card {
+      border-left: 4px solid #4f46e5;
+    }
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c7d2fe;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4f46e5;
+    }
+    .shadow-card {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    }
+    .chart-container {
+      position: relative;
+      margin: auto;
+      height: 300px;
+      width: 100%;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .rotate-icon {
+      transition: transform 0.3s ease;
+    }
+    .rotate-icon.open {
+      transform: rotate(180deg);
+    }
+    
+    /* Calendar styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: white;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .modal.active .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .calendar-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      overflow: hidden;
+    }
+    
+    .calendar-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-gap: 1px;
+      background-color: #f0f4f8;
+    }
+    
+    .calendar-day-names {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background-color: #e2e8f0;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .calendar-day-name {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+    
+    .calendar-day {
+      min-height: 100px;
+      background-color: white;
+      padding: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .calendar-day:hover {
+      background-color: #f7fafc;
+    }
+    
+    .calendar-day.different-month {
+      background-color: #f8fafc;
+      color: #a0aec0;
+    }
+    
+    .calendar-day.today {
+      background-color: #ebf4ff;
+    }
+    
+    .day-number {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .calendar-day.today .day-number {
+      color: #4f46e5;
+    }
+    
+    .event {
+      background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      border-radius: 4px;
+      padding: 2px 5px;
+      margin-bottom: 2px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Event form styles */
+    .event-form {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .event-form.active {
+      display: flex;
+    }
+    
+    .event-form-content {
+      background-color: white;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #4a5568;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    
+    .alarm-setting {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+    }
+    
+    .alarm-setting input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    
+    .alarm-time {
+      margin-left: 10px;
+      display: none;
+    }
+    
+    .alarm-time.active {
+      display: block;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <a href="{% url 'landing' %}" class="logo">AuraFitness</a>
+          
+        </div>
+        
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow">
+    <div class="container mx-auto px-6 py-8">
+      <!-- Profile Header -->
+      <div class="bg-white shadow-card rounded-2xl p-6 mb-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center">
+          <div class="relative">
+            <div class="h-24 w-24 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold mb-4 md:mb-0 md:mr-6">
+              SA
+            </div>
+            <div class="absolute bottom-0 right-0 bg-green-500 h-5 w-5 rounded-full border-2 border-white"></div>
+          </div>
+          <div class="flex-grow">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Sujal Almedia</h1>
+            <p class="text-gray-600 mb-4">@sujal · San Francisco, CA · Joined January 2025</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="badge bg-indigo-100 text-indigo-800">
+                <i class="fas fa-trophy mr-1"></i> Weight Loss
+              </span>
+              <span class="badge bg-green-100 text-green-800">
+                <i class="fas fa-running mr-1"></i> Intermediate
+              </span>
+              <span class="badge bg-yellow-100 text-yellow-800">
+                <i class="fas fa-heartbeat mr-1"></i> Custom Plan
+              </span>
+              <span class="badge bg-purple-100 text-purple-800">
+                <i class="fas fa-fire mr-1"></i> 8-Week Streak
+              </span>
+            </div>
+          </div>
+          <div class="mt-4 md:mt-0 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+            <!-- <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-md flex items-center justify-center">
+              <i class="fas fa-edit mr-2"></i> Edit Profile
+            </button>
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg shadow-md flex items-center justify-center">
+              <i class="fas fa-share-alt mr-2"></i> Share
+            </button> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <!-- <div class="flex mb-6 border-b border-gray-200 overflow-x-auto scrollbar-thin pb-2">
+        <div class="nav-item active px-4 py-2 mr-4 whitespace-nowrap" data-tab="overview">Overview</div>
+        <div class="nav-item px-4 py-2 mr-4 whitespace-nowrap" data-tab="fitness-data">Fitness Data</div>
+        <div class="nav-item px-4 py-2 mr-4 whitespace-nowrap" data-tab="medical-info">Medical Info</div>
+        <div class="nav-item px-4 py-2 mr-4 whitespace-nowrap" data-tab="workout-plans">Workout Plans</div>
+        <div class="nav-item px-4 py-2 mr-4 whitespace-nowrap" data-tab="nutrition">Nutrition</div>
+        <div class="nav-item px-4 py-2 mr-4 whitespace-nowrap" data-tab="progress">Progress</div>
+      </div> -->
+
+      <!-- Overview Tab Content -->
+      <div id="overview" class="tab-content active">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- Personal Information -->
+          <div class="card bg-white shadow-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold text-gray-800">Personal Information</h2>
+              <button class="text-indigo-600 hover:text-indigo-800">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Full Name</span>
+                <span class="text-gray-800 font-medium">sujal almedia</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Date of Birth</span>
+                <span class="text-gray-800 font-medium">May 12, 1990 (34 years)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Gender</span>
+                <span class="text-gray-800 font-medium">Female</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Height</span>
+                <span class="text-gray-800 font-medium">5'11" (180 cm)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Weight</span>
+                <span class="text-gray-800 font-medium">185 lbs (84 kg)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">BMI</span>
+                <span class="text-gray-800 font-medium">25.9 (Overweight)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Email</span>
+                <span class="text-gray-800 font-medium">ashdabre@example.com</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lifestyle -->
+          <div class="card bg-white shadow-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold text-gray-800">Lifestyle</h2>
+              <button class="text-indigo-600 hover:text-indigo-800">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="space-y-6">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-600">Activity Level</span>
+                  <span class="text-gray-800 font-medium">Moderately Active</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 65%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-600">Sleep Quality</span>
+                  <span class="text-gray-800 font-medium">Good (7.5 hrs avg)</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 75%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-600">Stress Level</span>
+                  <span class="text-gray-800 font-medium">Moderate</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 45%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-600">Daily Step Count</span>
+                  <span class="text-gray-800 font-medium">8,543 steps</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 85%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diet & Allergies -->
+          <div class="card bg-white shadow-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold text-gray-800">Diet & Allergies</h2>
+              <button class="text-indigo-600 hover:text-indigo-800">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Diet Type</span>
+                <span class="text-gray-800 font-medium">Balanced</span>
+              </div>
+              <div>
+                <span class="text-gray-600 block mb-2">Allergens</span>
+                <div class="flex flex-wrap gap-2">
+                  <span class="badge bg-red-100 text-red-800">Shellfish</span>
+                  <span class="badge bg-red-100 text-red-800">Tree Nuts</span>
+                  <button class="badge bg-gray-100 text-gray-600 hover:bg-gray-200">
+                    <i class="fas fa-plus mr-1"></i> Add
+                  </button>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-600 block mb-2">Dietary Restrictions</span>
+                <div class="flex flex-wrap gap-2">
+                  <span class="badge bg-blue-100 text-blue-800">Low Sodium</span>
+                  <button class="badge bg-gray-100 text-gray-600 hover:bg-gray-200">
+                    <i class="fas fa-plus mr-1"></i> Add
+                  </button>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-600 block mb-2">Calorie Target</span>
+                <div class="flex justify-between">
+                  <span>1,850 calories/day</span>
+                  <span class="text-green-600 font-medium">On Track</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fitness Goals -->
+          <div class="card bg-white shadow-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold text-gray-800">Fitness Goals</h2>
+              <button class="text-indigo-600 hover:text-indigo-800">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Primary Goal</span>
+                <span class="text-gray-800 font-medium">Weight Loss</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Experience Level</span>
+                <span class="text-gray-800 font-medium">Intermediate</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Target Weight</span>
+                <span class="text-gray-800 font-medium">165 lbs (75 kg)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Target Date</span>
+                <span class="text-gray-800 font-medium">July 15, 2025</span>
+              </div>
+              <div>
+                <span class="text-gray-600 block mb-1">Goal Progress</span>
+                <div class="flex items-center">
+                  <div class="flex-grow progress-bar mr-4">
+                    <div class="progress" style="width: 40%"></div>
+                  </div>
+                  <span class="text-indigo-600 font-medium">40% (8 of 20 lbs)</span>
+                </div>
+              </div>
+              <div>
+                <span class="text-gray-600 block mb-1">Description</span>
+                <p class="text-gray-800">Lose 20 pounds while maintaining muscle mass and improving overall fitness level.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Summary -->
+        <div class="card bg-white shadow-card p-6 mb-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Activity Summary</h2>
+            <div class="flex space-x-2">
+              <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">Week</button>
+              <button class="text-indigo-600 bg-indigo-100 px-2 py-1 text-sm rounded">Month</button>
+              <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">3 Months</button>
+              <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">Year</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="stat-card bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white">
+              <div class="text-sm opacity-75 mb-1">Weight Change</div>
+              <div class="text-2xl font-bold">-7.5 lbs</div>
+              <div class="text-sm mt-1 flex items-center">
+                <i class="fas fa-arrow-down mr-1"></i> 4.1% from start
+              </div>
+            </div>
+            <div class="stat-card bg-gradient-to-r from-green-500 to-green-600 p-4 text-white">
+              <div class="text-sm opacity-75 mb-1">Workout Frequency</div>
+              <div class="text-2xl font-bold">4.2/week</div>
+              <div class="text-sm mt-1 flex items-center">
+                <i class="fas fa-arrow-up mr-1"></i> 0.5 from last month
+              </div>
+            </div>
+            <div class="stat-card bg-gradient-to-r from-yellow-500 to-yellow-600 p-4 text-white">
+              <div class="text-sm opacity-75 mb-1">Cardio Time</div>
+              <div class="text-2xl font-bold">83 min/week</div>
+              <div class="text-sm mt-1 flex items-center">
+                <i class="fas fa-arrow-up mr-1"></i> 15 min from last month
+              </div>
+            </div>
+            <div class="stat-card bg-gradient-to-r from-purple-500 to-purple-600 p-4 text-white">
+              <div class="text-sm opacity-75 mb-1">Strength Sessions</div>
+              <div class="text-2xl font-bold">3.1/week</div>
+              <div class="text-sm mt-1 flex items-center">
+                <i class="fas fa-equals mr-1"></i> Same as last month
+              </div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="activityChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Upcoming Workouts -->
+        <div class="card bg-white shadow-card p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Upcoming Workouts</h2>
+            <button id="openCalendarBtn" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+              <i class="fas fa-calendar-alt mr-2"></i> View Full Schedule
+            </button>
+          </div>
+          <div class="space-y-4">
+            <div class="workout-card bg-gray-50 p-4 rounded-lg">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <h3 class="font-semibold text-gray-800">Upper Body Strength</h3>
+                  <p class="text-gray-600 text-sm">Tomorrow · 6:30 AM · 45 min</p>
+                </div>
+                <div class="badge bg-green-100 text-green-800">
+                  Scheduled
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-3">
+                <div class="flex space-x-2">
+                  <span class="badge bg-gray-100 text-gray-800">Chest</span>
+                  <span class="badge bg-gray-100 text-gray-800">Arms</span>
+                  <span class="badge bg-gray-100 text-gray-800">Shoulders</span>
+                </div>
+                <button class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                  View Details
+                </button>
+              </div>
+            </div>
+            <div class="workout-card bg-gray-50 p-4 rounded-lg">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <h3 class="font-semibold text-gray-800">HIIT Cardio</h3>
+                  <p class="text-gray-600 text-sm">Wednesday · 7:00 AM · 30 min</p>
+                </div>
+                <div class="badge bg-green-100 text-green-800">
+                  Scheduled
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-3">
+                <div class="flex space-x-2">
+                  <span class="badge bg-gray-100 text-gray-800">Cardio</span>
+                  <span class="badge bg-gray-100 text-gray-800">Core</span>
+                </div>
+                <button class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                    View Details
+                  </button>
+                </div>
+              </div>
+              <div class="workout-card bg-gray-50 p-4 rounded-lg">
+                <div class="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 class="font-semibold text-gray-800">Lower Body Focus</h3>
+                    <p class="text-gray-600 text-sm">Friday · 6:30 AM · 50 min</p>
+                  </div>
+                  <div class="badge bg-green-100 text-green-800">
+                    Scheduled
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex space-x-2">
+                    <span class="badge bg-gray-100 text-gray-800">Legs</span>
+                    <span class="badge bg-gray-100 text-gray-800">Glutes</span>
+                  </div>
+                  <button class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Fitness Data Tab -->
+        <div id="fitness-data" class="tab-content">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card bg-white shadow-card p-6 md:col-span-3">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Body Composition</h2>
+                <div class="flex space-x-2">
+                  <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">Week</button>
+                  <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">Month</button>
+                  <button class="text-indigo-600 bg-indigo-100 px-2 py-1 text-sm rounded">3 Months</button>
+                  <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">Year</button>
+                  <button class="text-gray-600 hover:text-gray-800 px-2 py-1 text-sm bg-gray-100 rounded">All Time</button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="bodyCompositionChart"></canvas>
+              </div>
+              <div class="grid grid-cols-3 md:grid-cols-5 gap-4 mt-6">
+                <div class="stat-card bg-white border border-gray-200 p-4 rounded-lg text-center">
+                  <div class="text-sm text-gray-600 mb-1">Current Weight</div>
+                  <div class="text-xl font-bold text-gray-800">185 lbs</div>
+                  <div class="text-xs text-green-600 mt-1">↓ 7.5 lbs</div>
+                </div>
+                <div class="stat-card bg-white border border-gray-200 p-4 rounded-lg text-center">
+                  <div class="text-sm text-gray-600 mb-1">Body Fat %</div>
+                  <div class="text-xl font-bold text-gray-800">22%</div>
+                  <div class="text-xs text-green-600 mt-1">↓ 2.5%</div>
+                </div>
+                <div class="stat-card bg-white border border-gray-200 p-4 rounded-lg text-center">
+                  <div class="text-sm text-gray-600 mb-1">Muscle Mass</div>
+                  <div class="text-xl font-bold text-gray-800">131 lbs</div>
+                  <div class="text-xs text-green-600 mt-1">↑ 2 lbs</div>
+                </div>
+                <div class="stat-card bg-white border border-gray-200 p-4 rounded-lg text-center">
+                  <div class="text-sm text-gray-600 mb-1">BMI</div>
+                  <div class="text-xl font-bold text-gray-800">25.9</div>
+                  <div class="text-xs text-green-600 mt-1">↓ 1.1</div>
+                </div>
+                <div class="stat-card bg-white border border-gray-200 p-4 rounded-lg text-center">
+                  <div class="text-sm text-gray-600 mb-1">Waist Size</div>
+                  <div class="text-xl font-bold text-gray-800">34"</div>
+                  <div class="text-xs text-green-600 mt-1">↓ 2"</div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="card bg-white shadow-card p-6">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Cardiovascular Health</h2>
+                <button class="text-indigo-600 hover:text-indigo-800">
+                  <i class="fas fa-pen-to-square"></i>
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Resting Heart Rate</span>
+                    <span class="text-gray-800 font-medium">68 bpm</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 72%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Calendar Modal -->
+        <div id="calendarModal" class="modal">
+          <div class="modal-content">
+            <div class="p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Workout Schedule</h2>
+                <div class="flex items-center space-x-2">
+                  <button id="addEventBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-md flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i> Add Event
+                  </button>
+                  <button id="closeCalendarBtn" class="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+  
+              <div class="calendar-container">
+                <div class="calendar-navigation bg-gray-50 p-4 rounded-lg mb-4">
+                  <div class="flex justify-between items-center">
+                    <button id="prevMonth" class="p-2 rounded-full hover:bg-gray-200">
+                      <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentMonthYear" class="text-xl font-semibold">April 2025</h3>
+                    <button id="nextMonth" class="p-2 rounded-full hover:bg-gray-200">
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+  
+                <div class="calendar-day-names mb-1">
+                  <div class="calendar-day-name">Sun</div>
+                  <div class="calendar-day-name">Mon</div>
+                  <div class="calendar-day-name">Tue</div>
+                  <div class="calendar-day-name">Wed</div>
+                  <div class="calendar-day-name">Thu</div>
+                  <div class="calendar-day-name">Fri</div>
+                  <div class="calendar-day-name">Sat</div>
+                </div>
+  
+                <div class="calendar-grid">
+                  <!-- Sample calendar days - would be dynamically generated -->
+                  <div class="calendar-day different-month">
+                    <div class="day-number">30</div>
+                  </div>
+                  <div class="calendar-day different-month">
+                    <div class="day-number">31</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">1</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">2</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">3</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">4</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">5</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">6</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">7</div>
+                  </div>
+                  <div class="calendar-day today">
+                    <div class="day-number">8</div>
+                    <div class="event">Upper Body Strength</div>
+                    <div class="event">Mobility Session</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">9</div>
+                    <div class="event">Upper Body Strength</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">10</div>
+                    <div class="event">HIIT Cardio</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">11</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">12</div>
+                    <div class="event">Lower Body Focus</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">13</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">14</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">15</div>
+                    <div class="event">Upper Body Strength</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">16</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">17</div>
+                    <div class="event">HIIT Cardio</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">18</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">19</div>
+                    <div class="event">Lower Body Focus</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">20</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">21</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">22</div>
+                    <div class="event">Upper Body Strength</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">23</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">24</div>
+                    <div class="event">HIIT Cardio</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">25</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">26</div>
+                    <div class="event">Lower Body Focus</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">27</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">28</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">29</div>
+                    <div class="event">Upper Body Strength</div>
+                  </div>
+                  <div class="calendar-day">
+                    <div class="day-number">30</div>
+                  </div>
+                  <div class="calendar-day different-month">
+                    <div class="day-number">1</div>
+                  </div>
+                  <div class="calendar-day different-month">
+                    <div class="day-number">2</div>
+                  </div>
+                  <div class="calendar-day different-month">
+                    <div class="day-number">3</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Event Form Modal -->
+        <div id="eventFormModal" class="event-form">
+          <div class="event-form-content">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Add Workout Event</h2>
+              <button id="closeEventFormBtn" class="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+  
+            <form id="eventForm">
+              <div class="form-group">
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" placeholder="e.g., Upper Body Workout" required>
+              </div>
+  
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="eventDate">Date</label>
+                  <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                  <label for="eventTime">Time</label>
+                  <input type="time" id="eventTime" required>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="eventDuration">Duration (minutes)</label>
+                <input type="number" id="eventDuration" min="5" max="300" step="5" value="45">
+              </div>
+  
+              <div class="form-group">
+                <label for="eventType">Workout Type</label>
+                <select id="eventType">
+                  <option value="strength">Strength Training</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="hiit">HIIT</option>
+                  <option value="yoga">Yoga/Stretching</option>
+                  <option value="mobility">Mobility</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+  
+              <div class="form-group">
+                <label for="eventDescription">Description (Optional)</label>
+                <textarea id="eventDescription" rows="3" placeholder="Add notes about this workout"></textarea>
+              </div>
+  
+              <div class="form-group">
+                <label>Target Areas</label>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="chest"> 
+                    <span class="ml-2">Chest</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="back"> 
+                    <span class="ml-2">Back</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="arms"> 
+                    <span class="ml-2">Arms</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="shoulders"> 
+                    <span class="ml-2">Shoulders</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="core"> 
+                    <span class="ml-2">Core</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="legs"> 
+                    <span class="ml-2">Legs</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="glutes"> 
+                    <span class="ml-2">Glutes</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" name="targetAreas" value="fullbody"> 
+                    <span class="ml-2">Full Body</span>
+                  </label>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="eventAlarm">Reminder</label>
+                <div class="alarm-setting">
+                  <input type="checkbox" id="enableAlarm">
+                  <label for="enableAlarm">Set reminder</label>
+                  <div id="alarmTimeContainer" class="alarm-time">
+                    <select id="alarmTime">
+                      <option value="5">5 minutes before</option>
+                      <option value="15">15 minutes before</option>
+                      <option value="30" selected>30 minutes before</option>
+                      <option value="60">1 hour before</option>
+                      <option value="120">2 hours before</option>
+                      <option value="1440">1 day before</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-actions">
+                <button type="button" id="cancelEventBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save Event</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  
+    <script>
+      // Tab navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+          
+          item.classList.add('active');
+          const tabId = item.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+
+      
+  
+      // Activity Chart (sample - would be replaced with actual data)
+      const activityChartCtx = document.getElementById('activityChart').getContext('2d');
+      const activityChart = new Chart(activityChartCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [{
+            label: 'Weight (lbs)',
+            data: [195, 193, 190, 188, 186.5, 185, null, null, null, null, null, null],
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 160,
+              max: 200
+            }
+          }
+        }
+      });
+  
+      // Calendar modal functionality
+      const calendarModal = document.getElementById('calendarModal');
+      const openCalendarBtn = document.getElementById('openCalendarBtn');
+      const closeCalendarBtn = document.getElementById('closeCalendarBtn');
+  
+      openCalendarBtn.addEventListener('click', () => {
+        calendarModal.classList.add('active');
+        setTimeout(() => {
+          calendarModal.querySelector('.modal-content').style.transform = 'translateY(0)';
+          calendarModal.querySelector('.modal-content').style.opacity = '1';
+        }, 10);
+      });
+  
+      closeCalendarBtn.addEventListener('click', () => {
+        calendarModal.querySelector('.modal-content').style.transform = 'translateY(20px)';
+        calendarModal.querySelector('.modal-content').style.opacity = '0';
+        setTimeout(() => {
+          calendarModal.classList.remove('active');
+        }, 300);
+      });
+  
+      // Event form functionality
+      const eventFormModal = document.getElementById('eventFormModal');
+      const addEventBtn = document.getElementById('addEventBtn');
+      const closeEventFormBtn = document.getElementById('closeEventFormBtn');
+      const cancelEventBtn = document.getElementById('cancelEventBtn');
+      const enableAlarmCheckbox = document.getElementById('enableAlarm');
+      const alarmTimeContainer = document.getElementById('alarmTimeContainer');
+      const eventForm = document.getElementById('eventForm');
+  
+      addEventBtn.addEventListener('click', () => {
+        eventFormModal.classList.add('active');
+        // Set default date to today
+        const today = new Date();
+        const dateString = today.toISOString().split('T')[0];
+        document.getElementById('eventDate').value = dateString;
+      });
+  
+      closeEventFormBtn.addEventListener('click', () => {
+        eventFormModal.classList.remove('active');
+      });
+  
+      cancelEventBtn.addEventListener('click', () => {
+        eventFormModal.classList.remove('active');
+      });
+  
+      enableAlarmCheckbox.addEventListener('change', () => {
+        if (enableAlarmCheckbox.checked) {
+          alarmTimeContainer.classList.add('active');
+        } else {
+          alarmTimeContainer.classList.remove('active');
+        }
+      });
+  
+      eventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Here you would normally save the event data
+        // For demo purposes, we'll just close the form and show an alert
+        alert('Workout event saved!');
+        eventFormModal.classList.remove('active');
+        
+        // We could add the event to the calendar here
+        const eventTitle = document.getElementById('eventTitle').value;
+        const eventDate = document.getElementById('eventDate').value;
+        const eventDateObj = new Date(eventDate);
+        const day = eventDateObj.getDate();
+        
+        // Find the corresponding calendar day and add the event
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(calendarDay => {
+          const dayNumber = calendarDay.querySelector('.day-number').textContent;
+          if (parseInt(dayNumber) === day && !calendarDay.classList.contains('different-month')) {
+            const eventElement = document.createElement('div');
+            eventElement.className = 'event';
+            eventElement.textContent = eventTitle;
+            calendarDay.appendChild(eventElement);
+          }
+        });
+      });
+  
+      // Calendar day click to add event
+      document.querySelectorAll('.calendar-day').forEach(day => {
+        day.addEventListener('click', () => {
+          // Set the date in the form
+          const dayNumber = day.querySelector('.day-number').textContent;
+          const monthYear = document.getElementById('currentMonthYear').textContent;
+          const [month, year] = monthYear.split(' ');
+          
+          const monthMap = {
+            'January': '01', 'February': '02', 'March': '03', 'April': '04',
+            'May': '05', 'June': '06', 'July': '07', 'August': '08',
+            'September': '09', 'October': '10', 'November': '11', 'December': '12'
+          };
+          
+          const monthNum = monthMap[month];
+          const formattedDate = `${year}-${monthNum}-${dayNumber.padStart(2, '0')}`;
+          
+          document.getElementById('eventDate').value = formattedDate;
+          eventFormModal.classList.add('active');
+        });
+      });
+  
+      // Calendar navigation (previous/next month)
+      const prevMonthBtn = document.getElementById('prevMonth');
+      const nextMonthBtn = document.getElementById('nextMonth');
+      const currentMonthYearDisplay = document.getElementById('currentMonthYear');
+      
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      let currentDate = new Date();
+      
+      function updateCalendarHeader() {
+        currentMonthYearDisplay.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+      }
+      
+      prevMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        updateCalendarHeader();
+        // Here you would rebuild the calendar grid based on the new month
+      });
+      
+      nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        updateCalendarHeader();
+        // Here you would rebuild the calendar grid based on the new month
+      });
+    </script>
+  </body>
+  </html>

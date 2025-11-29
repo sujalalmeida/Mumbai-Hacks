@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's In My Fridge</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .content {
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .dashboard-header-text {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #15803d;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+        }
+        
+        .btn svg {
+            margin-right: 8px;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .fridge-image-container {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .fridge-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .fridge-image-container .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+        
+        .fridge-image-container:hover .upload-overlay {
+            opacity: 1;
+        }
+        
+        .fridge-items-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .fridge-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+        
+        .fridge-item:hover {
+            background-color: #f3f4f6;
+            transform: translateX(5px);
+        }
+        
+        .fridge-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .fridge-item-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        
+        .fridge-item-details {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .fridge-item-expiry {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .fridge-item-expiry.ok {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+        }
+        
+        .fridge-item-expiry.warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .fridge-item-expiry.expired {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .fridge-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .fridge-item-actions button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+        
+        .fridge-item-actions button:hover {
+            color: var(--primary-color);
+        }
+        
+        .alerts-section {
+            background-color: #fffbeb;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alerts-section h4 {
+            color: var(--warning-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .alerts-list {
+            list-style: none;
+        }
+        
+        .alert-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+        }
+        
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+        
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+        
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+        
+        .recipe-card {
+            background-color: #f9fafb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .recipe-card:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-3px);
+        }
+        
+        .recipe-card h4 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        .recipe-card p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .ingredient-tag {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="dashboard-header">
+            <div class="dashboard-header-text">
+                <h2>What's In My Fridge</h2>
+                <p>Track your fridge items, expiry dates, and discover recipes</p>
+            </div>
+            <div class="dashboard-actions">
+                <a href="{% url 'fridge_upload' %}" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                    </svg>
+                    Scan New Image
+                </a>
+                <a href="{% url 'add_fridge_item' %}" class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                    Add Item Manually
+                </a>
+                <a href="{% url 'suggest_fridge_recipes' %}" class="btn btn-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                    Find Recipes
+                </a>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="main-content">
+                <div class="card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 9.5V2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v7.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5zm10.5 0V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7.5h10.5zM1.5 11a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-13z"/>
+                        </svg>
+                        Fridge Inventory
+                    </h3>
+                    
+                    {% if fridge_items %}
+                        <ul class="fridge-items-list">
+                            {% for item in fridge_items %}
+                                <li class="fridge-item">
+                                    <div class="fridge-item-info">
+                                        <span class="fridge-item-name">{{ item.name }}</span>
+                                        <span class="fridge-item-details">{{ item.quantity }} {{ item.unit }}</span>
+                                    </div>
+                                    
+                                    {% if item.expiry_date %}
+                                        {% if item.is_expired %}
+                                            <div class="fridge-item-expiry expired">Expired</div>
+                                        {% elif item.is_expiring_soon %}
+                                            <div class="fridge-item-expiry warning">Expires in {{ item.days_until_expiry }} days</div>
+                                        {% else %}
+                                            <div class="fridge-item-expiry ok">{{ item.days_until_expiry }} days left</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                    <div class="fridge-item-actions">
+                                        <a href="{% url 'update_fridge_item' item.id %}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'delete_fridge_item' item.id %}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="empty-state">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2 9.5V2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v7.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5zm10.5 0V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7.5h10.5zM1.5 11a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-13z"/>
+                            </svg>
+                            <p>Your fridge is empty! Upload a photo or add items manually.</p>
+                            <a href="{% url 'fridge_upload' %}" class="btn btn-primary">Upload Fridge Photo</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                {% if expiring_items %}
+                    <div class="card">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                            </svg>
+                            Expiring Soon
+                        </h3>
+                        <div class="alerts-section">
+                            <h4>Items expiring in the next 3 days:</h4>
+                            <ul class="alerts-list">
+                                {% for item in expiring_items %}
+                                    <li class="alert-item">
+                                        {{ item.name }} - {{ item.days_until_expiry }} days left
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% if expired_items %}
+                    <div class="card">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                            Expired Items
+                        </h3>
+                        <div class="alerts-section" style="border-left-color: var(--danger-color); background-color: #fee2e2;">
+                            <h4 style="color: var(--danger-color);">Items that have expired:</h4>
+                            <ul class="alerts-list">
+                                {% for item in expired_items %}
+                                    <li class="alert-item">
+                                        {{ item.name }} - Expired {{ item.days_since_expiry }} days ago
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <div class="card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                        </svg>
+                        Recipe Suggestions
+                    </h3>
+                    
+                    {% if recipes %}
+                        {% for recipe in recipes %}
+                            <div class="recipe-card">
+                                <h4>{{ recipe.title }}</h4>
+                                <p>
+                                    {{ recipe.ingredients|truncatechars:80 }}
+                                </p>
+                                <a href="{% url 'suggest_fridge_recipes' %}" class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">View Recipe</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state" style="padding: 20px 0;">
+                            <p>Generate recipes based on your fridge items!</p>
+                            <a href="{% url 'suggest_fridge_recipes' %}" class="btn btn-warning" style="padding: 5px 10px; font-size: 14px;">Find Recipes</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

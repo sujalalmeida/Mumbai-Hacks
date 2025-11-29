@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CulinaryGenius - Recipe Generator</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo svg {
+            margin-right: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .recipe-form {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section h2 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-section h2 svg {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .cuisine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(99, 102, 241, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .checkbox-item input {
+            display: none;
+        }
+
+        .checkbox-item input:checked + span {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .checkbox-item input:checked + span::before {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .checkbox-item span {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .checkbox-item span::before {
+            content: "";
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            margin-right: 8px;
+            transition: all 0.2s ease;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 10px;
+        }
+
+        .checkbox-item input:checked + span::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .input-group .form-group {
+            flex: 1;
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .day-item {
+            text-align: center;
+        }
+
+        .day-item label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .day-item input {
+            display: none;
+        }
+
+        .day-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .day-item input:checked + .day-circle {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn svg {
+            margin-right: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* Recipe Cards - Enhanced Modern Design */
+        .recipes-container {
+            margin-top: 3rem;
+        }
+
+        .recipes-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .recipes-header svg {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .recipe-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-image {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
+        }
+
+        .recipe-content {
+            padding: 1.75rem;
+        }
+
+        .recipe-title {
+            font-size: 1.35rem;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
+        }
+
+        .recipe-meta span {
+            display: flex;
+            align-items: center;
+        }
+
+        .recipe-meta svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.35rem;
+            opacity: 0.75;
+        }
+
+        .recipe-description {
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .recipe-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .recipe-tag {
+            background-color: rgba(59, 130, 246, 0.08);
+            color: var(--secondary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        .recipe-view {
+            text-align: center;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 1.25rem;
+        }
+
+        .recipe-view a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .recipe-view svg {
+            margin-left: 0.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-view a:hover {
+            color: var(--primary-hover);
+        }
+
+        .recipe-view a:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Modal Styles */
+        .recipe-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .recipe-modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .recipe-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .recipe-modal-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .recipe-modal-close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s ease;
+        }
+
+        .recipe-modal-close:hover {
+            color: var(--text-dark);
+            transform: scale(1.1);
+        }
+
+        .recipe-modal-body {
+            padding: 2rem;
+        }
+
+        .recipe-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .recipe-detail-meta span {
+            display: flex;
+            align-items: center;
+        }
+
+        .recipe-detail-meta svg {
+            margin-right: 0.5rem;
+        }
+
+        .recipe-detail-description {
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .nutrition-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background-color: rgba(99, 102, 241, 0.05);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .nutrition-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recipe-detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .recipe-detail-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.75rem;
+        }
+
+        .ingredients-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.75rem 1.5rem;
+        }
+
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .ingredient-item svg {
+            color: var(--primary-color);
+            margin-right: 0.65rem;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+
+        .instructions-list {
+            list-style: none;
+            counter-reset: instructions;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .instruction-item {
+            position: relative;
+            padding-left: 3rem;
+            line-height: 1.6;
+        }
+
+        .instruction-item::before {
+            counter-increment: instructions;
+            content: counter(instructions);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* No recipes message */
+        .no-recipes {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .recipe-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .days-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .recipe-modal-content {
+                max-height: 90vh;
+            }
+            
+            .recipe-modal-header,
+            .recipe-modal-body {
+                padding: 1.25rem;
+            }
+            
+            .ingredients-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .recipe-form {
+                padding: 1.5rem;
+            }
+            
+            .days-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+            }
+            
+            .day-circle {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .recipe-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recipe-modal {
+                padding: 1rem;
+            }
+        }
+        
+        /* Modal Open State */
+        body.modal-open {
+            overflow: hidden;
+        }
+        
+        /* Modal animation */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .recipe-modal {
+            animation: fade-in 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);">
+                    <path d="M15 11h.01"></path>
+                    <path d="M11 15h.01"></path>
+                    <path d="M16 16h.01"></path>
+                    <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
+                    <path d="M22 8a10 10 0 0 1-10 10"></path>
+                    <path d="M18 12h-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                </svg>
+                <h1>CulinaryGenius</h1>
+            </div>
+            <p class="tagline">AI-Powered Recipe Generator Tailored to Your Preferences</p>
+        </header>
+
+        <form class="recipe-form" method="post" action="{% url 'my_receipes' %}">
+            {% csrf_token %}
+            <div class="form-section">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
+                        <line x1="6" y1="17" x2="18" y2="17"></line>
+                    </svg>
+                    Dietary Preferences
+                </h2>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="vegetarian">
+                        <span>Vegetarian</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="vegan">
+                        <span>Vegan</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="gluten_free">
+                        <span>Gluten-Free</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="dairy_free">
+                        <span>Dairy-Free</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="keto">
+                        <span>Keto</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="paleo">
+                        <span>Paleo</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="low_carb">
+                        <span>Low-Carb</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="high_protein">
+                        <span>High-Protein</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="low_fat">
+                        <span>Low-Fat</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="preference" value="low_sodium">
+                        <span>Low-Sodium</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path>
+                    </svg>
+                    Cuisine Preferences
+                </h2>
+                <div class="cuisine-grid">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="italian">
+                        <span>Italian</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="mexican">
+                        <span>Mexican</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="indian">
+                        <span>Indian</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="chinese">
+                        <span>Chinese</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="japanese">
+                        <span>Japanese</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="thai">
+                        <span>Thai</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="french">
+                        <span>French</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="mediterranean">
+                        <span>Mediterranean</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="american">
+                        <span>American</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="middle_eastern">
+                        <span>Middle Eastern</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="korean">
+                        <span>Korean</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="cuisine" value="spanish">
+                        <span>Spanish</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                        <path d="M3 9h18"></path>
+                        <path d="M9 21V9"></path>
+                    </svg>
+                    Meal Planning
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="meal_type">Meal Type</label>
+                        <select class="form-control" id="meal_type" name="meal_type">
+                            <option value="">Any</option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                            <option value="dessert">Dessert</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="servings">Servings</label>
+                        <select class="form-control" id="servings" name="servings">
+                            <option value="">Any</option>
+                            <option value="1">1 serving</option>
+                            <option value="2">2 servings</option>
+                            <option value="4">4 servings</option>
+                            <option value="6">6+ servings</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Days to Generate Recipes For</label>
+                    <div class="days-grid">
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="monday">
+                                <div class="day-circle">M</div>
+                                <span>Mon</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="tuesday">
+                                <div class="day-circle">T</div>
+                                <span>Tue</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="wednesday">
+                                <div class="day-circle">W</div>
+                                <span>Wed</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="thursday">
+                                <div class="day-circle">T</div>
+                                <span>Thu</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="friday">
+                                <div class="day-circle">F</div>
+                                <span>Fri</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="saturday">
+                                <div class="day-circle">S</div>
+                                <span>Sat</span>
+                            </label>
+                        </div>
+                        <div class="day-item">
+                            <label>
+                                <input type="checkbox" name="diet_days" value="sunday">
+                                <div class="day-circle">S</div>
+                                <span>Sun</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"></path>
+                        <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+                        <path d="m12 2 2 2"></path>
+                        <path d="M12 22v-2"></path>
+                        <path d="m2 12 2-2"></path>
+                        <path d="M22 12h-2"></path>
+                        <path d="m20 20-2-2"></path>
+                        <path d="M4 4 6 6"></path>
+                    </svg>
+                    Additional Preferences
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cooking_time">Cooking Time</label>
+                        <select class="form-control" id="cooking_time" name="cooking_time">
+                            <option value="">Any</option>
+                            <option value="15">Under 15 minutes</option>
+                            <option value="30">Under 30 minutes</option>
+                            <option value="45">Under 45 minutes</option>
+                            <option value="60">Under 1 hour</option>
+                            <option value="120">1-2 hours</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Level</label>
+                        <select class="form-control" id="difficulty" name="difficulty">
+                            <option value="">Any</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ingredients">Ingredients to Include (comma-separated)</label>
+                    <input type="text" class="form-control" id="ingredients" name="ingredients" placeholder="e.g., chicken, rice, bell peppers">
+                </div>
+                <div class="form-group">
+                    <label for="exclude">Ingredients to Exclude (comma-separated)</label>
+                    <input type="text" class="form-control" id="exclude" name="exclude" placeholder="e.g., nuts, shellfish, cilantro">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="generate-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m17 2 4 4-4 4"></path>
+                        <path d="M3 11v-1a4 4 0 0 1 4-4h14"></path>
+                        <path d="m7 22-4-4 4-4"></path>
+                        <path d="M21 13v1a4 4 0 0 1-4 4H3"></path>
+                    </svg>
+                    Generate Recipes
+                </button>
+            </div>
+        </form>
+
+        <div class="recipes-container">
+            <div class="recipes-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+                    <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+                    <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+                    <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
+                </svg>
+                <h2>Generated Recipes</h2>
+            </div>
+            
+            <!-- Loading Animation -->
+            <div class="loading" id="loading-spinner" style="display: none;">
+                <div class="loading-spinner"></div>
+            </div>
+            
+            <!-- Recipe grid will be populated by JavaScript -->
+            <div class="recipe-grid">
+                {% if recipes %}
+                <!-- Recipes will be populated by JavaScript -->
+                {% else %}
+                <div class="no-recipes">No recipes yet. Generate some recipes to see them here!</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Submission Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.recipe-form');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const generateBtn = document.getElementById('generate-btn');
+            
+            form.addEventListener('submit', function(e) {
+                // Show loading spinner
+                loadingSpinner.style.display = 'flex';
+                generateBtn.textContent = 'Generating...';
+                generateBtn.disabled = true;
+                
+                // Form will submit as normal
+            });
+            
+            // Pre-select today's day of week
+            const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, ...
+            const dayIndex = today === 0 ? 6 : today - 1; // Adjust to match our form indexes
+            const dayInputs = document.querySelectorAll('input[name="diet_days"]');
+            if (dayInputs.length > dayIndex) {
+                dayInputs[dayIndex].checked = true;
+            }
+        });
+    </script>
+    
+    <!-- Recipe Data Handling -->
+    <script>
+        // Store recipes data from Django
+        let recipesData = [];
+        
+        // Initialize recipe data from Django context if available
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Check if recipes_json is defined (passed from Django view)
+                {% if recipes_json %}
+                    recipesData = JSON.parse('{{ recipes_json|escapejs }}');
+                    generateRecipeCards(recipesData);
+                {% else %}
+                    // If no recipes data provided, ensure loading spinner is hidden
+                    const loadingSpinner = document.getElementById('loading-spinner');
+                    if (loadingSpinner && window.location.search) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                {% endif %}
+            } catch (error) {
+                console.error('Error loading recipe data:', error);
+                // If error occurs, ensure loading spinner is hidden and show error
+                const loadingSpinner = document.getElementById('loading-spinner');
+                if (loadingSpinner) {
+                    loadingSpinner.style.display = 'none';
+                }
+                const recipeGrid = document.querySelector('.recipe-grid');
+                if (recipeGrid) {
+                    recipeGrid.innerHTML = '<div class="no-recipes">Error loading recipes. Please try again.</div>';
+                }
+                
+                // Re-enable the generate button if it exists
+                const generateBtn = document.getElementById('generate-btn');
+                if (generateBtn) {
+                    generateBtn.textContent = 'Generate Recipes';
+                    generateBtn.disabled = false;
+                }
+            }
+        });
+
+        // Generate recipe cards based on the recipe data
+        function generateRecipeCards(recipes) {
+            const recipeGrid = document.querySelector('.recipe-grid');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            
+            // Hide loading spinner
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'none';
+            }
+            
+            // Clear existing cards if any
+            recipeGrid.innerHTML = '';
+            
+            if (!recipes || recipes.length === 0) {
+                recipeGrid.innerHTML = '<div class="no-recipes">No recipes found. Try generating some recipes!</div>';
+                return;
+            }
+            
+            // Create a card for each recipe
+            recipes.forEach((recipe, index) => {
+                // Generate random appealing food image colors
+                const hue = Math.floor(Math.random() * 360);
+                const bgColor = `hsl(${hue}, 70%, 85%)`;
+                const textColor = `hsl(${hue}, 80%, 30%)`;
+                
+                // Create card element
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.setAttribute('data-recipe-index', index);
+                
+                // Generate difficulty stars
+                let difficultyStars = '';
+                if (recipe.difficulty) {
+                    const difficulty = recipe.difficulty.toLowerCase();
+                    const starCount = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 3;
+                    difficultyStars = '★'.repeat(starCount) + '☆'.repeat(3 - starCount);
+                }
+                
+                // Prepare tags HTML
+                const tagsHtml = recipe.tags && recipe.tags.length > 0 
+                    ? recipe.tags.map(tag => `<span class="recipe-tag">${tag}</span>`).join('') 
+                    : '';
+                
+                // Calculate total cooking time
+                const totalTime = (recipe.prep_time || 0) + (recipe.cook_time || 0);
+                
+                // Build the card HTML
+                card.innerHTML = `
+                    <div class="recipe-image" style="background-color: ${bgColor}; color: ${textColor};">
+                        <span style="font-size: 24px; font-weight: bold;">${recipe.title.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">${recipe.title}</h3>
+                        <div class="recipe-meta">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                ${totalTime} min
+                            </span>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                                </svg>
+                                ${difficultyStars}
+                            </span>
+                        </div>
+                        <p class="recipe-description">${recipe.description || 'No description available.'}</p>
+                        <div class="recipe-tags">
+                            ${tagsHtml}
+                        </div>
+                        <div class="recipe-view">
+                            <a href="#" onclick="showRecipeDetail(${index}); return false;">
+                                View Recipe
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                // Add card to grid
+                recipeGrid.appendChild(card);
+            });
+        }
+
+        // Show detailed recipe view
+        function showRecipeDetail(index) {
+            const recipe = recipesData[index];
+            if (!recipe) return;
+            
+            // Create the recipe detail modal
+            const modal = document.createElement('div');
+            modal.className = 'recipe-modal';
+            
+            // Prepare ingredients HTML
+            const ingredientsHtml = recipe.ingredients && recipe.ingredients.length 
+                ? recipe.ingredients.map(ingredient => 
+                    `<div class="ingredient-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        ${ingredient}
+                    </div>`
+                ).join('') 
+                : '<div>No ingredients listed</div>';
+            
+            // Prepare instructions HTML
+            const instructionsHtml = recipe.instructions && recipe.instructions.length 
+                ? recipe.instructions.map((instruction, i) => 
+                    `<li class="instruction-item">${instruction}</li>`
+                ).join('') 
+                : '<li>No instructions available</li>';
+            
+            // Prepare nutrition HTML
+            let nutritionHtml = '';
+            if (recipe.nutritional_info) {
+                nutritionHtml = `
+                    <div class="nutrition-info">
+                        <span class="nutrition-item">
+                            <strong>Calories:</strong> ${recipe.nutritional_info.calories || 0}
+                        </span>
+                        <span class="nutrition-item">
+                            <strong>Protein:</strong> ${recipe.nutritional_info.protein || 0}g
+                        </span>
+                        <span class="nutrition-item">
+                            <strong>Carbs:</strong> ${recipe.nutritional_info.carbs || 0}g
+                        </span>
+                        <span class="nutrition-item">
+                            <strong>Fat:</strong> ${recipe.nutritional_info.fat || 0}g
+                        </span>
+                    </div>
+                `;
+            }
+            
+            // Build the modal HTML
+            modal.innerHTML = `
+                <div class="recipe-modal-content">
+                    <div class="recipe-modal-header">
+                        <h2>${recipe.title}</h2>
+                        <div class="recipe-modal-close" onclick="closeRecipeModal()">&times;</div>
+                    </div>
+                    <div class="recipe-modal-body">
+                        <div class="recipe-detail-meta">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                Prep: ${recipe.prep_time || 0} min | Cook: ${recipe.cook_time || 0} min
+                            </span>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                Serves: ${recipe.servings || 0}
+                            </span>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                </svg>
+                                ${recipe.cuisine || 'Various'}
+                            </span>
+                        </div>
+                        
+                        <p class="recipe-detail-description">${recipe.description || 'No description available.'}</p>
+                        
+                        ${nutritionHtml}
+                        
+                        <div class="recipe-detail-section">
+                            <h3>Ingredients</h3>
+                            <div class="ingredients-list">
+                                ${ingredientsHtml}
+                            </div>
+                        </div>
+                        
+                        <div class="recipe-detail-section">
+                            <h3>Instructions</h3>
+                            <ol class="instructions-list">
+                                ${instructionsHtml}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to body
+            document.body.appendChild(modal);
+            
+            // Add modal open class to body to prevent scrolling
+            document.body.classList.add('modal-open');
+            
+            // Add event listener to close when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeRecipeModal();
+                }
+            });
+        }
+        
+        // Close the recipe detail modal
+        function closeRecipeModal() {
+            const modal = document.querySelector('.recipe-modal');
+            if (modal) {
+                modal.remove();
+                document.body.classList.remove('modal-open');
+            }
+        }
+    </script>
+</body>
+</html>

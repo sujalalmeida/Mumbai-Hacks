@@ -1,0 +1,618 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <h1 class="display-4 mb-2">Food Tracker</h1>
+            <p class="lead text-muted">Upload food photos for instant nutritional analysis</p>
+        </div>
+        <div class="col-lg-4 text-end d-flex align-items-center justify-content-end">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary me-2">
+                <i class="fas fa-chart-line me-2"></i> View Dashboard
+            </a>
+            {% if entries.exists %}
+            <a href="{% url 'delete_entry' entries.first.id %}" class="btn btn-danger" 
+               onclick="return confirm('Are you sure you want to delete the most recent food entry?')">
+                <i class="fas fa-trash-alt me-2"></i> Delete Latest
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Image Upload Form -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card shadow border-0 rounded-lg">
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data" class="dropzone-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="card-title mb-4"><i class="fas fa-camera text-primary me-2"></i>Upload Food Image</h4>
+                                <div class="mb-4 upload-area p-4 text-center border rounded bg-light">
+                                    <input type="file" class="form-control d-none" id="food-image-input" name="food_image" accept="image/*">
+                                    <label for="food-image-input" class="d-block cursor-pointer">
+                                        <div class="upload-icon mb-3">
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                                        </div>
+                                        <h5 id="file-name-display">Drag &amp; drop or click to upload</h5>
+                                        <p class="text-muted">Supports JPG, PNG, JPEG images</p>
+                                        <div id="preview-container" class="mt-3 d-none">
+                                            <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 150px;">
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- Video Capture Option -->
+                                <div class="text-center mb-4">
+                                    <span class="text-muted">- OR -</span>
+                                </div>
+                                
+                                <h4 class="card-title mb-4"><i class="fas fa-video text-primary me-2"></i>Record Food Video</h4>
+                                <div class="mb-4 video-area p-4 text-center border rounded bg-light">
+                                    <div id="video-buttons">
+                                        <button type="button" id="start-video-btn" class="btn btn-outline-primary">
+                                            <i class="fas fa-video me-2"></i> Start Camera
+                                        </button>
+                                    </div>
+                                    <div id="video-container" class="mt-3 d-none">
+                                        <video id="video-preview" autoplay playsinline style="width: 100%; max-height: 250px;" class="rounded"></video>
+                                        <div class="mt-3">
+                                            <button type="button" id="start-recording-btn" class="btn btn-danger me-2">
+                                                <i class="fas fa-record-vinyl me-2"></i> Start Recording
+                                            </button>
+                                            <button type="button" id="stop-recording-btn" class="btn btn-secondary d-none">
+                                                <i class="fas fa-stop-circle me-2"></i> Stop Recording
+                                            </button>
+                                            <button type="button" id="cancel-video-btn" class="btn btn-outline-secondary ms-2">
+                                                <i class="fas fa-times me-2"></i> Cancel
+                                            </button>
+                                        </div>
+                                        <div id="recording-status" class="mt-2 d-none">
+                                            <span class="badge bg-danger recording-badge">
+                                                <i class="fas fa-circle recording-indicator"></i> Recording...
+                                            </span>
+                                            <div class="text-muted small mt-1">Frame analysis in progress</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="card-title mb-4"><i class="fas fa-utensils text-primary me-2"></i>Meal Information</h4>
+                                <div class="mb-3">
+                                    <label for="meal-type" class="form-label">Meal Type</label>
+                                    <select name="meal_type" id="meal-type" class="form-select">
+                                        <option value="Breakfast">Breakfast</option>
+                                        <option value="Lunch">Lunch</option>
+                                        <option value="Dinner">Dinner</option>
+                                        <option value="Snack">Snack</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-text mb-4">
+                                        Our AI will analyze your food image to identify:
+                                        <ul class="mt-2">
+                                            <li>Food type and components</li>
+                                            <li>Calorie content</li>
+                                            <li>Macro nutrients (proteins, fats, carbs)</li>
+                                            <li>Additional nutritional data</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg px-4" id="analyze-btn">
+                                        <i class="fas fa-bolt me-2"></i> Analyze Food
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger shadow-sm">
+        <i class="fas fa-exclamation-circle me-2"></i> {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Food Entries -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="border-bottom pb-2">Your Food Log</h2>
+                <div>
+                    <button class="btn btn-outline-primary" id="grid-view-btn" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" id="list-view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="grid-view">
+        <div class="row">
+            {% for entry in entries %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm hover-shadow transition food-card">
+                    <div class="position-relative">
+                        <img src="{{ entry.image.url }}" class="card-img-top food-image" alt="Food Image" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute top-0 end-0 bg-primary text-white px-2 py-1 m-2 rounded-pill small">
+                            <i class="fas fa-utensils me-1"></i> {{ entry.meal_type }}
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 bg-dark bg-opacity-75 text-white px-3 py-2 m-2 rounded">
+                            <h5 class="mb-0 fs-6">{{ entry.food_name }}</h5>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 bg-dark text-white px-2 py-1 m-2 rounded-pill small">
+                            {{ entry.created_at|date:"M d, Y" }}
+                        </div>
+                        <a href="{% url 'delete_entry' entry.id %}" class="position-absolute top-0 start-0 bg-danger text-white p-2 m-2 rounded-circle delete-btn" 
+                           onclick="return confirm('Are you sure you want to delete this food entry?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5 class="card-title fw-bold mb-3">Nutrition Facts</h5>
+                            <div class="progress mb-3" style="height: 10px;" title="Daily calorie goal comparison">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {% widthratio entry.calories|floatformat:0|default:0 2000 100 %}%;" aria-valuenow="{{ entry.calories|floatformat:0 }}" aria-valuemin="0" aria-valuemax="2000"></div>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 65px; height: 65px; font-weight: 600;">
+                                    {{ entry.calories|floatformat:0 }}
+                                </div>
+                                <h6 class="small text-muted">CALORIES</h6>
+                            </div>
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-info text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 65px; height: 65px; font-weight: 600;">
+                                    {{ entry.fats|floatformat:1 }}g
+                                </div>
+                                <h6 class="small text-muted">FATS</h6>
+                            </div>
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 65px; height: 65px; font-weight: 600;">
+                                    {{ entry.proteins|floatformat:1 }}g
+                                </div>
+                                <h6 class="small text-muted">PROTEINS</h6>
+                            </div>
+                        </div>
+                        {% if entry.carbs > 0 %}
+                        <div class="row text-center mt-3">
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px; font-weight: 600;">
+                                    {{ entry.carbs|floatformat:1 }}g
+                                </div>
+                                <h6 class="small text-muted">CARBS</h6>
+                            </div>
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px; font-weight: 600;">
+                                    {{ entry.fiber|floatformat:1 }}g
+                                </div>
+                                <h6 class="small text-muted">FIBER</h6>
+                            </div>
+                            <div class="col-4">
+                                <div class="nutrition-circle bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px; font-weight: 600;">
+                                    {{ entry.sugar|floatformat:1 }}g
+                                </div>
+                                <h6 class="small text-muted">SUGAR</h6>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="empty-state mb-4">
+                    <i class="fas fa-utensils fa-4x text-muted"></i>
+                </div>
+                <h4 class="text-muted">No food entries yet</h4>
+                <p class="lead">Upload an image to get started with your nutritional tracking!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div id="list-view" class="d-none">
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Image</th>
+                            <th>Food</th>
+                            <th>Meal Type</th>
+                            <th>Calories</th>
+                            <th>Proteins</th>
+                            <th>Fats</th>
+                            <th>Carbs</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                        <tr>
+                            <td width="80">
+                                <img src="{{ entry.image.url }}" alt="{{ entry.food_name }}" width="70" height="70" class="rounded" style="object-fit: cover;">
+                            </td>
+                            <td><strong>{{ entry.food_name }}</strong></td>
+                            <td><span class="badge bg-secondary">{{ entry.meal_type }}</span></td>
+                            <td><span class="badge bg-primary">{{ entry.calories|floatformat:0 }}</span></td>
+                            <td>{{ entry.proteins|floatformat:1 }}g</td>
+                            <td>{{ entry.fats|floatformat:1 }}g</td>
+                            <td>{{ entry.carbs|floatformat:1 }}g</td>
+                            <td>{{ entry.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'delete_entry' entry.id %}" class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('Are you sure you want to delete this food entry?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4">No food entries yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .transition {
+        transition: all 0.3s ease;
+    }
+    .upload-area {
+        transition: all 0.2s ease;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .upload-area:hover {
+        background-color: #f8f9fa !important;
+        border-color: #0d6efd !important;
+    }
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .nutrition-circle {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .nutrition-circle:hover {
+        transform: scale(1.05);
+    }
+    .food-image {
+        transition: transform 0.3s ease;
+    }
+    .food-card:hover .food-image {
+        transform: scale(1.03);
+    }
+    #analyze-btn {
+        transition: all 0.2s ease;
+    }
+    #analyze-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* Additional hover effects */
+    .card:hover .card-img-top {
+        filter: brightness(0.95);
+    }
+    
+    /* Video recording animation */
+    .recording-badge {
+        padding: 0.5rem 0.75rem;
+        animation: pulse 1.5s infinite;
+    }
+    
+    .recording-indicator {
+        animation: blink 1.5s infinite;
+        font-size: 0.5rem;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.4; }
+        100% { opacity: 1; }
+    }
+    
+    /* Video interface styling */
+    .video-area {
+        transition: all 0.3s ease;
+    }
+    
+    .video-area:hover {
+        border-color: var(--bs-primary) !important;
+    }
+    
+    #video-preview {
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    #video-container.recording #video-preview {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
+    
+    /* Delete button styles */
+    .delete-btn {
+        opacity: 0.7;
+        transition: all 0.2s ease;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .delete-btn:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Image upload preview
+        const fileInput = document.getElementById('food-image-input');
+        const uploadArea = document.querySelector('.upload-area');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                fileNameDisplay.textContent = file.name;
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('border-primary');
+        });
+        
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.classList.remove('border-primary');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('border-primary');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                const file = e.dataTransfer.files[0];
+                fileNameDisplay.textContent = file.name;
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Click functionality
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // View toggle functionality
+        const gridViewBtn = document.getElementById('grid-view-btn');
+        const listViewBtn = document.getElementById('list-view-btn');
+        const gridView = document.getElementById('grid-view');
+        const listView = document.getElementById('list-view');
+        
+        gridViewBtn.addEventListener('click', function() {
+            gridView.classList.remove('d-none');
+            listView.classList.add('d-none');
+            gridViewBtn.classList.remove('btn-outline-primary');
+            gridViewBtn.classList.add('btn-primary');
+            listViewBtn.classList.remove('btn-primary');
+            listViewBtn.classList.add('btn-outline-secondary');
+        });
+        
+        listViewBtn.addEventListener('click', function() {
+            gridView.classList.add('d-none');
+            listView.classList.remove('d-none');
+            listViewBtn.classList.remove('btn-outline-secondary');
+            listViewBtn.classList.add('btn-primary');
+            gridViewBtn.classList.remove('btn-primary');
+            gridViewBtn.classList.add('btn-outline-primary');
+        });
+        
+        // Loading animation for analyze button
+        const form = document.querySelector('form');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        
+        form.addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('food-image-input');
+            
+            // Only submit if file is selected or video recording was used
+            if (fileInput.files.length > 0) {
+                analyzeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Analyzing...';
+                analyzeBtn.disabled = true;
+            } else {
+                // If no file selected and not recording, prevent submission
+                if (!isRecording) {
+                    e.preventDefault();
+                    alert('Please upload an image or use video recording');
+                }
+            }
+        });
+    });
+
+    // Video recording functionality
+    const startVideoBtn = document.getElementById('start-video-btn');
+    const videoContainer = document.getElementById('video-container');
+    const videoPreview = document.getElementById('video-preview');
+    const startRecordingBtn = document.getElementById('start-recording-btn');
+    const stopRecordingBtn = document.getElementById('stop-recording-btn');
+    const cancelVideoBtn = document.getElementById('cancel-video-btn');
+    const recordingStatus = document.getElementById('recording-status');
+    
+    let stream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+    let recordingInterval = null;
+    
+    // Start video preview
+    startVideoBtn.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'environment' 
+                } 
+            });
+            videoPreview.srcObject = stream;
+            videoContainer.classList.remove('d-none');
+            startVideoBtn.classList.add('d-none');
+        } catch (err) {
+            console.error("Error accessing camera:", err);
+            alert("Could not access camera. Please check permissions.");
+        }
+    });
+    
+    // Start recording and frame capture
+    startRecordingBtn.addEventListener('click', function() {
+        if (!stream) return;
+        
+        isRecording = true;
+        recordingStatus.classList.remove('d-none');
+        startRecordingBtn.classList.add('d-none');
+        stopRecordingBtn.classList.remove('d-none');
+        videoContainer.classList.add('recording');  // Add recording class for styling
+        
+        // Create canvas for capturing frames
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = videoPreview.videoWidth;
+        canvas.height = videoPreview.videoHeight;
+        
+        // Disable the normal upload button during recording
+        document.getElementById('food-image-input').disabled = true;
+        document.getElementById('analyze-btn').disabled = true;
+        
+        // Set up frame capture interval (every 3 seconds)
+        let frameCount = 0;
+        recordingInterval = setInterval(() => {
+            // Draw current video frame to canvas
+            ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to blob
+            canvas.toBlob(function(blob) {
+                // Create FormData and add needed parameters
+                const formData = new FormData();
+                formData.append('food_image', blob, `frame-${frameCount}.jpg`);
+                formData.append('meal_type', document.getElementById('meal-type').value);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+                formData.append('is_video_frame', 'true');  // Flag to indicate this is from video
+                
+                // Send frame to server for analysis
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Frame analysis result:', data);
+                    // If we got a high confidence result or hit our frame limit, stop recording
+                    if (data.confidence > 0.8 || frameCount >= 5) {
+                        clearInterval(recordingInterval);
+                        stopRecording();
+                        // Redirect to see results
+                        window.location.href = window.location.href;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error analyzing frame:', error);
+                });
+                
+                frameCount++;
+            }, 'image/jpeg', 0.95);
+        }, 3000);  // Capture a frame every 3 seconds
+    });
+    
+    // Stop recording
+    stopRecordingBtn.addEventListener('click', stopRecording);
+    
+    function stopRecording() {
+        if (recordingInterval) {
+            clearInterval(recordingInterval);
+        }
+        
+        isRecording = false;
+        recordingStatus.classList.add('d-none');
+        stopRecordingBtn.classList.add('d-none');
+        startRecordingBtn.classList.remove('d-none');
+        videoContainer.classList.remove('recording');  // Remove recording class
+        
+        // Re-enable the upload button
+        document.getElementById('food-image-input').disabled = false;
+        document.getElementById('analyze-btn').disabled = false;
+    }
+    
+    // Cancel video
+    cancelVideoBtn.addEventListener('click', function() {
+        stopRecording();
+        
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        
+        videoPreview.srcObject = null;
+        videoContainer.classList.add('d-none');
+        startVideoBtn.classList.remove('d-none');
+    });
+</script>
+{% endblock %} 

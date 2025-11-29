@@ -1,0 +1,17 @@
+<!-- {% extends "home/landing_page.html" %} -->
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Your Personalized Plan</h2>
+    <p class="lead text-center">Hello, {{ profile.full_name }}! Based on your inputs, here is your plan:</p>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">Plan Details</h4>
+            <p class="card-text">{{ plan }}</p>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Go to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

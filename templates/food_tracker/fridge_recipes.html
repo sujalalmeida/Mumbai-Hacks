@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Recipe Suggestions</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .content {
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dashboard-header-text {
+            flex: 1;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 20px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .back-button svg {
+            margin-right: 8px;
+        }
+        
+        .recipe-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        .recipe-card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .recipe-card h3 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+        
+        .recipe-metadata {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .recipe-metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .ingredients-source {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .ingredients-source h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .ingredients-source ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style-type: none;
+        }
+
+        .ingredients-source li {
+            background-color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .highlight-ingredient {
+            background-color: #ecfdf5;
+            color: #047857;
+            font-weight: 500;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ingredients-list {
+            list-style-type: none;
+            margin-bottom: 25px;
+        }
+        
+        .ingredients-list li {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ingredients-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .ingredients-list li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+        }
+        
+        .instructions-list {
+            list-style-type: none;
+            counter-reset: step-counter;
+        }
+        
+        .instructions-list li {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .instructions-list li::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .fridge-items-used {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(99, 102, 241, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .fridge-items-used h4 {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .items-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .item-tag {
+            background-color: #e2e8f0;
+            color: var(--text-dark);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #94a3b8;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+        
+        .btn svg {
+            margin-right: 8px;
+        }
+        
+        .recipe-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .loading-animation {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 50px 0;
+        }
+        
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 8px solid rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #b91c1c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .missing-ingredients {
+            background-color: #fff7ed;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .missing-ingredients h4 {
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .missing-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .missing-item {
+            background-color: white;
+            border: 1px solid #ffedd5;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .missing-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .delivery-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .delivery-option {
+            flex: 1;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .delivery-option:hover {
+            border-color: var(--primary-color);
+            background-color: #f3f4f6;
+        }
+        
+        .delivery-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .delivery-option img {
+            height: 30px;
+            margin-bottom: 5px;
+            object-fit: contain;
+        }
+        
+        .order-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .order-btn:hover {
+            background-color: #ea580c;
+            transform: translateY(-2px);
+        }
+        
+        .order-btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .success-toast.error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .success-toast.warning {
+            background-color: #fff7ed;
+            color: #c2410c;
+        }
+        
+        .success-toast.success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .success-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="dashboard-header">
+            <div class="dashboard-header-text">
+                <h2>Recipe Suggestions</h2>
+                <p>Recipes based on what's in your fridge</p>
+            </div>
+            <a href="{% url 'fridge_contents' %}" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Back to Fridge
+            </a>
+        </div>
+        
+        {% if error %}
+            <div class="error-message">
+                <strong>Error: </strong> {{ error }}
+            </div>
+        {% endif %}
+        
+        <div id="recipe-generation">
+            {% if recipe %}
+                <div class="recipe-card">
+                    <h3>{{ recipe.title }}</h3>
+                    
+                    <div class="recipe-metadata">
+                        <div class="recipe-metadata-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                            </svg>
+                            <span>Created: {{ recipe.created_date|date:"F j, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if original_ingredients %}
+                    <div class="ingredients-source">
+                        <h4>Reasoning from Fridge Contents:</h4>
+                        <ul>
+                            {% for ingredient in original_ingredients %}
+                                <li class="{% if ingredient in recipe.ingredients %}highlight-ingredient{% endif %}">{{ ingredient }}</li>
+                            {% endfor %}
+                        </ul>
+                        <p style="margin-top: 15px; font-size: 14px;">Our AI analyzed these ingredients and created a recipe that makes the best use of them.</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if missing_ingredients %}
+                    <div class="missing-ingredients">
+                        <h4>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h6zM5 1a4 4 0 0 0-4 4v6a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4V5a4 4 0 0 0-4-4H5z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                            Missing Ingredients
+                        </h4>
+                        <p>These ingredients aren't in your fridge but would make this recipe complete:</p>
+                        
+                        <form id="order-form">
+                            <div class="missing-items">
+                                {% for item in missing_ingredients %}
+                                <div class="missing-item">
+                                    <input type="checkbox" id="item-{{ forloop.counter }}" name="order_items" value="{{ item }}" checked>
+                                    <label for="item-{{ forloop.counter }}">{{ item }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <p>Select delivery service:</p>
+                            <div class="delivery-options">
+                                <div class="delivery-option selected" data-service="blinkit">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Blinkit-yellow-app-icon.svg" alt="Blinkit">
+                                    <div>Blinkit</div>
+                                    <div style="font-size: 12px; color: var(--text-light);">10-15 mins</div>
+                                </div>
+                                <div class="delivery-option" data-service="zepto">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Zepto_company_logo.png" alt="Zepto">
+                                    <div>Zepto</div>
+                                    <div style="font-size: 12px; color: var(--text-light);">10 mins</div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" id="order-button" class="order-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                                Order Missing Ingredients
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                    
+                    <h4 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M7 7V1.414a1 1 0 0 1 2 0V2h5a1 1 0 0 1 .8.4l.975 1.3a.5.5 0 0 1 0 .6L14.8 5.6a1 1 0 0 1-.8.4H9v10H7v-5H2a1 1 0 0 1-.8-.4L.225 9.3a.5.5 0 0 1 0-.6L1.2 7.4A1 1 0 0 1 2 7h5zm1 3V8H2l-.75 1L2 10h6zm0-5h6l.75-1L14 3H8v2z"/>
+                        </svg>
+                        Ingredients
+                    </h4>
+                    <ul class="ingredients-list">
+                        {% if ingredients_list %}
+                            {% for ingredient in ingredients_list %}
+                                <li>{{ ingredient }}</li>
+                            {% endfor %}
+                        {% else %}
+                            {% for line in recipe.ingredients.split|linebreaksbr %}
+                                <li>{{ line }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                    
+                    <h4 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1zm-2 0v1A2.5 2.5 0 0 0 5.5 5h5A2.5 2.5 0 0 0 13 2.5v-1H1.5zm0 3h13V14.5A1.5 1.5 0 0 1 13 16H3a1.5 1.5 0 0 1-1.5-1.5V4.5z"/>
+                        </svg>
+                        Instructions
+                    </h4>
+                    <ol class="instructions-list">
+                        {% if instructions_list %}
+                            {% for instruction in instructions_list %}
+                                <li>{{ instruction }}</li>
+                            {% endfor %}
+                        {% else %}
+                            {% for line in recipe.instructions.split|linebreaksbr %}
+                                <li>{{ line }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    </ol>
+                    
+                    <div class="recipe-actions">
+                        <a href="{% url 'suggest_fridge_recipes' %}" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                            </svg>
+                            Generate Another Recipe
+                        </a>
+                        <a href="#" id="print-recipe" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+                                <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                            </svg>
+                            Print Recipe
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="loading-animation">
+                    <div class="spinner"></div>
+                    <div style="margin-bottom: 15px; font-weight: 600;">Generating Recipe</div>
+                    <div style="color: var(--text-light); text-align: center;">
+                        We're creating a delicious recipe based on<br>the items in your fridge. Please wait...
+                    </div>
+                </div>
+                
+                <script>
+                    // Auto-refresh if no recipe is generated yet
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 5000);
+                </script>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Success Toast Notification -->
+    <div class="success-toast" id="success-toast">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        <span id="toast-message">Success!</span>
+    </div>
+    
+    <!-- Order Confirmation Modal -->
+    <div class="modal-overlay" id="order-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Confirmation</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="order-summary">Your order has been placed with <strong id="service-name">Blinkit</strong>.</p>
+                <p>Estimated delivery time: <strong id="delivery-time">10-15 minutes</strong>.</p>
+                <p style="margin-top: 15px;">You'll be redirected to complete your order.</p>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" id="confirm-redirect">Continue to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order form modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Order Missing Ingredients</h3>
+            <form id="orderForm" method="post" action="{% url 'order_missing_ingredients' %}">
+                {% csrf_token %}
+                <input type="hidden" name="recipe_id" id="orderRecipeId">
+                <input type="hidden" name="service" id="selectedService">
+                <!-- This will be populated dynamically with missing ingredients -->
+                <div id="missingIngredientsList"></div>
+                
+                <div class="delivery-services">
+                    <p>Choose delivery service:</p>
+                    <div class="service-buttons">
+                        <button type="button" class="service-btn" data-service="blinkit">
+                            <img src="{% static 'img/blinkit.png' %}" alt="Blinkit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/9b/Blinkit-yellow-app-icon.svg'">
+                            Blinkit
+                        </button>
+                        <button type="button" class="service-btn" data-service="zepto">
+                            <img src="{% static 'img/zepto.png' %}" alt="Zepto" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/13/Zepto_company_logo.png'">
+                            Zepto
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="button" id="placeOrderBtn" disabled>Place Order</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Print recipe functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const printButton = document.getElementById('print-recipe');
+            
+            if (printButton) {
+                printButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.print();
+                });
+            }
+            
+            // Delivery service selection
+            const deliveryOptions = document.querySelectorAll('.delivery-option');
+            let selectedService = 'blinkit';
+            
+            deliveryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedService = this.dataset.service;
+                });
+            });
+            
+            // Order button functionality
+            const orderButton = document.getElementById('order-button');
+            const orderModal = document.getElementById('order-modal');
+            const closeModal = document.querySelector('.close-modal');
+            const confirmRedirect = document.getElementById('confirm-redirect');
+            
+            if (orderButton) {
+                orderButton.addEventListener('click', function() {
+                    // Get selected ingredients
+                    const checkboxes = document.querySelectorAll('input[name="order_items"]:checked');
+                    if (checkboxes.length === 0) {
+                        showToast('Please select at least one ingredient to order', 'warning');
+                        return;
+                    }
+                    
+                    const missingIngredients = Array.from(checkboxes).map(cb => cb.value);
+                    
+                    // Disable the button to prevent multiple clicks
+                    orderButton.disabled = true;
+                    orderButton.innerHTML = '<span class="spinner"></span> Processing...';
+                    
+                    // Additional CSS styles for the spinner
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .spinner {
+                            display: inline-block;
+                            width: 16px;
+                            height: 16px;
+                            border: 2px solid rgba(255,255,255,0.3);
+                            border-radius: 50%;
+                            border-top-color: #fff;
+                            animation: spin 1s ease-in-out infinite;
+                            margin-right: 8px;
+                            vertical-align: middle;
+                        }
+                        
+                        @keyframes spin {
+                            to { transform: rotate(360deg); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    // Create form data
+                    const formData = new FormData();
+                    formData.append('recipe_id', "{{ recipe.id }}");
+                    formData.append('service', selectedService);
+                    formData.append('ingredients', JSON.stringify(missingIngredients));
+                    formData.append('timestamp', new Date().getTime()); // Add timestamp to prevent caching
+                    
+                    // Function to reset order button state
+                    function resetOrderButton() {
+                        // Reset the current button (order-button)
+                        orderButton.disabled = false;
+                        orderButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg> Order Missing Ingredients';
+                    }
+                    
+                    // Get CSRF token from cookies or meta tag
+                    function getCsrfToken() {
+                        // First try cookies
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            const cookies = document.cookie.split(';');
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // If cookie not found, try meta tag
+                        if (!cookieValue) {
+                            const metaTag = document.querySelector('meta[name="csrf-token"]');
+                            if (metaTag) {
+                                cookieValue = metaTag.getAttribute('content');
+                            }
+                        }
+                        
+                        console.log('CSRF Token:', cookieValue);
+                        return cookieValue;
+                    }
+                    
+                    // Send order request
+                    const csrfToken = getCsrfToken();
+                    console.log('Using CSRF Token:', csrfToken);
+                    
+                    fetch('{% url "order_missing_ingredients" %}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': csrfToken
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Reset button state
+                        resetOrderButton();
+                        
+                        if (data.success) {
+                            // Show success toast
+                            showToast(data.message || 'Ready to complete your order!', 'success');
+                            
+                            // Open the URL in a new tab
+                            if (data.redirect_url) {
+                                window.open(data.redirect_url, '_blank');
+                                showToast('Opening delivery service in a new tab');
+                            }
+                            
+                            // Close modal if it exists
+                            const orderModal = document.getElementById('orderModal');
+                            if (orderModal) {
+                                orderModal.style.display = 'none';
+                            }
+                        } else {
+                            // Show error message
+                            showToast(data.message || 'Error preparing order. Please try again.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        // Reset button state
+                        resetOrderButton();
+                        
+                        console.error('Error:', error);
+                        
+                        // Show error message
+                        showToast('Error placing order. Please try again.', 'error');
+                    });
+                });
+            }
+            
+            // Modal close functionality
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    orderModal.classList.remove('active');
+                });
+            }
+            
+            // Redirect confirmation
+            if (confirmRedirect) {
+                confirmRedirect.addEventListener('click', function() {
+                    const redirectUrl = this.getAttribute('data-url');
+                    if (redirectUrl) {
+                        window.open(redirectUrl, '_blank');
+                    }
+                    orderModal.classList.remove('active');
+                    showToast('Opening delivery service in new tab');
+                });
+            }
+            
+            // Toast notification function
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('success-toast');
+                const toastMessage = document.getElementById('toast-message');
+                
+                toastMessage.innerText = message;
+                
+                // Add appropriate class based on type
+                toast.className = 'success-toast';
+                if (type === 'error') {
+                    toast.classList.add('error');
+                } else if (type === 'warning') {
+                    toast.classList.add('warning');
+                } else {
+                    toast.classList.add('success');
+                }
+                
+                toast.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html> 

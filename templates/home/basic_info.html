@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Information</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6366F1;
+      --primary-hover: #4F46E5;
+      --secondary-color: #3b82f6;
+      --accent-color: #f97316;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --bg-light: #f8fafc;
+      --bg-dark: #0f172a;
+      --card-bg: #ffffff;
+      --border-radius: 16px;
+    }
+    
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background-color: #f5f7ff;
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .navbar {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .onboarding-container {
+      display: flex;
+      margin: 40px auto;
+      max-width: 1100px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-sidebar {
+      width: 280px;
+      background-color: #f1f5f9;
+      padding: 30px 15px;
+    }
+    
+    .progress-item {
+      display: flex;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .progress-item.active {
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-item.completed .step-number {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .step-info h3 {
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    
+    .step-info p {
+      font-size: 14px;
+      color: var(--text-light);
+      margin: 0;
+    }
+    
+    .form-container {
+      flex: 1;
+      padding: 40px;
+      background-color: white;
+    }
+    
+    .step-title {
+      margin-bottom: 30px;
+    }
+    
+    .step-title h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .step-title p {
+      color: var(--text-light);
+    }
+    
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light py-3">
+      <div class="container">
+        <a class="logo" href="#">AuraFitness</a>
+        <div class="d-flex align-items-center">
+          <a href="#" class="nav-link me-3">Home</a>
+          <a href="#" class="nav-link me-3">Workouts</a>
+          <a href="#" class="nav-link me-3">Nutrition</a>
+          <a href="#" class="nav-link me-3">Challenges</a>
+          <a href="#" class="nav-link me-3">Community</a>
+          <div class="user-avatar">JD</div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <div class="onboarding-container">
+    <div class="progress-sidebar">
+      <div class="progress-item active completed">
+        <div class="step-number">1</div>
+        <div class="step-info">
+          <h3>Basic Information</h3>
+          <p>Personal details</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">2</div>
+        <div class="step-info">
+          <h3>Lifestyle & Habits</h3>
+          <p>Daily activity level</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">3</div>
+        <div class="step-info">
+          <h3>Diet Preferences</h3>
+          <p>Food choices & restrictions</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">4</div>
+        <div class="step-info">
+          <h3>Fitness Goals</h3>
+          <p>What you want to achieve</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">5</div>
+        <div class="step-info">
+          <h3>Medical Information</h3>
+          <p>Health conditions</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">6</div>
+        <div class="step-info">
+          <h3>Workout Preferences</h3>
+          <p>Exercise style & equipment</p>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="step-number">7</div>
+        <div class="step-info">
+          <h3>Plan Selection</h3>
+          <p>Choose your program</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-container">
+      <div class="step-title">
+        <h2>Basic Information</h2>
+        <p>Let's start with some basic information about you</p>
+      </div>
+      
+      <form id="basicInfoForm" action="{% url 'show_plan' %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="fullName" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="fullName" name="full_name" placeholder="Enter your full name">
+        </div>
+        
+        <div class="mb-4">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+        </div>
+        
+        <div class="mb-4">
+          <label for="dob" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="dob" name="dob">
+        </div>
+        
+        <div class="mb-4">
+          <label for="gender" class="form-label">Gender</label>
+          <select class="form-select" id="gender" name="gender">
+            <option value="" selected disabled>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+            <option value="prefer-not">Prefer not to say</option>
+          </select>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Current Measurements</label>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input type="number" step="0.01" class="form-control" id="height" name="height" placeholder="Height (cm)">
+            </div>
+            <div class="col-md-6">
+              <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="Weight (kg)">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-footer">
+          <div></div>
+          <button type="submit" class="btn btn-primary" id="continueBtn">Continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Add event listener to the Continue button
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('basicInfoForm');
+      const continueBtn = document.getElementById('continueBtn');
+      
+      if(form && continueBtn) {
+        // Log form submission but don't prevent default
+        form.addEventListener('submit', function() {
+          console.log('Form submitted');
+          // Form will be submitted normally - no preventDefault
+        });
+        
+        // No need for additional button click handler as the button is already type="submit"
+        continueBtn.addEventListener('click', function() {
+          console.log('Continue button clicked');
+          // The button will submit the form already
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">Nutrition Dashboard</h1>
+            <p class="text-muted">Track your nutritional insights and progress</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <form method="GET" class="d-flex">
+                <select name="days" class="form-select me-2" onchange="this.form.submit()">
+                    <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 days</option>
+                    <option value="14" {% if days == 14 %}selected{% endif %}>Last 14 days</option>
+                    <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+                    <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 days</option>
+                </select>
+                <a href="{% url 'food_tracker' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Tracker
+                </a>
+            </form>
+        </div>
+    </div>
+
+    {% if total_entries == 0 %}
+        <div class="text-center py-5 my-5">
+            <div class="empty-state mb-4">
+                <i class="fas fa-chart-pie fa-4x text-muted"></i>
+            </div>
+            <h3 class="text-muted">No data available</h3>
+            <p class="lead">Upload food images to see your nutrition metrics</p>
+            <a href="{% url 'food_tracker' %}" class="btn btn-primary mt-3">Add Food Entry</a>
+        </div>
+    {% else %}
+        <!-- Stats Cards Row -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Total Entries</h6>
+                                <h3 class="mb-0">{{ total_entries }}</h3>
+                            </div>
+                            <div class="stat-icon bg-light rounded-circle p-3">
+                                <i class="fas fa-utensils text-primary fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Avg. Calories</h6>
+                                <h3 class="mb-0">{{ avg_calories }}</h3>
+                            </div>
+                            <div class="stat-icon bg-light rounded-circle p-3">
+                                <i class="fas fa-fire-alt text-danger fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Avg. Protein</h6>
+                                <h3 class="mb-0">{{ avg_proteins }}g</h3>
+                            </div>
+                            <div class="stat-icon bg-light rounded-circle p-3">
+                                <i class="fas fa-dumbbell text-success fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Avg. Carbs</h6>
+                                <h3 class="mb-0">{{ avg_carbs }}g</h3>
+                            </div>
+                            <div class="stat-icon bg-light rounded-circle p-3">
+                                <i class="fas fa-bread-slice text-warning fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0">Daily Calorie Intake</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="calorieChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0">Nutrition Composition</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="nutritionChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0">Meal Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="mealDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Entries</h5>
+                        <a href="{% url 'food_tracker' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Food</th>
+                                        <th>Calories</th>
+                                        <th>Proteins</th>
+                                        <th>Fats</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in recent_entries %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ entry.image.url }}" alt="{{ entry.food_name }}" width="40" height="40" class="rounded me-2" style="object-fit: cover;">
+                                                <span>{{ entry.food_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-primary">{{ entry.calories|floatformat:0 }}</span></td>
+                                        <td>{{ entry.proteins|floatformat:1 }}g</td>
+                                        <td>{{ entry.fats|floatformat:1 }}g</td>
+                                        <td>{{ entry.created_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartData = {{ chart_data|safe }};
+        
+        if (!chartData || Object.keys(chartData).length === 0) {
+            return;
+        }
+        
+        // Calorie Chart (Line Chart)
+        const calorieCtx = document.getElementById('calorieChart').getContext('2d');
+        new Chart(calorieCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.dates,
+                datasets: [{
+                    label: 'Daily Calories',
+                    data: chartData.calories,
+                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Calories'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Nutrition Composition (Pie Chart)
+        const nutritionCtx = document.getElementById('nutritionChart').getContext('2d');
+        new Chart(nutritionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.nutrition.labels,
+                datasets: [{
+                    data: chartData.nutrition.data,
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',  // Protein (green)
+                        'rgba(255, 193, 7, 0.8)',  // Fats (yellow)
+                        'rgba(23, 162, 184, 0.8)'  // Carbs (cyan)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.formattedValue;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Meal Distribution Chart
+        const mealDistCtx = document.getElementById('mealDistributionChart').getContext('2d');
+        new Chart(mealDistCtx, {
+            type: 'bar',
+            data: {
+                labels: chartData.meal_distribution.labels,
+                datasets: [{
+                    label: 'Number of Meals',
+                    data: chartData.meal_distribution.data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card {
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %} 

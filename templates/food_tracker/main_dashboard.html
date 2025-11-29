@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #f97316;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Main Content */
+        .content {
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Background decorations */
+        .bg-decoration {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        .bg-decoration-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
+            top: -150px;
+            right: -100px;
+            filter: blur(50px);
+        }
+        
+        .bg-decoration-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f97316, #eab308);
+            bottom: -100px;
+            left: 10%;
+            filter: blur(40px);
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dashboard-header-text {
+            flex: 1;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 20px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .back-button svg {
+            margin-right: 8px;
+        }
+        
+        .dashboard-content {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-content:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .dashboard-content h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .dashboard-content p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+        
+        .feature-overview {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-top: 25px;
+        }
+        
+        .feature-overview h4 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .feature-overview ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .feature-overview li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-overview li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-overview li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: 10px;
+        }
+        
+        .feature-overview li strong {
+            color: var(--text-dark);
+        }
+        
+        /* Feature Cards Section */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(59, 130, 246, 0.03));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+        }
+        
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+        
+        .feature-card:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3), 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(59, 130, 246, 0.1));
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <div class="dashboard-header">
+            <a href="{% url 'landing' %}" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5"></path>
+                    <path d="M12 19l-7-7 7-7"></path>
+                </svg>
+                Back to Home
+            </a>
+            <div class="dashboard-header-text">
+                <h2>Welcome to Your Food Dashboard</h2>
+                <p>Track, analyze, and improve your nutrition with powerful tools</p>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            {% block content %}
+            <div id="dashboard-view" class="content-view">
+                <h3>Dashboard Overview</h3>
+                <p>Use these powerful features to take control of your nutrition and make healthier food choices every day.</p>
+                
+                <div class="feature-cards">
+                    <a href="{% url 'my_receipes' %}" class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 2H9a1 1 0 0 0-1 1v19l4-2 4 2V3a1 1 0 0 0-1-1Z"></path>
+                            </svg>
+                        </div>
+                        <h3>My Recipes</h3>
+                        <p>Store and organize your favorite recipes in one place. Add nutritional information and easily plan your meals.</p>
+                    </a>
+                    
+                    <a href="{% url 'food_tracker' %}" class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                                <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                                <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                                <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                            </svg>
+                        </div>
+                        <h3>Real-time Food Detection</h3>
+                        <p>Take a photo of your food and instantly get detailed nutritional information with our AI-powered detection.</p>
+                    </a>
+                    
+                    <a href="{% url 'fridge_contents' %}" class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"></path>
+                                <path d="M5 10h14"></path>
+                                <path d="M9 2v18"></path>
+                                <path d="M9 14h3"></path>
+                            </svg>
+                        </div>
+                        <h3>What's in My Fridge</h3>
+                        <p>Keep track of items in your fridge, get alerts on expiring food, and discover recipes using what you have.</p>
+                    </a>
+                
+                </div>
+                
+                <div class="feature-overview glass">
+                    <h4>Getting Started Tips:</h4>
+                    <ul>
+                        <li><strong>Set your nutritional goals</strong> in your profile settings to personalize your dashboard</li>
+                        <li><strong>Add your favorite recipes</strong> to quickly log meals you eat regularly</li>
+                        <li><strong>Use the camera feature</strong> to scan food labels or take pictures of your meals</li>
+                        <li><strong>Update your fridge inventory</strong> after each shopping trip</li>
+                        <li><strong>Check your analytics weekly</strong> to track your progress and make adjustments</li>
+                    </ul>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

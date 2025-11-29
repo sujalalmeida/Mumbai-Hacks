@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraFitness Onboarding</title>
+  <style>
+    :root {
+      --primary: #6366F1;
+      --primary-light: #818CF8;
+      --primary-dark: #4F46E5;
+      --secondary: #F3F4F6;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --white: #FFFFFF;
+      --shadow: rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(120deg, #EEF2FF, #E0E7FF);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px var(--shadow);
+      padding: 16px 0;
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    
+    .nav-links a.active {
+      color: var(--white);
+      background-color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .onboarding-container {
+      display: flex;
+      margin: 40px auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 20px var(--shadow);
+      background-color: var(--white);
+      max-width: 1000px;
+    }
+    
+    .progress-sidebar {
+      width: 280px;
+      background-color: var(--secondary);
+      padding: 30px 20px;
+    }
+    
+    .progress-item {
+      display: flex;
+      gap: 12px;
+      padding: 16px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .progress-item.active {
+      background-color: var(--white);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .progress-item.completed .step-number {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .step-number {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .step-info h3 {
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    
+    .step-info p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    
+    .form-container {
+      flex: 1;
+      padding: 40px;
+    }
+    
+    .form-step {
+      display: none;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
+    
+    .step-title {
+      margin-bottom: 30px;
+    }
+    
+    .step-title h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .step-title p {
+      color: var(--text-light);
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .checkbox-item {
+      flex: 1;
+      min-width: calc(33% - 12px);
+    }
+    
+    .checkbox-card {
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      height: 100%;
+    }
+    
+    .checkbox-card:hover {
+      border-color: var(--primary-light);
+    }
+    
+    .checkbox-card.selected {
+      border-color: var(--primary);
+      background-color: rgba(99, 102, 241, 0.05);
+    }
+    
+    .checkbox-card-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .checkbox-card-desc {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .form-step {
+  display: none;
+}
+.form-step.active {
+  display: block;
+}
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E7EB;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: var(--text);
+    }
+    
+    .btn-secondary:hover {
+      background-color: #E5E7EB;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .dashboard {
+      display: none;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .welcome-message h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .welcome-message p {
+      color: var(--text-light);
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .dashboard-card {
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+    
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background-color: rgba(99, 102, 241, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+    
+    .dashboard-card h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    
+    .dashboard-card p {
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+    
+    .card-action {
+      color: var(--primary);
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .goals-section {
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 2px 10px var(--shadow);
+      margin-bottom: 40px;
+    }
+    
+    .goals-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    
+    .goal-card {
+      background-color: var(--secondary);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .goal-progress {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+    
+    .goal-progress svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    
+    .goal-progress circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+    
+    .goal-progress .bg {
+      stroke: #E5E7EB;
+    }
+    
+    .goal-progress .progress {
+      stroke: var(--primary);
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 125.6; /* 50% */
+    }
+    
+    .goal-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 600;
+      font-size: 18px;
+    }
+    
+    .goal-card h4 {
+      margin-bottom: 8px;
+    }
+    
+    .goal-card p {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    
+    /* Success Animation */
+    .success-animation {
+      text-align: center;
+      padding: 60px 0;
+    }
+    
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: block;
+      stroke-width: 2;
+      stroke: #4F46E5;
+      stroke-miterlimit: 10;
+      margin: 0 auto 30px;
+      box-shadow: inset 0px 0px 0px #4F46E5;
+      animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+    }
+    
+    .checkmark__circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: #4F46E5;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    
+    .checkmark__check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+    
+    @keyframes stroke {
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    @keyframes scale {
+      0%, 100% {
+        transform: none;
+      }
+      50% {
+        transform: scale3d(1.1, 1.1, 1);
+      }
+    }
+    
+    @keyframes fill {
+      100% {
+        box-shadow: inset 0px 0px 0px 30px #f8f9fa;
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .onboarding-container {
+        flex-direction: column;
+      }
+      
+      .progress-sidebar {
+        width: 100%;
+      }
+      
+      .goals-grid, .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="navbar">
+        <a href="#" class="logo">AuraFitness</a>
+        <div class="nav-links">
+          <a href="#" class="active">Home</a>
+          <a href="#">Workouts</a>
+          <a href="#">Nutrition</a>
+          <a href="#">Challenges</a>
+          <a href="#">Community</a>
+          <div class="user-avatar">JD</div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container" id="main-container">
+    <div class="onboarding-container" id="onboarding-container">
+      <div class="progress-sidebar">
+        <div class="progress-item active completed" data-step="1" id="nav-step1">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <h3>Basic Information</h3>
+            <p>Personal details</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="2" id="nav-step2">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <h3>Lifestyle & Habits</h3>
+            <p>Daily activity level</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="3" id="nav-step3">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <h3>Diet Preferences</h3>
+            <p>Food choices & restrictions</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="4" id="nav-step4">
+          <div class="step-number">4</div>
+          <div class="step-info">
+            <h3>Fitness Goals</h3>
+            <p>What you want to achieve</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="5" id="nav-step5">
+          <div class="step-number">5</div>
+          <div class="step-info">
+            <h3>Medical Information</h3>
+            <p>Health conditions</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="6" id="nav-step6">
+          <div class="step-number">6</div>
+          <div class="step-info">
+            <h3>Workout Preferences</h3>
+            <p>Exercise style & equipment</p>
+          </div>
+        </div>
+        <div class="progress-item" data-step="7" id="nav-step7">
+          <div class="step-number">7</div>
+          <div class="step-info">
+            <h3>Plan Selection</h3>
+            <p>Choose your program</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-container">
+        <!-- Step 1: Basic Information -->
+        <div class="form-step active" id="step1">
+          <div class="step-title">
+            <h2>Basic Information</h2>
+            <p>Let's start with some basic information about you</p>
+          </div>
+          
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" placeholder="Enter your email">
+          </div>
+          
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" class="form-control">
+              <option value="" selected disabled>Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="non-binary">Non-binary</option>
+              <option value="prefer-not">Prefer not to say</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Current Measurements</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <input type="number" class="form-control" placeholder="Height (cm)">
+              <input type="number" class="form-control" placeholder="Weight (kg)">
+            </div>
+          </div>
+          
+          <div class="form-footer">
+            <div></div>
+            <button class="btn btn-primary" id="step1-next">Continue</button>
+          </div>
+        </div>
+        
+        <!-- Step 2: Lifestyle & Habits -->
+        <div class="form-step" id="step2">
+          <div class="step-title">
+            <h2>Lifestyle & Habits</h2>
+            <p>Tell us about your current activity level and daily habits</p>
+          </div>
+          
+          <div class="form-group">
+            <label>What's your daily activity level?</label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="sedentary">
+                  <div class="checkbox-card-title">Sedentary</div>
+                  <div class="checkbox-card-desc">Little to no exercise, desk job</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="lightly-active">
+                  <div class="checkbox-card-title">Lightly Active</div>
+                  <div class="checkbox-card-desc">Light exercise 1-3 days/week</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card selected" data-value="moderately-active">
+                  <div class="checkbox-card-title">Moderately Active</div>
+                  <div class="checkbox-card-desc">Moderate exercise 3-5 days/week</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="very-active">
+                  <div class="checkbox-card-title">Very Active</div>
+                  <div class="checkbox-card-desc">Hard exercise 6-7 days/week</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="extremely-active">
+                  <div class="checkbox-card-title">Extremely Active</div>
+                  <div class="checkbox-card-desc">Hard daily exercise & physical job</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>How would you describe your sleep quality?</label>
+            <select class="form-control">
+              <option value="" selected disabled>Select an option</option>
+              <option value="excellent">Excellent (8+ hours quality sleep)</option>
+              <option value="good">Good (7-8 hours most nights)</option>
+              <option value="fair">Fair (6-7 hours, sometimes disrupted)</option>
+              <option value="poor">Poor (Less than 6 hours, often disrupted)</option>
+              <option value="very-poor">Very poor (Significant sleep issues)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>How would you rate your stress levels?</label>
+            <select class="form-control">
+              <option value="" selected disabled>Select an option</option>
+              <option value="very-low">Very low (Rarely feel stressed)</option>
+              <option value="low">Low (Occasionally feel stressed)</option>
+              <option value="moderate">Moderate (Regular stress but manageable)</option>
+              <option value="high">High (Frequently stressed)</option>
+              <option value="very-high">Very high (Constant stress)</option>
+            </select>
+          </div>
+          
+          <div class="form-footer">
+            <button class="btn btn-secondary" id="step2-prev">Back</button>
+            <button class="btn btn-primary" id="step2-next">Continue</button>
+          </div>
+        </div>
+        
+        <!-- Step 3: Diet Preferences -->
+        <div class="form-step" id="step3">
+          <div class="step-title">
+            <h2>Diet Preferences</h2>
+            <p>Help us understand your eating habits and food preferences</p>
+          </div>
+          
+          <div class="form-group">
+            <label>Do you follow any specific diet?</label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <div class="checkbox-card selected" data-value="no-diet">
+                  <div class="checkbox-card-title">No Specific Diet</div>
+                  <div class="checkbox-card-desc">I eat everything</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="vegetarian">
+                  <div class="checkbox-card-title">Vegetarian</div>
+                  <div class="checkbox-card-desc">No meat or fish</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="vegan">
+                  <div class="checkbox-card-title">Vegan</div>
+                  <div class="checkbox-card-desc">No animal products</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="keto">
+                  <div class="checkbox-card-title">Keto</div>
+                  <div class="checkbox-card-desc">Low carb, high fat</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="paleo">
+                  <div class="checkbox-card-title">Paleo</div>
+                  <div class="checkbox-card-desc">Whole foods based diet</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="mediterranean">
+                  <div class="checkbox-card-title">Mediterranean</div>
+                  <div class="checkbox-card-desc">Plant-based with lean proteins</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Do you have any food allergies or intolerances?</label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="gluten">
+                  <div class="checkbox-card-title">Gluten</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="dairy">
+                  <div class="checkbox-card-title">Dairy</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="nuts">
+                  <div class="checkbox-card-title">Nuts</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="eggs">
+                  <div class="checkbox-card-title">Eggs</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="soy">
+                  <div class="checkbox-card-title">Soy</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="shellfish">
+                  <div class="checkbox-card-title">Shellfish</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>How many meals do you typically eat per day?</label>
+            <select class="form-control">
+              <option value="" selected disabled>Select an option</option>
+              <option value="2">2 meals</option>
+              <option value="3">3 meals</option>
+              <option value="4">4 meals</option>
+              <option value="5">5 meals</option>
+              <option value="6+">6+ meals</option>
+            </select>
+          </div>
+          
+          <div class="form-footer">
+            <button class="btn btn-secondary" id="step3-prev">Back</button>
+            <button class="btn btn-primary" id="step3-next">Continue</button>
+          </div>
+        </div>
+        
+        <!-- Step 4: Fitness Goals -->
+        <div class="form-step" id="step4">
+          <div class="step-title">
+            <h2>Fitness Goals</h2>
+            <p>What do you want to achieve with AuraFitness?</p>
+          </div>
+          
+          <div class="form-group">
+            <label>What are your primary fitness goals?</label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <div class="checkbox-card selected" data-value="weight-loss">
+                  <div class="checkbox-card-title">Weight Loss</div>
+                  <div class="checkbox-card-desc">Reduce body fat</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="build-muscle">
+                  <div class="checkbox-card-title">Build Muscle</div>
+                  <div class="checkbox-card-desc">Increase muscle mass</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="improve-fitness">
+                  <div class="checkbox-card-title">Improve Fitness</div>
+                  <div class="checkbox-card-desc">Better endurance & strength</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="athletic-performance">
+                  <div class="checkbox-card-title">Athletic Performance</div>
+                  <div class="checkbox-card-desc">Sport-specific training</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card" data-value="flexibility">
+                  <div class="checkbox-card-title">Flexibility</div>
+                  <div class="checkbox-card-desc">Improve mobility & range</div>
+                </div>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox-card selected" data-value="overall-health">
+                  <div class="checkbox-card-title">Overall Health</div>
+                  <div class="checkbox-card-desc">General wellbeing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Set your specific targets</label>
+            <div class="checkbox-group" style="grid-template-columns: 1fr 1fr;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Target Weight (kg)</label>
+                <input type="number" class="form-control" placeholder="Enter target weight">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Target Date</label>
+                <input type="date" class="form-control">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>What's your fitness experience level?</label>
+            <select class="form-control">
+              <option value="" selected disabled>Select an option</option>
+              <option value="beginner">Beginner (New to fitness)</option>
+              <option value="intermediate">Intermediate (Some experience)</option>
+              <option value="advanced">Advanced (Regular training for 1+ years)</option>
+              <option value="expert">Expert (Consistent training for 3+ years)</option>
+            </select>
+          </div>
+          
+          <div class="form-footer">
+            <button class="btn btn-secondary" id="step4-prev">Back</button>
+            <button class="btn btn-primary" id="step4-next">Continue</button>
+          </div>

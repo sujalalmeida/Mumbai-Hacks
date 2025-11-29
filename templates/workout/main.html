@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraFitness - Workout Session</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --secondary-color: #3b82f6;
+      --accent-color: #f97316;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-radius: 16px;
+      --success-color: #22c55e;
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .navbar {
+      padding: 0.5rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .back-button:hover {
+      color: var(--primary-color);
+    }
+    .main-content {
+      padding: 1.5rem 0;
+    }
+    .dropdown-custom {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .dropdown-custom select {
+      appearance: none;
+      background: var(--card-bg);
+      border: 1px solid #ccc;
+      padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .dropdown-custom::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      width: 1rem;
+      height: 1rem;
+      transform: translateY(-50%);
+      pointer-events: none;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236366f1' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .camera-container {
+      position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      background-color: #000;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+    }
+    /* Fullscreen mode: camera occupies full viewport */
+    .camera-container.fullscreen {
+      width: 100vw;
+      height: 100vh;
+    }
+    .camera-feed {
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+    }
+    .camera-container.fullscreen .camera-feed {
+      height: 100%;
+    }
+    .controls-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .control-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .control-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    .control-button.active {
+      background-color: var(--accent-color);
+    }
+    .voice-indicator {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .indicator-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--success-color);
+    }
+    /* Timer overlay (optional) */
+    .timer {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    /* Exercise Details */
+    .exercise-details {
+      padding: 1rem 0;
+    }
+    .exercise-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-description {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .progress-container span {
+      font-size: 0.9rem;
+    }
+    .progress {
+      position: relative;
+      height: 10px;
+      border-radius: 5px;
+      background-color: rgba(99, 102, 241, 0.1);
+      flex-grow: 1;
+      margin: 0 1rem;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 5px;
+      width: 0%;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    /* Info Cards */
+    .info-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.25rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+      <a href="{% url 'landing' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span>HIIT Cardio Blast</span>
+      </a>
+      <div class="ms-auto">
+        <a href="#" class="btn btn-light rounded-circle">
+          <i class="fas fa-ellipsis-h"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Exercise Selector -->
+      <div class="dropdown-custom">
+        <select id="exerciseSelect">
+          {% for ex in exercises %}
+            <option value="{{ ex }}" {% if ex == selected_exercise %}selected{% endif %}>
+              {{ ex }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row g-3">
+        <!-- Left Column: Camera & Exercise Details -->
+        <div class="col-lg-8">
+          <div class="camera-container" id="cameraContainer">
+            <!-- Live stream from server (drawn via MediaPipe) -->
+            <img id="cameraFeed" src="{% url 'video_feed' %}" alt="Live Camera Feed" class="camera-feed" />
+            <!-- Optional voice indicator -->
+            <div class="voice-indicator" id="voiceIndicator" style="display: none;">
+              <div class="indicator-dot"></div>
+              Voice Commands Active
+            </div>
+            <!-- Overlay controls (volume, mic, camera, fullscreen) -->
+            <div class="controls-overlay">
+              <button class="control-button" id="volumeBtn"><i class="fas fa-volume-up"></i></button>
+              <button class="control-button active" id="micBtn"><i class="fas fa-microphone"></i></button>
+              <button class="control-button" id="cameraBtn"><i class="fas fa-camera"></i></button>
+              <button class="control-button active" id="expandBtn"><i class="fas fa-expand"></i></button>
+            </div>
+          </div>
+          <!-- Exercise Details -->
+          <div class="exercise-details">
+            <h3 class="exercise-title" id="exerciseTitle">{{ selected_exercise }}</h3>
+            <p class="exercise-description" id="exerciseDesc">{{ exercise_data.description }}</p>
+            <div class="progress-container">
+              <span id="exerciseProgressLabel">Exercise: 0 reps</span>
+              <div class="progress">
+                <div class="progress-bar" id="exerciseProgressBar"></div>
+              </div>
+              <span id="nextLabel">Next: {{ exercise_data.next }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Workout Stats & Video -->
+        <div class="col-lg-4">
+          <!-- Workout Details Card -->
+          <div class="info-card">
+            <h5>Workout Details</h5>
+            <div class="row mb-1">
+              <div class="col-6 text-muted">Duration:</div>
+              <div class="col-6 text-end fw-bold" id="workoutDuration">0:00</div>
+            </div>
+            <div class="row mb-1">
+              <div class="col-6 text-muted">Reps:</div>
+              <div class="col-6 text-end fw-bold" id="workoutReps">0</div>
+            </div>
+            <div class="row mb-1">
+              <div class="col-6 text-muted">Calories:</div>
+              <div class="col-6 text-end fw-bold" id="workoutCalories">0</div>
+            </div>
+            <div class="row">
+              <div class="col-6 text-muted">Sets:</div>
+              <div class="col-6 text-end fw-bold" id="workoutSets">0</div>
+            </div>
+          </div>
+          <!-- Workout Video Card -->
+          <div class="info-card">
+            <h5><i class="fab fa-youtube"></i> Workout Video</h5>
+            <div class="text-center mt-2">
+              <button class="btn btn-light btn-sm rounded-pill w-100" id="connectVideoBtn">
+                Play Workout Video
+              </button>
+            </div>
+          </div>
+          <!-- Mini YouTube Player -->
+          <div id="youtubePlayer" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;"></div>
+          <!-- Optional Test Button for Video Debug -->
+          <button onclick="testVideo()" class="btn btn-sm btn-info" style="position: fixed; bottom: 75px; right: 10px; z-index: 1001;">
+            Test Video
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let youtubePlayer;
+      let isVoiceActive = true; // controls if voice commands output is active
+      let lastRepTime = Date.now();
+      let repWarningGiven = false;
+
+      // Load YouTube IFrame API
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    
+      // Create YouTube player when API is ready
+      window.onYouTubeIframeAPIReady = function() {
+        youtubePlayer = new YT.Player('youtubePlayer', {
+          height: '180',
+          width: '320',
+          playerVars: {
+            playsinline: 1,
+            controls: 1,
+            autoplay: 0,
+            modestbranding: 1,
+            showinfo: 0,
+            fs: 0
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+      };
+    
+      function onPlayerReady(event) {
+        console.log('YouTube player ready');
+        event.target.setVolume(100);
+      }
+    
+      function onPlayerError(event) {
+        const fallbackIds = ['Z6-IEcWlF9o', 'UBMk30rjy0o', 'ml6cT4AZdqI'];
+        const randomFallback = fallbackIds[Math.floor(Math.random() * fallbackIds.length)];
+        console.error('YouTube error:', event.data);
+        alert('This video cannot be played. Loading an alternative...');
+        if (youtubePlayer && typeof youtubePlayer.loadVideoById === 'function') {
+          youtubePlayer.loadVideoById(randomFallback);
+        }
+      }
+    
+      // Debug test function for video playback
+      window.testVideo = function() {
+        if (youtubePlayer && typeof youtubePlayer.loadVideoById === 'function') {
+          youtubePlayer.loadVideoById('btPJPFnesV4');
+          youtubePlayer.setVolume(100);
+          youtubePlayer.playVideo();
+          alert('Testing video playback...');
+        } else {
+          alert('YouTube player not ready yet. Please try again.');
+        }
+      };
+    
+      // CSRF token helper
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          document.cookie.split(';').forEach(cookie => {
+            const [key, val] = cookie.trim().split('=');
+            if (key === name) cookieValue = decodeURIComponent(val);
+          });
+        }
+        return cookieValue;
+      }
+      const csrftoken = getCookie('csrftoken');
+    
+      // Event listener for "Play Workout Video" button
+      document.getElementById('connectVideoBtn').addEventListener('click', function() {
+        alert('Fetching a workout video...');
+        fetch("{% url 'connect_music_service' %}", {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            if (youtubePlayer && typeof youtubePlayer.loadVideoById === 'function') {
+              youtubePlayer.loadVideoById(data.video_id);
+              youtubePlayer.setVolume(100);
+              youtubePlayer.playVideo();
+              alert(`Now playing: ${data.title}`);
+            } else {
+              alert('Player not ready. Please wait and try again.');
+            }
+          } else {
+            alert(`Error fetching video: ${data.message}`);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error connecting to the video service.");
+        });
+      });
+    
+      // --- Voice Command Handling ---
+      function voiceCommandHandler(command) {
+        command = command.toLowerCase();
+        console.log("Voice Command Received:", command);
+        
+        // Camera commands
+        if (command.includes("camera on")) {
+          if (!document.getElementById('cameraBtn').classList.contains('active')) {
+            document.getElementById('cameraBtn').click();
+          }
+          if (isVoiceActive) speakText("Camera On");
+        } else if (command.includes("camera off")) {
+          if (document.getElementById('cameraBtn').classList.contains('active')) {
+            document.getElementById('cameraBtn').click();
+          }
+          if (isVoiceActive) speakText("Camera Off");
+        }
+        // Volume commands
+        else if (command.includes("volume on")) {
+          if (!document.getElementById('volumeBtn').classList.contains('active')) {
+            document.getElementById('volumeBtn').click();
+          }
+        } else if (command.includes("volume off")) {
+          if (document.getElementById('volumeBtn').classList.contains('active')) {
+            document.getElementById('volumeBtn').click();
+          }
+        }
+        // Play song command
+        else if (command.includes("play song")) {
+          document.getElementById('connectVideoBtn').click();
+        }
+        // Enable/disable buttons
+        else if (command.includes("disable buttons") || command.includes("buttons off") || command.includes("turn off buttons")) {
+          let buttons = document.querySelectorAll('.control-button');
+          buttons.forEach(btn => {
+            btn.disabled = true;
+          });
+          alert("Control buttons disabled");
+        } else if (command.includes("enable buttons") || command.includes("buttons on") || command.includes("turn on buttons")) {
+          let buttons = document.querySelectorAll('.control-button');
+          buttons.forEach(btn => {
+            btn.disabled = false;
+          });
+          alert("Control buttons enabled");
+        }
+        // Optionally, send the command to the server
+        sendCommandToServer(command);
+      }
+    
+      // --- Mic toggle (Speech Recognition) ---
+      const micBtn = document.getElementById('micBtn');
+      const voiceIndicator = document.getElementById('voiceIndicator');
+      let recognition, isRecognizing = false;
+      micBtn.addEventListener('click', () => {
+        micBtn.classList.toggle('active');
+        // Toggle global flag for voice output
+        isVoiceActive = micBtn.classList.contains('active');
+        if (!isRecognizing) {
+          if (!('webkitSpeechRecognition' in window)) {
+            alert("Your browser doesn't support Speech Recognition.");
+            micBtn.classList.add('active');
+            return;
+          }
+          recognition = new webkitSpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = false;
+          recognition.onresult = e => {
+            const transcript = e.results[e.results.length - 1][0].transcript.trim();
+            // Optionally speak back what was heard if volume is enabled
+            if (document.getElementById('volumeBtn').classList.contains('active') && isVoiceActive) {
+              speechSynthesis.speak(new SpeechSynthesisUtterance(`Heard: ${transcript}`));
+            }
+            voiceCommandHandler(transcript);
+          };
+          recognition.start();
+          voiceIndicator.style.display = 'flex';
+        } else {
+          recognition.stop();
+          voiceIndicator.style.display = 'none';
+        }
+        isRecognizing = !isRecognizing;
+      });
+    
+      // --- Fullscreen toggle ---
+      const expandBtn = document.getElementById('expandBtn');
+      const cameraContainer = document.getElementById('cameraContainer');
+      let isFullscreen = false;
+      expandBtn.addEventListener('click', () => {
+        if (!isFullscreen) {
+          if (cameraContainer.requestFullscreen) {
+            cameraContainer.requestFullscreen();
+          } else if (cameraContainer.webkitRequestFullscreen) {
+            cameraContainer.webkitRequestFullscreen();
+          }
+          cameraContainer.classList.add('fullscreen');
+          expandBtn.classList.remove('active');
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+          cameraContainer.classList.remove('fullscreen');
+          expandBtn.classList.add('active');
+        }
+        isFullscreen = !isFullscreen;
+      });
+    
+      // --- Volume toggle ---
+      const volumeBtn = document.getElementById('volumeBtn');
+      let isSpeakingEnabled = true;
+      volumeBtn.addEventListener('click', () => {
+        isSpeakingEnabled = !isSpeakingEnabled;
+        volumeBtn.classList.toggle('active');
+        const icon = volumeBtn.querySelector('i');
+        icon.classList.toggle('fa-volume-up', isSpeakingEnabled);
+        icon.classList.toggle('fa-volume-mute', !isSpeakingEnabled);
+      });
+    
+      // --- Camera on/off toggle (Django view) ---
+      const cameraBtn = document.getElementById('cameraBtn');
+      cameraBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        fetch("{% url 'toggle_camera' %}", {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Camera on:", data.camera_on);
+          // Speak camera state if voice commands are enabled
+          if (isVoiceActive) {
+            if (this.classList.contains('active')) {
+              speakText("Camera On");
+            } else {
+              speakText("Camera Off");
+            }
+          }
+        })
+        .catch(err => console.error("Error toggling camera:", err));
+      });
+    
+      // --- Exercise selection & update ---
+      const exerciseSelect = document.getElementById('exerciseSelect');
+      exerciseSelect.addEventListener('change', function() {
+        fetch("{% url 'update_exercise' %}", {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'exercise=' + encodeURIComponent(this.value)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('exerciseTitle').textContent = data.data.exercise;
+            document.getElementById('exerciseDesc').textContent = data.data.description;
+            document.getElementById('exerciseProgressLabel').textContent = "Exercise: 0 reps";
+            document.getElementById('nextLabel').textContent = "Next: " + data.data.next;
+            document.getElementById('exerciseProgressBar').style.width = '0%';
+            document.getElementById('workoutReps').textContent = 0;
+            document.getElementById('workoutSets').textContent = 0;
+            // Reset rep timer and warning flag
+            lastRepTime = Date.now();
+            repWarningGiven = false;
+          }
+        })
+        .catch(err => console.error("Error updating exercise:", err));
+      });
+    
+      // --- Poll server for workout stats ---
+      // Additionally, check if any value (reps, sets, or feedback) has changed.
+      let lastReps = 0, lastSets = 0, lastFeedback = "";
+      function pollWorkoutStats() {
+        fetch("{% url 'get_workout_stats' %}")
+          .then(res => res.json())
+          .then(data => {
+            // Update duration display
+            const duration = data.duration || 0;
+            let minutes = Math.floor(duration / 60);
+            let seconds = duration % 60;
+            document.getElementById('workoutDuration').textContent =
+              `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    
+            // Update reps
+            const reps = data.reps || 0;
+            document.getElementById('workoutReps').textContent = reps;
+    
+            // Update calories (if used)
+            document.getElementById('workoutCalories').textContent = data.calories || 0;
+    
+            // Update progress bar based on reps (assuming 15 reps per set)
+            const progressBar = document.getElementById('exerciseProgressBar');
+            const progressLabel = document.getElementById('exerciseProgressLabel');
+            const pct = ((reps % 15) / 15) * 100;
+            progressBar.style.width = pct + '%';
+            progressLabel.textContent = `Exercise: ${reps} reps`;
+    
+            // Calculate sets completed (1 set = 15 reps)
+            const setsCompleted = Math.floor(reps / 15);
+            document.getElementById('workoutSets').textContent = setsCompleted;
+    
+            // Voice feedback for rep count if voice is active:
+            if (reps !== lastReps && isVoiceActive) {
+              if (reps === 1) {
+                speakText("Starting jumping jacks");
+              } else if (reps > 1) {
+                speakText(reps.toString());
+              }
+              lastRepTime = Date.now();
+              repWarningGiven = false;
+              lastReps = reps;
+            }
+    
+            // (Optional) Remove speaking for sets if not desired
+            if (setsCompleted !== lastSets) {
+              lastSets = setsCompleted;
+            }
+    
+            // Check for no rep updates for 1 minute => alert "Please be in position"
+            if (isVoiceActive && (Date.now() - lastRepTime >= 60000) && !repWarningGiven && reps > 0) {
+              speakText("Please be in position");
+              repWarningGiven = true;
+            }
+    
+            // If feedback text changed, speak the feedback
+            if (data.feedback && data.feedback !== lastFeedback && isVoiceActive) {
+              speakText(data.feedback);
+              lastFeedback = data.feedback;
+            }
+          })
+          .catch(err => console.error("Error fetching workout stats:", err));
+      }
+      setInterval(pollWorkoutStats, 1000);
+    
+      // --- Send voice command to server helper ---
+      function sendCommandToServer(command) {
+        fetch("{% url 'voice_command_handler' %}", {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ command: command })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Server response:", data);
+        })
+        .catch(err => console.error("Error sending command:", err));
+      }
+    
+      // --- TTS function ---
+      function speakText(text) {
+        if (!isVoiceActive) return;
+        if (!text || text.trim() === "") return;
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 1.0;
+        speechSynthesis.speak(utter);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Fitness Tracker Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'fit_tracker/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="mb-4 text-center">Fitness Tracker Dashboard</h1>
+    
+    <!-- Metrics Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-icon">
+                        <i class="fas fa-shoe-prints"></i>
+                    </div>
+                    <h5 class="metric-title">Total Steps</h5>
+                    <p class="metric-value" id="totalStepsValue">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-icon">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <h5 class="metric-title">Average Steps</h5>
+                    <p class="metric-value" id="avgStepsValue">0</p>
+                    <p class="metric-subtitle">per day</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h5 class="metric-title">Total Calories</h5>
+                    <p class="metric-value" id="totalCaloriesValue">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h5 class="metric-title">Average Calories</h5>
+                    <p class="metric-value" id="avgCaloriesValue">0</p>
+                    <p class="metric-subtitle">per day</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Time filter buttons -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex justify-content-center filter-container">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary time-filter active" data-days="0">All Data</button>
+                        <button type="button" class="btn btn-outline-primary time-filter" data-days="7">Last 7 Days</button>
+                        <button type="button" class="btn btn-outline-primary time-filter" data-days="14">Last 14 Days</button>
+                        <button type="button" class="btn btn-outline-primary time-filter" data-days="30">Last 30 Days</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts - First Row -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Daily Steps</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="stepsChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="stepsChartOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="stepsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Calories Burned</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="caloriesChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="caloriesChartOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="caloriesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts - Second Row -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Activity Distribution</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="activityChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="activityChartOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="activityMinutesChart"></canvas>
+                    </div>
+                    <div class="chart-center-text">
+                        <h4>Daily Activity</h4>
+                        <p>Average minutes per day</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Step Progression</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="progressChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="progressChartOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="cumulativeStepsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts - Third Row -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Steps vs. Distance</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="scatterChartOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="scatterChartOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-expand me-2"></i>Fullscreen</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="distanceStepsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Recent Activity</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="tableOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="tableOptions">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Export Data</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sync me-2"></i>Refresh</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User ID</th>
+                                    <th>Steps</th>
+                                    <th>Calories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in fitness_data|slice:":7" %}
+                                <tr>
+                                    <td>{{ entry.activity_date }}</td>
+                                    <td>{{ entry.id_from_fitbit }}</td>
+                                    <td>{{ entry.total_steps }}</td>
+                                    <td>{{ entry.calories }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No data available. Please import data using the management command.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-outline-primary btn-sm" id="toggleFullData">View All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Full Data Table (Collapsed by default) -->
+    <div class="row mb-4 collapse" id="fullDataTable">
+        <div class="col-12">
+            <div class="card data-table">
+                <div class="card-header">
+                    <h3 class="card-title">All Activity Data</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User ID</th>
+                                    <th>Steps</th>
+                                    <th>Distance</th>
+                                    <th>Very Active (min)</th>
+                                    <th>Lightly Active (min)</th>
+                                    <th>Calories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in fitness_data %}
+                                <tr>
+                                    <td>{{ entry.activity_date }}</td>
+                                    <td>{{ entry.id_from_fitbit }}</td>
+                                    <td>{{ entry.total_steps }}</td>
+                                    <td>{{ entry.total_distance }}</td>
+                                    <td>{{ entry.very_active_minutes }}</td>
+                                    <td>{{ entry.lightly_active_minutes }}</td>
+                                    <td>{{ entry.calories }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No data available. Please import data using the management command.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Assistant Button to Launch Modal -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
+                <i class="fas fa-robot me-2"></i> Open AI Assistant
+            </button>
+        </div>
+    </div>
+    
+    <!-- Include the AI Assistant Modal -->
+    {% include "fit_tracker/ai.html" %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<script src="{% static 'fit_tracker/js/charts.js' %}"></script>
+
+<script>
+// Pass the data from Django to JavaScript
+const fitnessData = [
+    {% for entry in fitness_data %}
+    {
+        date: "{{ entry.activity_date|date:'Y-m-d' }}",
+        steps: {{ entry.total_steps }},
+        calories: {{ entry.calories }},
+        distance: {{ entry.total_distance }},
+        veryActiveMinutes: {{ entry.very_active_minutes }},
+        lightlyActiveMinutes: {{ entry.lightly_active_minutes }}
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+// Toggle full data table button
+document.getElementById('toggleFullData').addEventListener('click', function() {
+    const fullDataTable = document.getElementById('fullDataTable');
+    if (fullDataTable.classList.contains('show')) {
+        fullDataTable.classList.remove('show');
+        this.textContent = 'View All Data';
+    } else {
+        fullDataTable.classList.add('show');
+        this.textContent = 'Hide All Data';
+    }
+});
+</script>
+{% endblock %}
